@@ -3,7 +3,7 @@ import { Tabs, Card, Button, Input, Tooltip, Chip, Separator, TextField } from "
 import { Icon } from "@iconify/react";
 import { useUnmatchedItems } from "../hooks/useUnmatchedItems";
 
-export const UnmatchedItems = () => {
+export function UnmatchedItems() {
   const { state, actions } = useUnmatchedItems();
   const {
     photos,
@@ -326,4 +326,4 @@ export const UnmatchedItems = () => {
       )}
     </section>
   );
-};
+}

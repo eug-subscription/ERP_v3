@@ -1,6 +1,7 @@
 import React from "react";
 import { Avatar, ComboBox, ListBox, Button, Modal, Input, Label } from "@heroui/react";
 import { Icon } from "@iconify/react";
+import { useUsers } from "../hooks/useUsers";
 
 interface TeamMemberModalProps {
   isOpen: boolean;
@@ -8,63 +9,13 @@ interface TeamMemberModalProps {
   onAddMember: (userId: string) => void;
 }
 
-const users = [
-  {
-    id: "u1",
-    name: "Alex Thompson",
-    role: "Photographer",
-    email: "alex.thompson@example.com",
-    avatar: "https://img.heroui.chat/image/avatar?w=100&h=100&u=4",
-  },
-  {
-    id: "u2",
-    name: "Morgan Chen",
-    role: "Designer",
-    email: "morgan.chen@example.com",
-    avatar: "https://img.heroui.chat/image/avatar?w=100&h=100&u=5",
-  },
-  {
-    id: "u3",
-    name: "Taylor Kim",
-    role: "Developer",
-    email: "taylor.kim@example.com",
-    avatar: "https://img.heroui.chat/image/avatar?w=100&h=100&u=6",
-  },
-  {
-    id: "u4",
-    name: "Jamie Rodriguez",
-    role: "Photographer",
-    email: "jamie.rodriguez@example.com",
-    avatar: "https://img.heroui.chat/image/avatar?w=100&h=100&u=7",
-  },
-  {
-    id: "u5",
-    name: "Casey Johnson",
-    role: "Marketing",
-    email: "casey.johnson@example.com",
-    avatar: "https://img.heroui.chat/image/avatar?w=100&h=100&u=8",
-  },
-  {
-    id: "u6",
-    name: "Jordan Smith",
-    role: "UX Researcher",
-    email: "jordan.smith@example.com",
-    avatar: "https://img.heroui.chat/image/avatar?w=100&h=100&u=9",
-  },
-  {
-    id: "u7",
-    name: "Riley Garcia",
-    role: "Project Manager",
-    email: "riley.garcia@example.com",
-    avatar: "https://img.heroui.chat/image/avatar?w=100&h=100&u=10",
-  },
-];
 
-export const TeamMemberModal: React.FC<TeamMemberModalProps> = ({
+export function TeamMemberModal({
   isOpen,
   onOpenChange,
   onAddMember,
-}) => {
+}: TeamMemberModalProps) {
+  const { data: users = [] } = useUsers();
   const [selectedKey, setSelectedKey] = React.useState<string | number | null>(null);
   const [filterValue, setFilterValue] = React.useState("");
 
@@ -79,7 +30,7 @@ export const TeamMemberModal: React.FC<TeamMemberModalProps> = ({
         user.email.toLowerCase().includes(filterValue.toLowerCase()) ||
         user.role.toLowerCase().includes(filterValue.toLowerCase())
     );
-  }, [filterValue]);
+  }, [users, filterValue]);
 
   const handleAddMember = () => {
     if (selectedKey) {
@@ -192,4 +143,4 @@ export const TeamMemberModal: React.FC<TeamMemberModalProps> = ({
       </Modal.Backdrop>
     </Modal>
   );
-};
+}

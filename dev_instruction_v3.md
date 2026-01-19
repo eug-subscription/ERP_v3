@@ -121,8 +121,6 @@ export function useFeatureName() {
 
 **Current Route Structure:**
 
-| Route | Component |
-| :--- | :--- |
 | `/uploading` | `FileUploadSection` |
 | `/original` | `OriginalPhotos` |
 | `/items` | `UnmatchedItems` |
@@ -130,6 +128,11 @@ export function useFeatureName() {
 | `/team` | `TeamMembers` |
 | `/finances` | `FinancialBreakdown` |
 | `/timeline` | `Timeline` |
+| `/project/prices` | `ProjectPrices` |
+| `/project/account` | `Coming Soon` |
+| `/project/managers` | `Coming Soon` |
+| `/project/guidelines` | `Coming Soon` |
+| `/project/settings` | `Coming Soon` |
 
 **Adding a New Route:**
 

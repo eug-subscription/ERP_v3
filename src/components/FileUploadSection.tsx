@@ -1,110 +1,33 @@
 import React from "react";
 import { Icon } from "@iconify/react";
 import { Button, ButtonGroup, Card, Chip, Tabs } from "@heroui/react";
-
-interface UploadFile {
-  id: string;
-  name: string;
-  size: number;
-  status: "uploading" | "completed" | "failed" | "paused";
-  progress: number;
-  uploaded: number;
-  uploadSpeed: number;
-  timeRemaining: number;
-  errorMessage?: string;
-  fileType: string;
-}
+import { useUpload } from "../hooks/useUpload";
 
 interface FileUploadSectionProps {
   title: string;
   description: string;
-  type: "unedited" | "edited";
 }
 
-export const FileUploadSection: React.FC<FileUploadSectionProps> = ({
+export function FileUploadSection({
   title,
   description,
-  type: _type,
-}) => {
-  const [activeTab, setActiveTab] = React.useState("all");
-
-  const [files] = React.useState<UploadFile[]>([
-    {
-      id: "1",
-      name: "DSC_0123.jpg",
-      size: 3200000,
-      status: "uploading",
-      progress: 45,
-      uploaded: 1440000,
-      uploadSpeed: 250000,
-      timeRemaining: 7,
-      fileType: "image/jpeg",
-    },
-    {
-      id: "2",
-      name: "DSC_0124.jpg",
-      size: 4500000,
-      status: "completed",
-      progress: 100,
-      uploaded: 4500000,
-      uploadSpeed: 0,
-      timeRemaining: 0,
-      fileType: "image/jpeg",
-    },
-    {
-      id: "3",
-      name: "DSC_0125.png",
-      size: 6800000,
-      status: "failed",
-      progress: 23,
-      uploaded: 1564000,
-      uploadSpeed: 0,
-      timeRemaining: 0,
-      errorMessage: "Network error occurred",
-      fileType: "image/png",
-    },
-    {
-      id: "4",
-      name: "PRODUCT_BANNER.jpg",
-      size: 5100000,
-      status: "paused",
-      progress: 67,
-      uploaded: 3417000,
-      uploadSpeed: 0,
-      timeRemaining: 0,
-      fileType: "image/jpeg",
-    },
-    {
-      id: "5",
-      name: "DSC_0126.jpg",
-      size: 2800000,
-      status: "uploading",
-      progress: 78,
-      uploaded: 2184000,
-      uploadSpeed: 320000,
-      timeRemaining: 2,
-      fileType: "image/jpeg",
-    },
-  ]);
-
-  const fileCounts = React.useMemo(
-    () => ({
-      all: files.length,
-      uploading: files.filter((f) => f.status === "uploading").length,
-      completed: files.filter((f) => f.status === "completed").length,
-      failed: files.filter((f) => f.status === "failed").length,
-      paused: files.filter((f) => f.status === "paused").length,
-    }),
-    [files]
-  );
-
-  const filteredFiles = React.useMemo(
-    () => (activeTab === "all" ? files : files.filter((f) => f.status === activeTab)),
-    [files, activeTab]
-  );
+}: FileUploadSectionProps) {
+  const { state, actions } = useUpload();
+  const { filteredFiles, fileCounts, activeTab, isLoading } = state;
+  const { setActiveTab } = actions;
 
   const formatSize = (bytes: number) =>
     bytes < 1048576 ? (bytes / 1024).toFixed(1) + " KB" : (bytes / 1048576).toFixed(1) + " MB";
+
+  if (isLoading) {
+    return (
+      <section className="mb-10 scroll-mt-32">
+        <div className="h-8 w-64 bg-default-200 animate-pulse rounded-lg mb-2" />
+        <div className="h-4 w-96 bg-default-100 animate-pulse rounded-lg mb-6" />
+        <div className="h-48 bg-default-50 animate-pulse rounded-2xl border border-default-200 shadow-sm" />
+      </section>
+    );
+  }
 
   return (
     <section className="mb-10 scroll-mt-32">
@@ -125,7 +48,7 @@ export const FileUploadSection: React.FC<FileUploadSectionProps> = ({
         </Card.Content>
       </Card>
 
-      {files.length > 0 && (
+      {fileCounts.all > 0 && (
         <div className="space-y-4">
           <div className="flex justify-between items-center">
             <Tabs selectedKey={activeTab} onSelectionChange={(k) => setActiveTab(k as string)}>
@@ -234,4 +157,4 @@ export const FileUploadSection: React.FC<FileUploadSectionProps> = ({
       )}
     </section>
   );
-};
+}

@@ -1,39 +1,25 @@
 import React from "react";
 import { Outlet, createRootRoute, createRoute, createRouter } from "@tanstack/react-router";
-import { Header } from "./components/Header";
-import { TabNavigation } from "./components/TabNavigation";
-import { OrderInfo } from "./components/OrderInfo";
-import { FileUploadSection } from "./components/FileUploadSection";
-import { OriginalPhotos } from "./components/OriginalPhotos";
-import { UnmatchedItems } from "./components/UnmatchedItems";
-import { TeamMembers } from "./components/TeamMembers";
-import { FinancialBreakdown } from "./components/FinancialBreakdown";
-import { Timeline } from "./components/Timeline";
-import { Messages } from "./components/Messages";
 
-// 1. Root Route - Defines the global layout
+// 1. Root Route - Global shell (providers, etc.)
 const rootRoute = createRootRoute({
   component: () => (
-    <div className="min-h-screen bg-background">
-      <Header />
-      <TabNavigation />
-      <div className="container mx-auto px-4 py-4 pt-6 max-w-7xl">
-        <div className="flex flex-col lg:flex-row gap-6">
-          <div className="flex-1">
-            <Outlet />
-          </div>
-          <div className="w-full lg:w-80 xl:w-96 flex-shrink-0">
-            <OrderInfo />
-          </div>
-        </div>
-      </div>
+    <div className="min-h-screen bg-background font-sans antialiased">
+      <Outlet />
     </div>
   ),
 });
 
-// 2. Child Routes
-const indexRoute = createRoute({
+// 2. Order Layout Route (Pathless)
+const orderLayoutRoute = createRoute({
   getParentRoute: () => rootRoute,
+  id: "_order",
+  component: React.lazy(() => import("./components/layouts/OrderLayout").then(m => ({ default: m.OrderLayout }))),
+});
+
+// 3. Child Routes (Order)
+const indexRoute = createRoute({
+  getParentRoute: () => orderLayoutRoute,
   path: "/",
   beforeLoad: ({ navigate }) => {
     throw navigate({ to: "/uploading", replace: true });
@@ -41,75 +27,145 @@ const indexRoute = createRoute({
 });
 
 const uploadingRoute = createRoute({
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => orderLayoutRoute,
   path: "/uploading",
-  component: () => (
-    <div>
-      <FileUploadSection
-        title="Uploading unedited photos"
-        description="Upload unedited photos for further processing."
-        type="unedited"
-      />
-      <FileUploadSection
-        title="Uploading edited photos"
-        description="Upload a folder with all edited photos to the same structure as the original photos."
-        type="edited"
-      />
-    </div>
-  ),
+  component: () => {
+    const FileUploadSection = React.lazy(() => import("./components/FileUploadSection").then(m => ({ default: m.FileUploadSection })));
+    return (
+      <React.Suspense fallback={<div className="p-8 text-center animate-pulse">Loading Uploads...</div>}>
+        <FileUploadSection
+          title="Uploading unedited photos"
+          description="Upload unedited photos for further processing."
+        />
+        <FileUploadSection
+          title="Uploading edited photos"
+          description="Upload a folder with all edited photos to the same structure as the original photos."
+        />
+      </React.Suspense>
+    );
+  },
 });
 
 const originalRoute = createRoute({
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => orderLayoutRoute,
   path: "/original",
-  component: OriginalPhotos,
+  component: React.lazy(() => import("./components/OriginalPhotos").then(m => ({ default: m.OriginalPhotos }))),
 });
 
 const itemsRoute = createRoute({
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => orderLayoutRoute,
   path: "/items",
-  component: UnmatchedItems,
+  component: React.lazy(() => import("./components/UnmatchedItems").then(m => ({ default: m.UnmatchedItems }))),
 });
 
 const teamRoute = createRoute({
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => orderLayoutRoute,
   path: "/team",
-  component: TeamMembers,
+  component: React.lazy(() => import("./components/TeamMembers").then(m => ({ default: m.TeamMembers }))),
 });
 
 const financesRoute = createRoute({
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => orderLayoutRoute,
   path: "/finances",
-  component: FinancialBreakdown,
+  component: React.lazy(() => import("./components/FinancialBreakdown").then(m => ({ default: m.FinancialBreakdown }))),
 });
 
 const timelineRoute = createRoute({
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => orderLayoutRoute,
   path: "/timeline",
-  component: Timeline,
+  component: React.lazy(() => import("./components/Timeline").then(m => ({ default: m.Timeline }))),
 });
 
 const messagesRoute = createRoute({
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => orderLayoutRoute,
   path: "/messages",
-  component: Messages,
+  component: React.lazy(() => import("./components/Messages").then(m => ({ default: m.Messages }))),
 });
 
-// 3. Create Router
+// 4. Project Page Route (Parent)
+const projectRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/project",
+  component: React.lazy(() => import("./components/ProjectPage/ProjectPage").then(m => ({ default: m.ProjectPage }))),
+});
+
+const projectIndexRoute = createRoute({
+  getParentRoute: () => projectRoute,
+  path: "/",
+  beforeLoad: ({ navigate }) => {
+    throw navigate({ to: "/project/prices", replace: true });
+  },
+});
+
+const projectAccountRoute = createRoute({
+  getParentRoute: () => projectRoute,
+  path: "/account",
+  component: () => <div className="p-8 text-center text-default-500">Account Details (Coming Soon)</div>,
+});
+
+const projectNotificationsRoute = createRoute({
+  getParentRoute: () => projectRoute,
+  path: "/notifications",
+  component: () => <div className="p-8 text-center text-default-500">Notifications (Coming Soon)</div>,
+});
+
+const projectSecurityRoute = createRoute({
+  getParentRoute: () => projectRoute,
+  path: "/security",
+  component: () => <div className="p-8 text-center text-default-500">Security (Coming Soon)</div>,
+});
+
+const projectManagersRoute = createRoute({
+  getParentRoute: () => projectRoute,
+  path: "/managers",
+  component: () => <div className="p-8 text-center text-default-500">Managers (Coming Soon)</div>,
+});
+
+const projectPricesRoute = createRoute({
+  getParentRoute: () => projectRoute,
+  path: "/prices",
+  component: React.lazy(() => import("./components/ProjectPage/ProjectPrices").then(m => ({ default: m.ProjectPrices }))),
+});
+
+const projectGuidelinesRoute = createRoute({
+  getParentRoute: () => projectRoute,
+  path: "/guidelines",
+  component: () => <div className="p-8 text-center text-default-500">Guidelines (Coming Soon)</div>,
+});
+
+const projectSettingsRoute = createRoute({
+  getParentRoute: () => projectRoute,
+  path: "/settings",
+  component: () => <div className="p-8 text-center text-default-500">Settings (Coming Soon)</div>,
+});
+
+// 5. Create Router
 const routeTree = rootRoute.addChildren([
-  indexRoute,
-  uploadingRoute,
-  originalRoute,
-  itemsRoute,
-  teamRoute,
-  financesRoute,
-  timelineRoute,
-  messagesRoute,
+  orderLayoutRoute.addChildren([
+    indexRoute,
+    uploadingRoute,
+    originalRoute,
+    itemsRoute,
+    teamRoute,
+    financesRoute,
+    timelineRoute,
+    messagesRoute,
+  ]),
+  projectRoute.addChildren([
+    projectIndexRoute,
+    projectAccountRoute,
+    projectNotificationsRoute,
+    projectSecurityRoute,
+    projectManagersRoute,
+    projectPricesRoute,
+    projectGuidelinesRoute,
+    projectSettingsRoute,
+  ]),
 ]);
 
 export const router = createRouter({ routeTree });
 
-// 4. Register router for typesafety
+// 6. Register router for typesafety
 declare module "@tanstack/react-router" {
   interface Register {
     router: typeof router;

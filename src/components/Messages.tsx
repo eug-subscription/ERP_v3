@@ -1,40 +1,23 @@
-import { Avatar, Button, Card, Input, Label } from "@heroui/react";
+import { Avatar, Button, Card, Input, Label, Skeleton } from "@heroui/react";
 import { Icon } from "@iconify/react";
+import { useMessages } from "../hooks/useMessages";
 
-interface Message {
-  id: string;
-  user: {
-    name: string;
-    avatar: string;
-  };
-  text: string;
-  time: string;
-  isCurrentUser: boolean;
-}
+export function Messages() {
+  const { data: messages = [], isLoading } = useMessages();
 
-export const Messages = () => {
-  const messages: Message[] = [
-    {
-      id: "1",
-      user: {
-        name: "Phoenix Baker",
-        avatar: "https://img.heroui.chat/image/avatar?w=40&h=40&u=phoenix",
-      },
-      text: "Hey there, can you please choose the best design?",
-      time: "Today 7:15pm",
-      isCurrentUser: false,
-    },
-    {
-      id: "2",
-      user: {
-        name: "Phoenix Baker",
-        avatar: "https://img.heroui.chat/image/avatar?w=40&h=40&u=phoenix",
-      },
-      text: "Hurry up, I need a quick turnaround.",
-      time: "Today 7:39pm",
-      isCurrentUser: false,
-    },
-  ];
+  if (isLoading) {
+    return (
+      <section className="mb-8 scroll-mt-32">
+        <Card className="shadow-premium border-none p-6">
+          <Skeleton className="h-6 w-32 rounded-lg mb-6" />
+          <div className="space-y-6">
+            <Skeleton className="h-16 w-3/4 rounded-xl" />
+            <Skeleton className="h-16 w-2/3 rounded-xl ml-auto" />
+          </div>
+        </Card>
+      </section>
+    );
+  }
 
   return (
     <section className="mb-8 scroll-mt-32">
@@ -110,4 +93,4 @@ export const Messages = () => {
       </Card>
     </section>
   );
-};
+}

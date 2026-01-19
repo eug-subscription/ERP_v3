@@ -22,6 +22,9 @@ export function useUnmatchedItems() {
     return mockItems.filter((item) => !matchedPhotos[item.id]);
   }, [matchedPhotos]);
 
+  /**
+   * Filtered list of unmatched items based on current search term
+   */
   const filteredUnmatchedItems = React.useMemo(() => {
     if (!searchTerm.trim()) return unmatchedItems;
 
@@ -33,6 +36,12 @@ export function useUnmatchedItems() {
     );
   }, [unmatchedItems, searchTerm]);
 
+  /**
+   * Splits text into parts for highlighting based on the search query
+   * @param text The text to process
+   * @param query The search term to highlight
+   * @returns Array of text parts for rendering
+   */
   const highlightMatch = (text: string, query: string) => {
     if (!query.trim()) return text;
 
@@ -52,6 +61,10 @@ export function useUnmatchedItems() {
     }
   };
 
+  /**
+   * Unmatches a photo from an item and provides an undo window
+   * @param itemId The ID of the item to unmatch
+   */
   const handleUnmatch = (itemId: string) => {
     const photoUrl = matchedPhotos[itemId];
     setRecentlyUnmatched({ itemId, photoUrl });
@@ -67,6 +80,9 @@ export function useUnmatchedItems() {
     }, 5000);
   };
 
+  /**
+   * Reverts the last unmatch operation
+   */
   const handleUndoUnmatch = () => {
     if (recentlyUnmatched) {
       setMatchedPhotos((prev) => ({
@@ -77,6 +93,9 @@ export function useUnmatchedItems() {
     }
   };
 
+  /**
+   * Calculates statistics for matched vs unmatched items
+   */
   const matchStats = React.useMemo(() => {
     const totalItems = mockItems.length;
     const matchedCount = Object.keys(matchedPhotos).length;
@@ -90,6 +109,11 @@ export function useUnmatchedItems() {
     };
   }, [matchedPhotos]);
 
+  /**
+   * Handles the start of a drag-and-drop operation
+   * @param e Drag event
+   * @param photo Data of the photo being dragged
+   */
   const handleDragStart = (
     e: React.DragEvent,
     photo: { id: string; image: string; filename: string }
@@ -114,6 +138,11 @@ export function useUnmatchedItems() {
     setDragOverItem(null);
   };
 
+  /**
+   * Completes the drag-and-drop matching operation with exit animation
+   * @param e Drop event
+   * @param itemId The ID of the item being dropped onto
+   */
   const handleDrop = (e: React.DragEvent, itemId: string) => {
     e.preventDefault();
     const photoImage = e.dataTransfer.getData("photoImage");

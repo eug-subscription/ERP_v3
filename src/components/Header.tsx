@@ -1,7 +1,7 @@
 import React from "react";
 import { Icon } from "@iconify/react";
 
-export const Header = () => {
+export function Header() {
   const steps = [
     { label: "Home", icon: "lucide:home", href: "#" },
     { label: "Projects", href: "#" },
@@ -53,4 +53,4 @@ export const Header = () => {
       </div>
     </header>
   );
-};
+}

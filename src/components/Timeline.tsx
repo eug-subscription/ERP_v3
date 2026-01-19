@@ -1,19 +1,14 @@
 import React from "react";
-import { Card, Button, TextArea, Input, Label } from "@heroui/react";
+import { Card, Button, TextArea, Input, Label, Skeleton } from "@heroui/react";
 import { Icon } from "@iconify/react";
+import { useTimeline } from "../hooks/useTimeline";
+import { TimelineEvent } from "../data/mock-timeline";
 
-interface TimelineEvent {
-  id: string;
-  date: string;
-  title: string;
-  description: string;
-  type: "success" | "info" | "warning" | "danger";
-  icon: string;
-}
-
-export const Timeline = () => {
+export function Timeline() {
   const [comment, setComment] = React.useState("");
   const maxLength = 2000;
+
+  const { data: events = [], isLoading } = useTimeline();
 
   const handleCommentChange = (value: string) => {
     if (value.length <= maxLength) {
@@ -23,45 +18,9 @@ export const Timeline = () => {
 
   const handleSubmitComment = () => {
     if (comment.trim()) {
-      // Here you would normally send the comment to your API
       setComment("");
     }
   };
-
-  const events: TimelineEvent[] = [
-    {
-      id: "1",
-      date: "20 Jan, 2023",
-      title: "Photos are ready and were sent to Micky Mouse",
-      description: "Photos were processed by artistic assistant Natiq Neytonovich",
-      type: "success",
-      icon: "lucide:image",
-    },
-    {
-      id: "2",
-      date: "18 Jan, 2023",
-      title: "7 photos from Heinz have been successfully uploaded",
-      description: "Photos were processed by executive Heinz Steinbauer",
-      type: "info",
-      icon: "lucide:check-circle",
-    },
-    {
-      id: "3",
-      date: "15 Jan, 2023",
-      title: "Original photos have been uploaded",
-      description: "Photos were uploaded via the Food Web App",
-      type: "info",
-      icon: "lucide:upload-cloud",
-    },
-    {
-      id: "4",
-      date: "12 Jan, 2023",
-      title: "Order was created",
-      description: "The order was created via the Web Germany manager",
-      type: "info",
-      icon: "lucide:clipboard-check",
-    },
-  ];
 
   const getIconColor = (type: TimelineEvent["type"]) => {
     switch (type) {
@@ -159,28 +118,39 @@ export const Timeline = () => {
           </div>
         </Card.Header>
         <Card.Content className="px-6 py-8">
-          <div className="relative pl-8 border-l-2 border-default-100 ml-4 space-y-10">
-            {events.map((event) => (
-              <div key={event.id} className="relative">
-                <div
-                  className={`absolute -left-[45px] w-8 h-8 rounded-full bg-white shadow-md border-2 ${event.type === "success" ? "border-success" : "border-accent"} flex items-center justify-center`}
-                >
-                  <Icon icon={event.icon} className={`w-4 h-4 ${getIconColor(event.type)}`} />
+          {isLoading ? (
+            <div className="relative pl-8 border-l-2 border-default-100 ml-4 space-y-10">
+              {[1, 2, 3].map((i) => (
+                <div key={i} className="relative">
+                  <Skeleton className="absolute -left-[45px] w-8 h-8 rounded-full" />
+                  <Skeleton className="h-24 w-full rounded-xl" />
                 </div>
-                <div className="bg-default-50/30 p-4 rounded-xl border border-default-50 hover:bg-default-50 transition-colors">
-                  <p className="text-[10px] uppercase font-black tracking-widest text-default-500 mb-2">
-                    {event.date}
-                  </p>
-                  <h3 className="text-sm font-bold text-default-900 mb-1 leading-tight">
-                    {event.title}
-                  </h3>
-                  <p className="text-xs text-default-600 leading-relaxed">{event.description}</p>
+              ))}
+            </div>
+          ) : (
+            <div className="relative pl-8 border-l-2 border-default-100 ml-4 space-y-10">
+              {events.map((event) => (
+                <div key={event.id} className="relative">
+                  <div
+                    className={`absolute -left-[45px] w-8 h-8 rounded-full bg-white shadow-md border-2 ${event.type === "success" ? "border-success" : "border-accent"} flex items-center justify-center`}
+                  >
+                    <Icon icon={event.icon} className={`w-4 h-4 ${getIconColor(event.type)}`} />
+                  </div>
+                  <div className="bg-default-50/30 p-4 rounded-xl border border-default-50 hover:bg-default-50 transition-colors">
+                    <p className="text-[10px] uppercase font-black tracking-widest text-default-500 mb-2">
+                      {event.date}
+                    </p>
+                    <h3 className="text-sm font-bold text-default-900 mb-1 leading-tight">
+                      {event.title}
+                    </h3>
+                    <p className="text-xs text-default-600 leading-relaxed">{event.description}</p>
+                  </div>
                 </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
         </Card.Content>
       </Card>
     </section>
   );
-};
+}

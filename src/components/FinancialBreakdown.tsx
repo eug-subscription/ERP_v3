@@ -1,7 +1,22 @@
 import React from "react";
-import { Separator } from "@heroui/react";
+import { Separator, Skeleton } from "@heroui/react";
+import { useFinancial } from "../hooks/useFinancial";
 
-export const FinancialBreakdown = () => {
+export function FinancialBreakdown() {
+  const { data: financial, isLoading } = useFinancial();
+
+  if (isLoading || !financial) {
+    return (
+      <section className="mb-10 scroll-mt-32">
+        <div className="flex justify-between items-center mb-6">
+          <Skeleton className="h-10 w-64 rounded-lg" />
+          <Skeleton className="h-8 w-32 rounded-full" />
+        </div>
+        <Skeleton className="h-[600px] w-full rounded-[2.5rem]" />
+      </section>
+    );
+  }
+
   return (
     <section className="mb-10 scroll-mt-32">
       <div className="flex flex-col md:flex-row md:items-end justify-between mb-6 gap-4">
@@ -15,7 +30,7 @@ export const FinancialBreakdown = () => {
         </div>
         <div className="px-4 py-2 bg-accent/10 rounded-full border border-accent/20">
           <span className="text-xs font-bold text-accent uppercase tracking-widest">
-            Order #123456
+            Order #{financial.orderNumber}
           </span>
         </div>
       </div>
@@ -28,14 +43,7 @@ export const FinancialBreakdown = () => {
               Costs
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-x-16 gap-y-2">
-              {[
-                { label: "Photographer price", value: "$500 (£400)" },
-                { label: "Travel cost", value: "$500 (£400)" },
-                { label: "Videographer price", value: "$500 (£400)" },
-                { label: "Other expenses", value: "$500 (£400)" },
-                { label: "Retoucher Standard", value: "£500" },
-                { label: "VAT", value: "£400" },
-              ].map((item, i) => (
+              {financial.costs.items.map((item, i) => (
                 <div
                   key={i}
                   className="flex justify-between py-4 border-b border-default-100/50 last:border-0 hover:translate-x-1 transition-transform group"
@@ -51,7 +59,9 @@ export const FinancialBreakdown = () => {
                   <span className="text-accent font-black uppercase tracking-widest text-sm">
                     Total Costs
                   </span>
-                  <span className="text-accent font-black text-2xl tracking-tight">£5,500</span>
+                  <span className="text-accent font-black text-2xl tracking-tight">
+                    {financial.costs.total}
+                  </span>
                 </div>
               </div>
             </div>
@@ -65,12 +75,7 @@ export const FinancialBreakdown = () => {
               Revenue
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-x-16 gap-y-2">
-              {[
-                { label: "Photography (10 dishes)", value: "£400" },
-                { label: "Image-to-menu creation", value: "£400" },
-                { label: "Standard editing", value: "£1,000" },
-                { label: "AI Generations", value: "£400" },
-              ].map((item, i) => (
+              {financial.revenue.items.map((item, i) => (
                 <div
                   key={i}
                   className="flex justify-between py-4 border-b border-default-100/50 last:border-0 hover:translate-x-1 transition-transform group"
@@ -86,7 +91,9 @@ export const FinancialBreakdown = () => {
                   <span className="text-success font-black uppercase tracking-widest text-sm">
                     Total Revenue
                   </span>
-                  <span className="text-success font-black text-2xl tracking-tight">£6,500</span>
+                  <span className="text-success font-black text-2xl tracking-tight">
+                    {financial.revenue.total}
+                  </span>
                 </div>
               </div>
             </div>
@@ -105,7 +112,9 @@ export const FinancialBreakdown = () => {
                 <div className="flex-1">
                   <div className="flex justify-between items-center mb-6">
                     <span className="text-white/60 font-medium tracking-wide">Gross Profit</span>
-                    <span className="text-3xl font-bold tracking-tight">£1,000</span>
+                    <span className="text-3xl font-bold tracking-tight">
+                      {financial.summary.grossProfit}
+                    </span>
                   </div>
                   <Separator className="bg-white/10 mb-6" />
                   <div className="flex justify-between items-end">
@@ -114,11 +123,13 @@ export const FinancialBreakdown = () => {
                         Net Final (incl. VAT)
                       </span>
                       <span className="text-5xl font-black text-success tracking-tighter drop-shadow-sm">
-                        £1,200
+                        {financial.summary.netFinal}
                       </span>
                     </div>
                     <div className="px-4 py-2 bg-success/20 rounded-xl border border-success/30">
-                      <span className="text-success font-black text-sm">+20%</span>
+                      <span className="text-success font-black text-sm">
+                        {financial.summary.profitMargin}
+                      </span>
                     </div>
                   </div>
                 </div>
@@ -129,4 +140,4 @@ export const FinancialBreakdown = () => {
       </div>
     </section>
   );
-};
+}

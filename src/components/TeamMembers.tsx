@@ -2,71 +2,12 @@ import React from "react";
 import { Avatar, Button, Chip, Checkbox, Input, Label, Separator } from "@heroui/react";
 import { Icon } from "@iconify/react";
 import { TeamMemberModal } from "./TeamMemberModal";
+import { useTeam } from "../hooks/useTeam";
 
-interface TeamMember {
-  id: string;
-  user: {
-    name: string;
-    avatar: string;
-    email: string;
-  };
-  role: string;
-  status: "Active" | "Paused" | "Inactive";
-  addedDate: string;
-  lastActivity: string;
-  workerId: string;
-}
-
-export const TeamMembers = () => {
-  const [selectedKeys, setSelectedKeys] = React.useState<Set<string>>(new Set(["2"]));
-  const [page, setPage] = React.useState(1);
-  const [isOpen, setIsOpen] = React.useState(false);
-
-  const [teamMembers] = React.useState<TeamMember[]>([
-    {
-      id: "1",
-      user: {
-        name: "Tony Reichert",
-        avatar: "https://img.heroui.chat/image/avatar?w=40&h=40&u=1",
-        email: "tony.reichert@wolt.com",
-      },
-      role: "Sales",
-      status: "Active",
-      addedDate: "Jun 21st, 2024",
-      lastActivity: "2 hours ago",
-      workerId: "4121",
-    },
-    {
-      id: "2",
-      user: {
-        name: "Zoey Lang",
-        avatar: "https://img.heroui.chat/image/avatar?w=40&h=40&u=2",
-        email: "zoey.lang@wolt.com",
-      },
-      role: "Onboarding manager",
-      status: "Paused",
-      addedDate: "Dec 11th, 2023",
-      lastActivity: "1 day ago",
-      workerId: "1123",
-    },
-    {
-      id: "3",
-      user: {
-        name: "Jane Fisher",
-        avatar: "https://img.heroui.chat/image/avatar?w=40&h=40&u=3",
-        email: "jane.fisher@wolt.com",
-      },
-      role: "Senior Developer",
-      status: "Inactive",
-      addedDate: "Feb 20th, 2024",
-      lastActivity: "2 weeks ago",
-      workerId: "6542",
-    },
-  ]);
-
-  const handleAddMember = (_userId: string) => {
-    setIsOpen(false);
-  };
+export function TeamMembers() {
+  const { state, actions } = useTeam();
+  const { teamMembers, selectedKeys, page, isOpen, isLoading } = state;
+  const { setIsOpen, setPage, toggleSelected, handleAddMember } = actions;
 
   const statusColorMap: Record<string, "success" | "warning" | "default"> = {
     Active: "success",
@@ -74,15 +15,17 @@ export const TeamMembers = () => {
     Inactive: "default",
   };
 
-  const toggleSelected = (id: string) => {
-    const newSelected = new Set(selectedKeys);
-    if (newSelected.has(id)) {
-      newSelected.delete(id);
-    } else {
-      newSelected.add(id);
-    }
-    setSelectedKeys(newSelected);
-  };
+  if (isLoading) {
+    return (
+      <section className="mb-8 scroll-mt-32">
+        <div className="flex justify-between items-center mb-6">
+          <div className="h-10 w-48 bg-default-200 animate-pulse rounded-lg" />
+          <div className="h-12 w-32 bg-default-200 animate-pulse rounded-xl" />
+        </div>
+        <div className="h-64 bg-default-50 animate-pulse rounded-[2.5rem] border border-default-200" />
+      </section>
+    );
+  }
 
   return (
     <section className="mb-8 scroll-mt-32">
@@ -257,4 +200,4 @@ export const TeamMembers = () => {
       <TeamMemberModal isOpen={isOpen} onOpenChange={setIsOpen} onAddMember={handleAddMember} />
     </section>
   );
-};
+}

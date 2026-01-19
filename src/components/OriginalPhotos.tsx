@@ -1,77 +1,21 @@
-import React from "react";
-import { Button, Tooltip, Avatar, Chip } from "@heroui/react";
+import { Button, Tooltip, Avatar, Chip, Skeleton } from "@heroui/react";
 import { Icon } from "@iconify/react";
+import { usePhotos } from "../hooks/usePhotos";
 
-interface PhotoData {
-  id: string;
-  fileName: string;
-  source: "API" | "Admin";
-  size: string;
-  createdBy: {
-    name: string;
-    avatar: string;
-  };
-  downloadedBy: {
-    name: string;
-    avatar: string;
-  };
-  status: "Available" | "In process" | "Completed";
-  createdAt: string;
-}
+export function OriginalPhotos() {
+  const { data: photos = [], isLoading } = usePhotos();
 
-export const OriginalPhotos = () => {
-  const photos: PhotoData[] = [
-    {
-      id: "1",
-      fileName: "Archive_1.zip",
-      source: "API",
-      size: "54 KB",
-      createdBy: {
-        name: "Gary Reichert",
-        avatar: "https://img.heroui.chat/image/avatar?w=40&h=40&u=1",
-      },
-      downloadedBy: {
-        name: "Emma Thompson",
-        avatar: "https://img.heroui.chat/image/avatar?w=40&h=40&u=6",
-      },
-      status: "Completed",
-      createdAt: "21 Jan 2024, 12:30 AM",
-    },
-    {
-      id: "2",
-      fileName: "Archive_2.rar",
-      source: "Admin",
-      size: "41 KB",
-      createdBy: {
-        name: "Olivia Martinez",
-        avatar: "https://img.heroui.chat/image/avatar?w=40&h=40&u=2",
-      },
-      downloadedBy: {
-        name: "Marcus Lee",
-        avatar: "https://img.heroui.chat/image/avatar?w=40&h=40&u=7",
-      },
-      status: "Available",
-      createdAt: "21 Jan 2024, 12:35 AM",
-    },
-    {
-      id: "3",
-      fileName: "Product_Photo_01.zip",
-      source: "API",
-      size: "1.2 MB",
-      createdBy: {
-        name: "Gary Reichert",
-        avatar: "https://img.heroui.chat/image/avatar?w=40&h=40&u=1",
-      },
-      downloadedBy: {
-        name: "Not downloaded yet",
-        avatar: "",
-      },
-      status: "In process",
-      createdAt: "22 Jan 2024, 09:15 AM",
-    },
-  ];
+  const handleDownload = () => { };
 
-  const handleDownload = (_fileName: string) => {};
+  if (isLoading) {
+    return (
+      <section className="mb-8 scroll-mt-32">
+        <Skeleton className="h-7 w-48 rounded-lg mb-1" />
+        <Skeleton className="h-4 w-64 rounded-lg mb-6" />
+        <Skeleton className="h-[400px] w-full rounded-2xl" />
+      </section>
+    );
+  }
 
   return (
     <section className="mb-8 scroll-mt-32">
@@ -119,7 +63,7 @@ export const OriginalPhotos = () => {
                       <Tooltip.Trigger>
                         <Button
                           variant="ghost"
-                          onPress={() => handleDownload(photo.fileName)}
+                          onPress={handleDownload}
                           className="p-0 h-auto min-w-0 text-accent hover:underline text-left font-bold text-sm max-w-[180px] truncate block bg-transparent"
                         >
                           {photo.fileName}
@@ -204,7 +148,7 @@ export const OriginalPhotos = () => {
                       <Button
                         isIconOnly
                         variant="ghost"
-                        onPress={() => handleDownload(photo.fileName)}
+                        onPress={handleDownload}
                       >
                         <Icon icon="lucide:download" className="w-4 h-4 text-accent" />
                       </Button>
@@ -227,4 +171,4 @@ export const OriginalPhotos = () => {
       </div>
     </section>
   );
-};
+}
