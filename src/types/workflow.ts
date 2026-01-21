@@ -308,6 +308,35 @@ export interface ProjectWorkflowConfig {
     branches: WorkflowBranch[];
 }
 
+/**
+ * Position of a block on the canvas
+ */
+export interface CanvasBlockPosition {
+    id: string;
+    branchId: 'main' | 'photo' | 'video';
+    index: number;
+}
+
+/**
+ * State of a block on the canvas in the visual builder
+ */
+export interface CanvasBlock extends WorkflowBlock {
+    position: CanvasBlockPosition;
+    validationState: 'valid' | 'warning' | 'error' | 'unconfigured';
+    validationMessage?: string;
+}
+
+/**
+ * Complete state of the workflow builder canvas
+ */
+export interface WorkflowCanvasState {
+    blocks: CanvasBlock[];
+    selectedBlockId: string | null;
+    isDragging: boolean;
+    hasUnsavedChanges: boolean;
+    lastAddedBlockId: string | null;
+}
+
 // Order Instance Tracking Types
 
 /**

@@ -4,9 +4,36 @@
 @theme {
   --color-accent: #0070f3;
   --color-primary: #0070f3;
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-default: var(--default);
+  --color-default-foreground: var(--default-foreground);
+  --color-muted: var(--muted);
+  --color-surface: var(--surface);
+  --color-overlay: var(--overlay);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-danger: var(--danger);
+  --color-border: var(--border);
+  --color-separator: var(--separator);
+
+  /* Block Category Colors per Specification */
+  --color-cat-setup: #3B82F6;
+  --color-cat-gates: #F59E0B;
+  --color-cat-prod: #8B5CF6;
+  --color-cat-flow: #F97316;
+  --color-cat-qa: #EF4444;
+  --color-cat-asset: #6B7280;
+  --color-cat-delivery: #10B981;
+
   --shadow-premium: 0 4px 20px -2px rgba(0, 0, 0, 0.05), 0 2px 10px -2px rgba(0, 0, 0, 0.03);
   --shadow-accent-sm: 0 2px 8px rgba(0, 112, 243, 0.1);
   --shadow-accent-md: 0 4px 12px rgba(0, 112, 243, 0.2);
+}
+
+@utility gpu-clipping-fix {
+  transform: translateZ(0);
+  -webkit-mask-image: -webkit-radial-gradient(white, black);
 }
 
 :root {
@@ -66,6 +93,45 @@ body {
 
 .animate-flow-dot {
   animation: flow-dot 2s linear infinite;
+}
+
+@keyframes flow-vertical {
+  0% {
+    transform: translateY(-4px);
+    opacity: 0;
+  }
+
+  10% {
+    opacity: 1;
+  }
+
+  90% {
+    opacity: 1;
+  }
+
+  100% {
+    transform: translateY(var(--flow-height, 32px));
+    opacity: 0;
+  }
+}
+
+.animate-flow-vertical {
+  animation: flow-vertical 2s linear infinite;
+}
+
+@keyframes draw-line {
+  from {
+    transform: scaleY(0);
+  }
+
+  to {
+    transform: scaleY(1);
+  }
+}
+
+.animate-draw-line {
+  animation: draw-line 300ms ease-in forwards;
+  transform-origin: top;
 }
 
 /* Custom scrollbar styling */

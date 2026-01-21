@@ -28,7 +28,7 @@ export function ProjectPage() {
             <header className="mb-8">
                 <Breadcrumbs className="mb-3">
                     <Breadcrumbs.Item href="#">Projects</Breadcrumbs.Item>
-                    <Breadcrumbs.Item isCurrent>Wolf Germany</Breadcrumbs.Item>
+                    <Breadcrumbs.Item>Wolf Germany</Breadcrumbs.Item>
                 </Breadcrumbs>
                 <h1 className="text-3xl font-bold mb-1">Project: Wolf Germany</h1>
                 <p className="text-default-500">

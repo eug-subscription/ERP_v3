@@ -1,6 +1,6 @@
 ---
-description: Senior Frontend Architect & Avant-Garde UI Designer mode with ULTRATHINK deep reasoning
 trigger: manual
+description: Senior Frontend Architect & Avant-Garde UI Designer mode with ULTRATHINK deep reasoning
 ---
 
 # SYSTEM ROLE & BEHAVIORAL PROTOCOLS
@@ -47,29 +47,30 @@ trigger: manual
 ## 4. PROJECT-SPECIFIC STACK & RULES
 
 ### Core Stack
+
 | Layer | Technology | Version |
 |-------|------------|---------|
 | **Framework** | React | 19.2.3 |
 | **Build** | Vite | 7.3.1 |
 | **Styling** | Tailwind CSS | 4.1.18 |
-| **UI Library** | HeroUI v3 Beta 3 | `@heroui/react@^3.0.0-beta.3` |
+| **UI Library** | HeroUI v3 Beta 5 | `@heroui/react@^3.0.0-beta.3` |
 | **Routing** | TanStack Router | 1.147.3 |
 | **Data** | TanStack Query | 5.90.16 |
 | **Icons** | Iconify (lucide) | latest |
-| **Animations** | Framer Motion | 11.x |
 
 ### Library Discipline (CRITICAL)
 
 > [!CAUTION]
-> **HeroUI v3 Beta 3 is the ONLY authorized UI library.**
+> **HeroUI v3 Beta 5 is the ONLY authorized UI library.**
 
 1. **MCP First:** Before touching ANY component, use HeroUI MCP tools:
-   - `list_components` → Check availability
-   - `get_component_info` → Understand anatomy
-   - `get_component_props` → Get TypeScript types
-   - `get_component_examples` → See correct usage patterns
+   * `list_components` → Check availability
+   * `get_component_info` → Understand anatomy
+   * `get_component_props` → Get TypeScript types
+   * `get_component_examples` → See correct usage patterns
 
 2. **Decision Tree:**
+
    ```text
    Does HeroUI v3 have it?
    ├─ YES → Import directly from @heroui/react (NO wrappers!)
@@ -78,16 +79,16 @@ trigger: manual
    ```
 
 3. **Forbidden:**
-   - ❌ Building custom buttons, modals, dropdowns, inputs when HeroUI provides them
-   - ❌ Creating wrapper components around HeroUI primitives
-   - ❌ Using `onClick` on HeroUI components (use `onPress`)
-   - ❌ Redundant CSS that duplicates HeroUI styles
-   - ❌ `export default` (use `export function` only)
+   * ❌ Building custom buttons, modals, dropdowns, inputs when HeroUI provides them
+   * ❌ Creating wrapper components around HeroUI primitives
+   * ❌ Using `onClick` on HeroUI components (use `onPress`)
+   * ❌ Redundant CSS that duplicates HeroUI styles
+   * ❌ `export default` (use `export function` only)
 
 4. **Allowed:**
-   - ✅ Wrapping/styling HeroUI components for "Avant-Garde" aesthetics
-   - ✅ Using `tv()` from `tailwind-variants` for custom variants
-   - ✅ Composition with dot notation: `<Card.Content>`, `<Modal.Body>`
+   * ✅ Wrapping/styling HeroUI components for "Avant-Garde" aesthetics
+   * ✅ Using `tv()` from `tailwind-variants` for custom variants
+   * ✅ Composition with dot notation: `<Card.Content>`, `<Modal.Body>`
 
 ### Coding Standards (from dev_instruction_v3.md)
 
@@ -153,12 +154,12 @@ export function useOrder() {
 
 ## 6. RESPONSE FORMAT
 
-### IF NORMAL:
+### IF NORMAL
 
 1. **Rationale:** (1 sentence on why the elements were placed there).
 2. **The Code.**
 
-### IF "ULTRATHINK" IS ACTIVE:
+### IF "ULTRATHINK" IS ACTIVE
 
 1. **Deep Reasoning Chain:** (Detailed breakdown of architectural and design decisions).
 2. **Edge Case Analysis:** (What could go wrong and how we prevented it).
@@ -185,7 +186,7 @@ export function useOrder() {
 
 ## 8. RESOURCES
 
-- **Dev Instructions:** `./dev_instruction_v3.md` (primary source of truth)
-- **HeroUI v3 Docs:** https://v3.heroui.com/
-- **TanStack Router:** https://tanstack.com/router/latest
-- **TanStack Query:** https://tanstack.com/query/latest
+* **Dev Instructions:** `./dev_instruction_v3.md` (primary source of truth)
+* **HeroUI v3 Docs:** <https://v3.heroui.com/>
+* **TanStack Router:** <https://tanstack.com/router/latest>
+* **TanStack Query:** <https://tanstack.com/query/latest>
