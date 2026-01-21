@@ -1,6 +1,5 @@
-import { Spinner, Link } from "@heroui/react";
-import { Outlet } from "@tanstack/react-router";
-import { Icon } from "@iconify/react";
+import { Spinner, Breadcrumbs } from "@heroui/react";
+import { useRouterState, Outlet } from "@tanstack/react-router";
 import { useProjectPage } from "../../hooks/useProjectPage";
 import { StatisticCard } from "./StatisticCard";
 
@@ -11,7 +10,10 @@ import { TagsCard } from "./TagsCard";
 
 export function ProjectPage() {
     const { state } = useProjectPage();
+    const routerState = useRouterState();
     const { stats, info, isLoading } = state;
+
+    const isWorkflowTab = routerState.location.pathname.includes("/project/workflow");
 
     if (isLoading || !stats || !info) {
         return (
@@ -24,13 +26,10 @@ export function ProjectPage() {
     return (
         <div className="p-6 md:p-8 max-w-7xl mx-auto">
             <header className="mb-8">
-                <nav className="flex items-center gap-2 text-sm text-default-500 mb-3" aria-label="Breadcrumb">
-                    <Link href="#" className="text-default-500 hover:text-default-900 transition-colors" underline="none">
-                        Projects
-                    </Link>
-                    <Icon icon="lucide:chevron-right" className="w-3.5 h-3.5 opacity-50" />
-                    <span className="font-medium text-default-900">Wolf Germany</span>
-                </nav>
+                <Breadcrumbs className="mb-3">
+                    <Breadcrumbs.Item href="#">Projects</Breadcrumbs.Item>
+                    <Breadcrumbs.Item isCurrent>Wolf Germany</Breadcrumbs.Item>
+                </Breadcrumbs>
                 <h1 className="text-3xl font-bold mb-1">Project: Wolf Germany</h1>
                 <p className="text-default-500">
                     A centralized view of your projects, offering quick access to essential information.
@@ -56,14 +55,16 @@ export function ProjectPage() {
 
             <ProjectTabs />
 
-            <div className="grid grid-cols-1 lg:grid-cols-[3fr_1fr] gap-8 mt-8">
+            <div className={`grid grid-cols-1 ${isWorkflowTab ? "lg:grid-cols-1" : "lg:grid-cols-[3fr_1fr]"} gap-8 mt-8`}>
                 <main>
                     <Outlet />
                 </main>
-                <aside className="space-y-6">
-                    <ProjectInfoCard info={info} />
-                    <TagsCard tags={info.tags} />
-                </aside>
+                {!isWorkflowTab && (
+                    <aside className="space-y-6">
+                        <ProjectInfoCard info={info} />
+                        <TagsCard tags={info.tags} />
+                    </aside>
+                )}
             </div>
         </div>
     );

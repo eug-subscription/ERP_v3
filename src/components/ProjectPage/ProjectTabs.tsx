@@ -17,6 +17,7 @@ export function ProjectTabs() {
         { id: "security", name: "Security", icon: "lucide:shield", path: "/project/security" },
         { id: "managers", name: "Managers", icon: "lucide:users", path: "/project/managers" },
         { id: "prices", name: "Prices", icon: "lucide:tag", path: "/project/prices" },
+        { id: "workflow", name: "Workflow", icon: "lucide:git-branch", path: "/project/workflow" },
         { id: "guidelines", name: "Guidelines", icon: "lucide:file-text", path: "/project/guidelines" },
         { id: "settings", name: "Settings", icon: "lucide:settings", path: "/project/settings" },
     ];

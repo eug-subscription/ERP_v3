@@ -36,6 +36,38 @@ body {
   animation: fadeIn 0.3s ease-out;
 }
 
+@keyframes pulse-subtle {
+
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  50% {
+    opacity: 0.85;
+    transform: scale(1.01);
+  }
+}
+
+.animate-pulse-subtle {
+  animation: pulse-subtle 3s infinite ease-in-out;
+}
+
+@keyframes flow-dot {
+  0% {
+    offset-distance: 0%;
+  }
+
+  100% {
+    offset-distance: 100%;
+  }
+}
+
+.animate-flow-dot {
+  animation: flow-dot 2s linear infinite;
+}
+
 /* Custom scrollbar styling */
 .overflow-auto {
   scrollbar-width: thin;

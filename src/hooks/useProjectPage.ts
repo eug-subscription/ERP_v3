@@ -1,18 +1,11 @@
-import { useState } from "react";
+import { useState, useCallback, useMemo } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { toast } from "@heroui/react";
 import { mockRates, defaultServiceConfigs, mockProjectStats, mockProjectInfo, ServiceConfig, Rate, NewRateData, DEFAULT_NEW_RATE } from "../data/mock-project";
-
-export interface ToastMessage {
-    id: string;
-    title: string;
-    description?: string;
-    status: "success" | "danger" | "warning" | "accent";
-}
 
 export function useProjectPage() {
     const [selectedServices, setSelectedServices] = useState<string[]>(["professional-photography"]);
     const [serviceConfigs, setServiceConfigs] = useState<ServiceConfig[]>(defaultServiceConfigs);
-    const [toasts, setToasts] = useState<ToastMessage[]>([]);
     const [editingRateId, setEditingRateId] = useState<string | null>(null);
     const [createdRateIds, setCreatedRateIds] = useState<string[]>([]);
     const queryClient = useQueryClient();
@@ -35,15 +28,15 @@ export function useProjectPage() {
         queryFn: async () => Promise.resolve(mockProjectInfo),
     });
 
-    const toggleServiceSelection = (serviceId: string) => {
+    const toggleServiceSelection = useCallback((serviceId: string) => {
         setSelectedServices((prev) =>
             prev.includes(serviceId)
                 ? prev.filter((id) => id !== serviceId)
                 : [...prev, serviceId]
         );
-    };
+    }, []);
 
-    const updateRate = (
+    const updateRate = useCallback((
         serviceId: string,
         rateType: "client" | "provider",
         rateId: string
@@ -68,8 +61,8 @@ export function useProjectPage() {
                 providerRateMode: "existing",
             }];
         });
-    };
-    const updateRateMode = (
+    }, []);
+    const updateRateMode = useCallback((
         serviceId: string,
         rateType: "client" | "provider",
         mode: "existing" | "new"
@@ -106,9 +99,9 @@ export function useProjectPage() {
                 newProviderRate: rateType === "provider" && mode === "new" ? defaultNewRate : undefined,
             }];
         });
-    };
+    }, []);
 
-    const updateNewRateField = (
+    const updateNewRateField = useCallback((
         serviceId: string,
         rateType: "client" | "provider",
         field: keyof NewRateData,
@@ -128,9 +121,9 @@ export function useProjectPage() {
                 };
             })
         );
-    };
+    }, []);
 
-    const createRate = (
+    const createRate = useCallback((
         serviceId: string,
         rateType: "client" | "provider"
     ) => {
@@ -178,17 +171,15 @@ export function useProjectPage() {
             })
         );
 
-        addToast({
-            title: "Rate created!",
+        toast.success("Rate created!", {
             description: `Rate "${newRate.name}" has been added to ${serviceId.split("-").join(" ")}.`,
-            status: "success",
         });
-    };
+    }, [serviceConfigs, queryClient]);
 
     /**
      * Delete a created rate - only works for rates created in this session
      */
-    const deleteCreatedRate = (rateId: string) => {
+    const deleteCreatedRate = useCallback((rateId: string) => {
         // Only allow deletion of rates created in this session
         if (!createdRateIds.includes(rateId)) return;
 
@@ -210,17 +201,15 @@ export function useProjectPage() {
             }))
         );
 
-        addToast({
-            title: "Rate deleted",
+        toast.warning("Rate deleted", {
             description: "The rate has been removed.",
-            status: "warning",
         });
-    };
+    }, [createdRateIds, queryClient]);
 
     /**
      * Start editing an existing rate - populates form with rate data
      */
-    const startEditRate = (
+    const startEditRate = useCallback((
         serviceId: string,
         rateType: "client" | "provider",
         rateId: string
@@ -258,12 +247,12 @@ export function useProjectPage() {
                 }
             })
         );
-    };
+    }, [rates]);
 
     /**
      * Save the edited rate - updates existing rate in cache
      */
-    const saveEditedRate = (
+    const saveEditedRate = useCallback((
         serviceId: string,
         rateType: "client" | "provider"
     ) => {
@@ -312,20 +301,18 @@ export function useProjectPage() {
             })
         );
 
-        addToast({
-            title: "Rate updated!",
+        toast.success("Rate updated!", {
             description: `Rate "${rateData.name}" has been updated successfully.`,
-            status: "success",
         });
 
         // Clear editing state
         setEditingRateId(null);
-    };
+    }, [editingRateId, serviceConfigs, queryClient]);
 
     /**
      * Cancel editing and clear form
      */
-    const cancelEdit = (serviceId: string, rateType: "client" | "provider") => {
+    const cancelEdit = useCallback((serviceId: string, rateType: "client" | "provider") => {
         setEditingRateId(null);
 
         setServiceConfigs((prev) =>
@@ -346,9 +333,9 @@ export function useProjectPage() {
                 }
             })
         );
-    };
+    }, []);
 
-    const updateRetouchingType = (type: "ai" | "human") => {
+    const updateRetouchingType = useCallback((type: "ai" | "human") => {
         setServiceConfigs((prev) =>
             prev.map((c) => {
                 if (c.type !== "retouching") return c;
@@ -359,19 +346,19 @@ export function useProjectPage() {
                 };
             })
         );
-    };
+    }, []);
 
-    const updateRetoucherRate = (rateId: string) => {
+    const updateRetoucherRate = useCallback((rateId: string) => {
         setServiceConfigs((prev) =>
             prev.map((c) => {
                 if (c.type !== "retouching") return c;
                 return { ...c, retoucherRateId: rateId };
             })
         );
-    };
+    }, []);
 
 
-    const updateNewRetoucherRateField = (field: keyof NewRateData, value: string | number) => {
+    const updateNewRetoucherRateField = useCallback((field: keyof NewRateData, value: string | number) => {
         setServiceConfigs((prev) =>
             prev.map((c) => {
                 if (c.type !== "retouching") return c;
@@ -384,19 +371,19 @@ export function useProjectPage() {
                 };
             })
         );
-    };
+    }, []);
 
-    const updateRetouchingLevel = (level: "standard" | "advanced" | "premium") => {
+    const updateRetouchingLevel = useCallback((level: "standard" | "advanced" | "premium") => {
         setServiceConfigs((prev) =>
             prev.map((c) => {
                 if (c.type !== "retouching") return c;
                 return { ...c, retouchingLevel: level };
             })
         );
-    };
+    }, []);
 
 
-    const addRetouchingRate = () => {
+    const addRetouchingRate = useCallback(() => {
         setServiceConfigs((prev) =>
             prev.map((c) => {
                 if (c.type !== "retouching") return c;
@@ -406,9 +393,9 @@ export function useProjectPage() {
                 };
             })
         );
-    };
+    }, []);
 
-    const removeRetouchingRate = (index: number) => {
+    const removeRetouchingRate = useCallback((index: number) => {
         setServiceConfigs((prev) =>
             prev.map((c) => {
                 if (c.type !== "retouching") return c;
@@ -420,9 +407,9 @@ export function useProjectPage() {
                 };
             })
         );
-    };
+    }, []);
 
-    const updateRetouchingRateIndexed = (index: number, rateId: string) => {
+    const updateRetouchingRateIndexed = useCallback((index: number, rateId: string) => {
         setServiceConfigs((prev) =>
             prev.map((c) => {
                 if (c.type !== "retouching") return c;
@@ -434,9 +421,9 @@ export function useProjectPage() {
                 };
             })
         );
-    };
+    }, []);
 
-    const createCombinedRetouchingRate = () => {
+    const createCombinedRetouchingRate = useCallback(() => {
         const config = serviceConfigs.find((c) => c.type === "retouching");
         if (!config || !config.newClientRate?.name) return;
 
@@ -493,66 +480,84 @@ export function useProjectPage() {
             })
         );
 
-        addToast({
-            title: "Rates created!",
+        toast.success("Rates created!", {
             description: `Retouching rate "${newClientRate.name}" has been added.`,
-            status: "success",
         });
-    };
+    }, [serviceConfigs, queryClient]);
 
-    const addToast = (toast: Omit<ToastMessage, "id">) => {
-        const id = Math.random().toString(36).substring(2, 9);
-        setToasts((prev) => [...prev, { ...toast, id }]);
-        setTimeout(() => {
-            removeToast(id);
-        }, 5000);
-    };
 
-    const removeToast = (id: string) => {
-        setToasts((prev) => prev.filter((t) => t.id !== id));
-    };
 
-    const getServiceConfig = (serviceId: string): ServiceConfig =>
+    const getServiceConfig = useCallback((serviceId: string): ServiceConfig =>
         serviceConfigs.find(c => c.type === serviceId) || {
             id: `s-${serviceId}`,
             type: serviceId,
             isEnabled: true,
             clientRateMode: "existing",
             providerRateMode: "existing",
-        };
+        }, [serviceConfigs]);
+
+    const state = useMemo(() => ({
+        selectedServices,
+        serviceConfigs,
+        rates: rates || [],
+        stats,
+        info,
+        isLoading: isLoadingRates,
+        editingRateId,
+        createdRateIds,
+        getServiceConfig,
+    }), [
+        selectedServices,
+        serviceConfigs,
+        rates,
+        stats,
+        info,
+        isLoadingRates,
+        editingRateId,
+        createdRateIds,
+        getServiceConfig
+    ]);
+
+    const actions = useMemo(() => ({
+        toggleServiceSelection,
+        updateRate,
+        updateRateMode,
+        updateNewRateField,
+        createRate,
+        updateRetouchingType,
+        updateRetoucherRate,
+        updateNewRetoucherRateField,
+        createCombinedRetouchingRate,
+        addRetouchingRate,
+        removeRetouchingRate,
+        updateRetouchingRate: updateRetouchingRateIndexed,
+        updateRetouchingLevel,
+        startEditRate,
+        saveEditedRate,
+        cancelEdit,
+        deleteCreatedRate,
+    }), [
+        toggleServiceSelection,
+        updateRate,
+        updateRateMode,
+        updateNewRateField,
+        createRate,
+        updateRetouchingType,
+        updateRetoucherRate,
+        updateNewRetoucherRateField,
+        createCombinedRetouchingRate,
+        addRetouchingRate,
+        removeRetouchingRate,
+        updateRetouchingRateIndexed,
+        updateRetouchingLevel,
+        startEditRate,
+        saveEditedRate,
+        cancelEdit,
+        deleteCreatedRate,
+    ]);
 
     return {
-        state: {
-            selectedServices,
-            serviceConfigs,
-            rates: rates || [],
-            stats,
-            info,
-            isLoading: isLoadingRates,
-            toasts,
-            editingRateId,
-            createdRateIds,
-            getServiceConfig,
-        },
-        actions: {
-            toggleServiceSelection,
-            updateRate,
-            updateRateMode,
-            updateNewRateField,
-            createRate,
-            updateRetouchingType,
-            updateRetoucherRate,
-            updateNewRetoucherRateField,
-            createCombinedRetouchingRate,
-            addRetouchingRate,
-            removeRetouchingRate,
-            updateRetouchingRate: updateRetouchingRateIndexed,
-            removeToast,
-            updateRetouchingLevel,
-            startEditRate,
-            saveEditedRate,
-            cancelEdit,
-            deleteCreatedRate,
-        },
+        state,
+        actions
     };
 }

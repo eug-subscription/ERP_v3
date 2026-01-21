@@ -3,13 +3,10 @@ import { ServiceConfigCard } from "./ServiceConfigCard";
 import { RetouchingConfigCard } from "./RetouchingConfigCard";
 import { useProjectPage } from "../../hooks/useProjectPage";
 import { allServices } from "../../data/mock-project";
-import { Alert, Button } from "@heroui/react";
-import { Icon } from "@iconify/react";
-import { AnimatePresence, motion } from "framer-motion";
 
 export function ProjectPrices() {
     const { state, actions } = useProjectPage();
-    const { rates, selectedServices, getServiceConfig, toasts, editingRateId, createdRateIds } = state;
+    const { rates, selectedServices, getServiceConfig, editingRateId, createdRateIds } = state;
 
     return (
         <div className="space-y-6">
@@ -111,46 +108,6 @@ export function ProjectPrices() {
                     );
                 })}
 
-            {/* Global Toast Container */}
-            <div className="fixed bottom-6 right-6 z-50 flex flex-col gap-3 min-w-[320px] max-w-md pointer-events-none">
-                <AnimatePresence>
-                    {toasts.map((toast) => (
-                        <motion.div
-                            key={toast.id}
-                            initial={{ opacity: 0, x: 20, scale: 0.95 }}
-                            animate={{ opacity: 1, x: 0, scale: 1 }}
-                            exit={{ opacity: 0, scale: 0.95, transition: { duration: 0.2 } }}
-                            className="pointer-events-auto"
-                        >
-                            <Alert
-                                status={toast.status}
-                                className="shadow-2xl border-divider/50 backdrop-blur-xl bg-content1/80 relative pr-12"
-                            >
-                                <Alert.Indicator />
-                                <Alert.Content>
-                                    <Alert.Title className="text-sm font-bold">{toast.title}</Alert.Title>
-                                    {toast.description && (
-                                        <Alert.Description className="text-xs opacity-90 text-pretty">
-                                            {toast.description}
-                                        </Alert.Description>
-                                    )}
-                                </Alert.Content>
-                                <div className="absolute top-2 right-2">
-                                    <Button
-                                        isIconOnly
-                                        variant="ghost"
-                                        size="sm"
-                                        onPress={() => actions.removeToast(toast.id)}
-                                        className="h-8 w-8 min-w-0"
-                                    >
-                                        <Icon icon="lucide:x" width={14} />
-                                    </Button>
-                                </div>
-                            </Alert>
-                        </motion.div>
-                    ))}
-                </AnimatePresence>
-            </div>
         </div>
     );
 }
