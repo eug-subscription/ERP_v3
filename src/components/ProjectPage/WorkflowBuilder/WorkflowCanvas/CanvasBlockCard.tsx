@@ -76,7 +76,7 @@ export function CanvasBlockCard({ block, isSelected, className, style }: CanvasB
                         }}
                     >
                         <Icon
-                            icon={categoryMeta?.icon || "lucide:box"}
+                            icon={libraryItem?.icon || "lucide:box"}
                             width={16}
                             height={16}
                             style={{ color: accentColor }}
