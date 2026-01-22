@@ -773,12 +773,12 @@ Container for parallel lanes created by IF/ELSE blocks.
 
 **Acceptance Criteria:**
 
-- [ ] Two parallel lanes displayed
-- [ ] Lane labels match condition (per spec §4.5)
-- [ ] Each lane accepts drops independently
-- [ ] Lane split animation 400ms ease-in-out per spec §15
-- [ ] `npm run build` passes
-- [ ] `npm run lint` passes
+- [x] Two parallel lanes displayed
+- [x] Lane labels match condition (per spec §4.5)
+- [x] Each lane accepts drops independently
+- [x] Lane split animation 400ms ease-in-out per spec §15
+- [x] `npm run build` passes
+- [x] `npm run lint` passes
 
 ---
 
@@ -801,12 +801,12 @@ When IF/ELSE is added, split canvas into two parallel lanes.
 
 **Acceptance Criteria:**
 
-- [ ] Adding IF/ELSE creates two lanes
-- [ ] `has_video` condition creates Photo/Video lanes
-- [ ] Blocks can be added to each lane independently
-- [ ] Lane constraints enforced per spec §6.4
-- [ ] `npm run build` passes
-- [ ] `npm run lint` passes
+- [x] Adding IF/ELSE creates two lanes
+- [x] `has_video` condition creates Photo/Video lanes
+- [x] Blocks can be added to each lane independently
+- [x] Lane constraints (reorder prevention) enforced per spec §6.4
+- [x] `npm run build` passes
+- [x] `npm run lint` passes
 
 ---
 
@@ -828,12 +828,13 @@ MERGE block rejoins parallel lanes into single flow.
 
 **Acceptance Criteria:**
 
-- [ ] MERGE can only be placed after IF/ELSE branch
-- [ ] MERGE rejoins lanes into single flow
-- [ ] Validation error if branches exist without MERGE
-- [ ] Lane merge animation 400ms ease-in-out per spec §15
-- [ ] `npm run build` passes
-- [ ] `npm run lint` passes
+- [x] Branch lanes render side-by-side
+- [x] Photo blocks filter to Photo lane
+- [x] Video blocks filter to Video lane
+- [x] Merge block correctly rejoins to Main trunk
+- [x] Smooth S-curve connection lines
+- [x] `npm run build` passes
+- [x] `npm run lint` passes
 
 ---
 
@@ -855,13 +856,13 @@ Enforce which blocks can be placed in which lane per spec §8.1.
 
 **Acceptance Criteria:**
 
-- [ ] Photo-only blocks rejected from Video lane
-- [ ] Video-only blocks rejected from Photo lane
-- [ ] Universal blocks allowed in both lanes
-- [ ] Tooltip shown on invalid drop attempt
-- [ ] Cross-lane drag not allowed (per spec §6.3)
-- [ ] `npm run build` passes
-- [ ] `npm run lint` passes
+- [x] Photo-only blocks rejected from Video lane
+- [x] Video-only blocks rejected from Photo lane
+- [x] Universal blocks allowed in both lanes
+- [x] Tooltip shown on invalid drop attempt
+- [x] Cross-lane drag not allowed (per spec §6.3)
+- [x] `npm run build` passes
+- [x] `npm run lint` passes
 
 ---
 

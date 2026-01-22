@@ -31,24 +31,30 @@ export function ConnectionLine({
     if (variant === 'vertical') {
         return (
             <div
-                className={`relative flex justify-center items-center w-4 ${className}`}
+                className={`relative flex justify-center items-center w-8 ${className}`}
                 style={{ height }}
                 aria-hidden="true"
             >
-                {/* Static Line with Draw Animation */}
-                <div
-                    className="bg-default-200 animate-draw-line"
-                    style={{
-                        backgroundColor: color,
-                        height,
-                        width: width // Using consistency variable
-                    }}
-                />
+                {/* 
+                    CR-011: Using SVG for vertical lines to ensure identical rendering 
+                    to the curved branch lines.
+                */}
+                <svg width="32" height={height} viewBox={`0 0 32 ${height}`} className="overflow-visible">
+                    <line
+                        x1="16"
+                        y1="0"
+                        x2="16"
+                        y2={height}
+                        stroke={color}
+                        strokeWidth={width}
+                        strokeLinecap="round"
+                    />
+                </svg>
 
                 {/* Animated Flow Dot */}
                 {animated && (
                     <div
-                        className="absolute w-[6px] h-[6px] rounded-full bg-primary shadow-sm animate-flow-vertical"
+                        className="absolute w-[6px] h-[6px] rounded-full bg-primary shadow-sm animate-flow-vertical left-1/2 -translate-x-1/2"
                         style={{
                             ['--flow-height' as string]: `${height}px`,
                             top: 0,

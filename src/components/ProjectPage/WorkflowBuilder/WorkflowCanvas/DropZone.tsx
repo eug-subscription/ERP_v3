@@ -17,6 +17,10 @@ interface DropZoneProps {
     alwaysVisible?: boolean;
     /** Optional label to display when active. Defaults to "Drop Here" */
     label?: string;
+    /** Optional data to pass to dnd-kit's useDroppable */
+    data?: Record<string, unknown>;
+    /** If true, the drop zone will not react to drags */
+    disabled?: boolean;
 }
 
 export function DropZone({
@@ -26,13 +30,17 @@ export function DropZone({
     baseHeight = "h-4",
     alwaysVisible = false,
     hideVisuals = false,
-    label = "Drop Here"
+    label = "Drop Here",
+    data,
+    disabled = false
 }: DropZoneProps) {
     const { isOver, setNodeRef } = useDroppable({
         id,
         data: {
             type: "DROP_ZONE",
+            ...data
         },
+        disabled
     });
 
     const isActive = isOver;

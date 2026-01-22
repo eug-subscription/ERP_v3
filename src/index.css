@@ -134,6 +134,22 @@ body {
   transform-origin: top;
 }
 
+@keyframes lane-split {
+  from {
+    opacity: 0;
+    transform: translateY(-10px) scale(0.98);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.animate-lane-split {
+  animation: lane-split 400ms ease-in-out forwards;
+}
+
 /* Custom scrollbar styling */
 .overflow-auto {
   scrollbar-width: thin;

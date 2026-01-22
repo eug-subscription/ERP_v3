@@ -14,7 +14,19 @@ export const STANDARD_BRANCHES: BranchDefinition[] = [
             'ITEMS_TO_SHOOT',
             'SST',
             'WAIT_PAYMENT',
-            'SEND_NOTIFICATION'
+            'SEND_NOTIFICATION',
+            'IF_ELSE',
+            'PRO_ASSIGNING',
+            'RETOUCHER_ASSIGNING',
+            'PHOTO_SHOOT',
+            'VIDEO_SHOOT',
+            'PHOTO_RETOUCHING',
+            'VIDEO_RETOUCHING',
+            'MATCHING',
+            'FILE_RENAMING',
+            'MODERATION',
+            'EXTERNAL_PROCESS',
+            'SEND_TO_CLIENT'
         ]
     },
     {
@@ -58,7 +70,11 @@ export const STANDARD_BRANCHES: BranchDefinition[] = [
         allowedBlockTypes: [
             'MERGE',
             'SEND_NOTIFICATION',
-            'FILE_STORAGE'
+            'FILE_STORAGE',
+            'SEND_TO_CLIENT',
+            'MODERATION',
+            'FILE_RENAMING',
+            'EXTERNAL_PROCESS'
         ]
     }
 ];

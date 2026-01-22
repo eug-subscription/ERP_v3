@@ -1,4 +1,4 @@
-import { WorkflowBlockType, ProjectWorkflowConfig, ValidationError, ValidationResult } from "../types/workflow";
+import { WorkflowBlockType, ProjectWorkflowConfig, ValidationError, ValidationResult, CanvasBlock } from "../types/workflow";
 
 /**
  * Definition of dependency rules for a specific block type.
@@ -199,4 +199,88 @@ export function autoFixWorkflow(config: ProjectWorkflowConfig): ProjectWorkflowC
     });
 
     return fixedConfig;
+}
+
+/**
+ * Validates a flat list of CanvasBlocks against dependency rules.
+ * @param blocks The current blocks on the canvas.
+ */
+export function validateCanvasBlocks(blocks: CanvasBlock[]): ValidationResult {
+    const errors: ValidationError[] = [];
+    const enabledBlockTypes = new Set<WorkflowBlockType>();
+
+    // 1. Gathering enabled block types
+    blocks.forEach(block => {
+        if (block.isEnabled) {
+            enabledBlockTypes.add(block.type);
+        }
+    });
+
+    // 2. Check Global Requirements
+    if (!enabledBlockTypes.has('ORDER_CREATED')) {
+        errors.push({
+            type: 'ORDER_CREATED',
+            message: "Order Created block is mandatory and cannot be disabled.",
+            level: 'ERROR'
+        });
+    }
+
+    // 3. Check Specific Dependencies
+    ACTION_DEPENDENCIES.forEach(dep => {
+        const blocksOfType = blocks.filter(b => b.isEnabled && b.type === dep.blockType);
+
+        if (blocksOfType.length > 0) {
+            blocksOfType.forEach(block => {
+                // A. Check 'requires'
+                dep.requires?.forEach(req => {
+                    if (!enabledBlockTypes.has(req)) {
+                        errors.push({
+                            blockId: block.id,
+                            type: block.type,
+                            message: `${block.label} requires ${req.replace(/_/g, ' ')} to be enabled.`,
+                            level: 'ERROR',
+                            suggestion: `Add ${req.replace(/_/g, ' ')}`
+                        });
+                    }
+                });
+
+                // B. Check sequence constraints (mustComeAfter)
+                dep.mustComeAfter?.forEach(predecessor => {
+                    // Find all blocks of type predecessor
+                    const predecessorBlocks = blocks.filter(b => b.type === predecessor && b.isEnabled);
+
+                    if (predecessorBlocks.length === 0) {
+                        errors.push({
+                            blockId: block.id,
+                            type: block.type,
+                            message: `${block.label} must come after ${predecessor.replace(/_/g, ' ')}.`,
+                            level: 'WARNING',
+                            suggestion: `Add ${predecessor.replace(/_/g, ' ')}`
+                        });
+                    } else {
+                        // Check if at least one predecessor comes before this block in the overall sequence
+                        const blockIndex = blocks.findIndex(b => b.id === block.id);
+                        const hasBefore = predecessorBlocks.some(pb => {
+                            const pbIndex = blocks.findIndex(b => b.id === pb.id);
+                            return pbIndex < blockIndex;
+                        });
+
+                        if (!hasBefore) {
+                            errors.push({
+                                blockId: block.id,
+                                type: block.type,
+                                message: `${block.label} must come after ${predecessor.replace(/_/g, ' ')}.`,
+                                level: 'WARNING'
+                            });
+                        }
+                    }
+                });
+            });
+        }
+    });
+
+    return {
+        isValid: errors.filter(e => e.level === 'ERROR').length === 0,
+        errors
+    };
 }
