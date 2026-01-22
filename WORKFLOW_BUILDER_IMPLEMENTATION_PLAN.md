@@ -644,15 +644,15 @@ Right panel that slides in when a block is selected.
 
 **Acceptance Criteria:**
 
-- [ ] 320px fixed width
-- [ ] Slides in from right (300ms ease-in-out per spec §15)
-- [ ] Close button in top-right
-- [ ] Block icon and name displayed
-- [ ] Category shown below name
-- [ ] "Save Changes" primary button
-- [ ] "Delete Block" danger link
-- [ ] `npm run build` passes
-- [ ] `npm run lint` passes
+- [x] 320px fixed width
+- [x] Slides in from right (300ms ease-in-out per spec §15)
+- [x] Close button in top-right
+- [x] Block icon and name displayed
+- [x] Category shown below name
+- [x] "Save Changes" primary button
+- [x] "Delete Block" danger link
+- [x] `npm run build` passes
+- [x] `npm run lint` passes
 
 ---
 
@@ -683,12 +683,13 @@ export function BlockConfigForm({ block, onChange }: BlockConfigFormProps) {
 
 **Acceptance Criteria:**
 
-- [ ] Routes to correct config component
-- [ ] Reuses all existing config components
-- [ ] Non-configurable blocks show `BlockDescriptionPanel`
-- [ ] `onChange` properly propagates config changes
-- [ ] `npm run build` passes
-- [ ] `npm run lint` passes
+- [x] Routes to correct config component
+- [x] Reuses all existing config components from `WorkflowTab`
+- [x] Non-configurable blocks show `BlockDescriptionPanel`
+- [x] `availableSteps` passed to `ModerationConfig` and `ConditionalConfig`
+- [x] `onUpdate` properly propagates config changes to `useWorkflowBuilder`
+- [x] `npm run build` passes
+- [x] `npm run lint` passes
 
 ---
 
@@ -709,14 +710,14 @@ Modal shown when user tries to close panel or select different block with unsave
 
 **Acceptance Criteria:**
 
-- [ ] Uses HeroUI `Modal` compound pattern
-- [ ] Shows when switching blocks with unsaved changes
-- [ ] Shows when closing panel with unsaved changes
-- [ ] "Save" saves and proceeds
-- [ ] "Discard" reverts and proceeds
-- [ ] "Cancel" returns to current state
-- [ ] `npm run build` passes
-- [ ] `npm run lint` passes
+- [x] Uses HeroUI `Modal` compound pattern
+- [x] Shows when switching blocks with unsaved changes
+- [x] Shows when closing panel with unsaved changes
+- [x] "Save" saves and proceeds
+- [x] "Discard" reverts and proceeds
+- [x] "Cancel" returns to current state
+- [x] `npm run build` passes
+- [x] `npm run lint` passes
 
 ---
 
@@ -737,13 +738,13 @@ Confirmation modal before deleting a block.
 
 **Acceptance Criteria:**
 
-- [ ] Uses HeroUI `AlertDialog` compound pattern
-- [ ] Shows dependency warning if applicable
-- [ ] "Cancel" aborts deletion
-- [ ] "Delete" removes block
-- [ ] "Force delete" available for dependent blocks
-- [ ] `npm run build` passes
-- [ ] `npm run lint` passes
+- [x] Uses HeroUI `AlertDialog` compound pattern
+- [x] Shows dependency warning if applicable
+- [x] "Cancel" aborts deletion
+- [x] "Delete" removes block
+- [x] "Force delete" available for dependent blocks
+- [x] `npm run build` passes
+- [x] `npm run lint` passes
 
 ---
 

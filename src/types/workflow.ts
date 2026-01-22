@@ -200,6 +200,8 @@ export interface FileRenamingConfig {
     customPrefix: string;
     /** If true, appends current date in YYYYMMDD format. */
     includeDate: boolean;
+    /** If true, appends current time in HHMMSS format. */
+    includeTime?: boolean;
 }
 
 /**

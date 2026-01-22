@@ -20,79 +20,91 @@ export function SendNotificationConfig({ config, onUpdate }: SendNotificationCon
     return (
         <div className="space-y-8 animate-in fade-in slide-in-from-right-2 duration-500">
             {/* Channel Selection */}
-            <section className="space-y-4">
-                <div className="flex items-center gap-2 mb-1">
+            <section>
+                <div className="flex items-center gap-2 mb-2.5">
                     <Icon icon="lucide:message-square" className="w-4 h-4 text-accent" />
                     <Label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
                         Communication Channel
                     </Label>
                 </div>
 
-                <RadioGroup
-                    value={config.channel}
-                    onChange={(val) => handleUpdate({ channel: val as SendNotificationConfigType['channel'] })}
-                    orientation="horizontal"
-                    className="gap-6"
-                >
-                    {NOTIFICATION_CHANNELS.map((channel) => (
-                        <Radio key={channel.id} value={channel.id} className="data-[selected=true]:border-accent transition-all">
-                            <Radio.Control><Radio.Indicator /></Radio.Control>
-                            <Label className="text-sm font-semibold">{channel.label}</Label>
-                        </Radio>
-                    ))}
-                </RadioGroup>
+                <div className="bg-secondary/5 pt-1 px-4 pb-4 mx-[-1rem] border-y border-separator/10">
+                    <RadioGroup
+                        value={config.channel}
+                        onChange={(val: string) => handleUpdate({ channel: val as SendNotificationConfigType['channel'] })}
+                        className="gap-4"
+                    >
+                        {NOTIFICATION_CHANNELS.map((channel) => {
+                            const iconMap: Record<string, string> = {
+                                'EMAIL': 'lucide:mail',
+                                'SMS': 'lucide:smartphone',
+                                'APP': 'lucide:bell'
+                            };
+                            return (
+                                <Radio key={channel.id} value={channel.id} className="data-[selected=true]:border-accent transition-all">
+                                    <Radio.Control><Radio.Indicator /></Radio.Control>
+                                    <Radio.Content>
+                                        <div className="flex items-center gap-2">
+                                            <Icon icon={iconMap[channel.id]} className="w-3.5 h-3.5 opacity-60" />
+                                            <Label className="font-semibold text-sm">{channel.label}</Label>
+                                        </div>
+                                    </Radio.Content>
+                                </Radio>
+                            );
+                        })}
+                    </RadioGroup>
+                </div>
             </section>
 
             {/* Notification Content */}
-            <section className="space-y-6">
-                <div className="flex items-center gap-2 mb-1">
+            <section>
+                <div className="flex items-center gap-2 mb-2.5">
                     <Icon icon="lucide:pen-tool" className="w-4 h-4 text-accent" />
                     <Label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
-                        Notification Content
+                        Message Template
                     </Label>
                 </div>
 
-                <TextField
-                    value={config.title || ''}
-                    onChange={(val) => handleUpdate({ title: val })}
-                    fullWidth
-                    className="space-y-1.5"
-                >
-                    <Label className="text-xs font-medium text-muted-foreground ml-1">Subject / Title</Label>
-                    <Input
-                        placeholder="e.g. Action Required: Your photos are ready"
-                        className="bg-secondary/5 border-separator/20 rounded-xl"
-                    />
-                    <Description className="text-[10px] ml-1">Short overview for emails or push notification header.</Description>
-                </TextField>
+                <div className="bg-secondary/5 p-4 mx-[-1rem] border-y border-separator/10 space-y-5">
+                    <TextField
+                        value={config.title || ''}
+                        onChange={(val) => handleUpdate({ title: val })}
+                        fullWidth
+                    >
+                        <Label className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground mb-1 block">Subject / Title</Label>
+                        <Input
+                            placeholder="e.g. Action Required: Your photos are ready"
+                            className="bg-secondary/20 border-separator/20 rounded-xl h-10 px-3 text-sm"
+                        />
+                    </TextField>
 
-                <TextField
-                    value={config.body || ''}
-                    onChange={(val) => handleUpdate({ body: val })}
-                    fullWidth
-                    className="space-y-1.5"
-                >
-                    <Label className="text-xs font-medium text-muted-foreground ml-1">Message Body</Label>
-                    <TextArea
-                        placeholder="Hi {{user_name}}, your project has reached a new stage..."
-                        rows={4}
-                        className="bg-secondary/5 border-separator/20 rounded-2xl p-3 text-sm min-h-[120px]"
-                    />
-                    <Description className="text-[10px] ml-1 italic">
-                        Use {"{{variable_name}}"} for dynamic content.
-                    </Description>
-                </TextField>
+                    <TextField
+                        value={config.body || ''}
+                        onChange={(val) => handleUpdate({ body: val })}
+                        fullWidth
+                    >
+                        <Label className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground mb-1 block">Message Body</Label>
+                        <TextArea
+                            placeholder="Hi {{user_name}}, your project has reached a new stage..."
+                            className="bg-secondary/20 border-separator/20 rounded-xl p-3 text-sm min-h-[100px] leading-relaxed"
+                        />
+                        <Description className="text-[10px] block mt-1.5 opacity-60 italic">
+                            Tip: Variables like {"{{project_name}}"} are supported.
+                        </Description>
+                    </TextField>
+                </div>
             </section>
 
-            <div className="p-4 bg-accent/5 rounded-2xl border border-accent/10 flex items-start gap-4">
+            {/* Hint Box */}
+            <div className="bg-accent/5 p-4 mx-[-1rem] border-y border-accent/10 flex gap-4 items-start animate-in zoom-in-95 duration-300">
                 <div className="p-2 bg-accent/10 rounded-xl text-accent">
-                    <Icon icon="lucide:zap" className="w-5 h-5" />
+                    <Icon icon="lucide:sparkles" className="w-4 h-4" />
                 </div>
                 <div className="space-y-1">
-                    <span className="text-xs font-bold text-accent uppercase tracking-wider">Dynamic Variables</span>
-                    <p className="text-[10px] text-muted-foreground leading-relaxed">
-                        You can use project-specific variables like <code className="text-accent underline font-mono">{"{{project_name}}"}</code>,
-                        <code className="text-accent underline font-mono">{"{{client_name}}"}</code>, and <code className="text-accent underline font-mono">{"{{order_id}}"}</code>.
+                    <span className="text-[10px] font-bold uppercase tracking-widest text-accent/80">Dynamic Context</span>
+                    <p className="text-[10px] text-muted-foreground/80 leading-relaxed font-medium">
+                        Use <code className="text-accent underline font-mono">{"{{client_name}}"}</code> or <code className="text-accent underline font-mono">{"{{order_id}}"}</code>
+                        to personalize your message automatically for each recipient.
                     </p>
                 </div>
             </div>

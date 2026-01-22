@@ -98,7 +98,7 @@ export const MASTER_BLOCKS: Record<WorkflowBlockType, MasterBlock> = {
         config: {
             whoHasAccess: "PROJECT_TEAMS",
             welcomeText: "Instructions for retouching",
-            guidelines: "Follow the standard retouching guide.",
+            guidelines: "",
             needAcceptGuidelines: true,
             showRetoucherToClient: false,
             minRetoucherLevel: 4

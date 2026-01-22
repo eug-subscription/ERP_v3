@@ -1,4 +1,4 @@
-import { TextField, Input, Label, Description, TextArea, Separator, Button } from '@heroui/react';
+import { TextField, Input, Label, Description, TextArea, Button } from '@heroui/react';
 import { Icon } from '@iconify/react';
 import type { ExternalProcessConfig as ExternalProcessConfigType } from '../../../types/workflow';
 
@@ -17,105 +17,112 @@ export function ExternalProcessConfig({ config, onUpdate }: ExternalProcessConfi
     };
 
     return (
-        <div className="space-y-6 animate-in fade-in slide-in-from-right-2 duration-500">
+        <div className="space-y-8 animate-in fade-in slide-in-from-right-2 duration-500">
             {/* Webhook Configuration */}
-            <section className="space-y-4">
-                <div className="flex items-center gap-2 mb-1">
+            <section>
+                <div className="flex items-center gap-2 mb-2.5">
                     <Icon icon="lucide:link" className="w-4 h-4 text-accent" />
                     <Label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
                         Webhook Configuration
                     </Label>
                 </div>
 
-                <TextField
-                    value={config.webhookUrl}
-                    onChange={(val) => handleUpdate({ webhookUrl: val })}
-                    isRequired
-                    fullWidth
-                    className="space-y-1.5"
-                >
-                    <Label className="text-sm font-semibold mb-1">Webhook URL</Label>
-                    <Input
-                        placeholder="https://zapier.com/hooks/..."
-                        className="bg-secondary/10 border-separator/30 focus:border-accent h-11 px-4 rounded-xl"
-                    />
-                    <Description className="text-[10px] italic">
-                        The URL where the workflow will send a POST request when this block is triggered.
-                    </Description>
-                </TextField>
+                <div className="bg-secondary/5 p-4 mx-[-1rem] border-y border-separator/10">
+                    <TextField
+                        value={config.webhookUrl}
+                        onChange={(val) => handleUpdate({ webhookUrl: val })}
+                        isRequired
+                        fullWidth
+                    >
+                        <Label className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground mb-1 block">
+                            Webhook URL
+                        </Label>
+                        <Input
+                            placeholder="https://zapier.com/hooks/..."
+                            className="bg-secondary/20 border-separator/20 rounded-xl h-10 px-4 text-sm"
+                        />
+                        <Description className="text-[10px] block mt-1">
+                            The URL where the workflow will send a POST request when triggered.
+                        </Description>
+                    </TextField>
+                </div>
             </section>
 
-            <Separator className="opacity-30" />
-
             {/* Custom Payload */}
-            <section className="space-y-4">
-                <div className="flex items-center gap-2 mb-1">
+            <section>
+                <div className="flex items-center gap-2 mb-2.5">
                     <Icon icon="lucide:code" className="w-4 h-4 text-accent" />
                     <Label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
                         Payload Template (JSON)
                     </Label>
                 </div>
 
-                <TextField
-                    value={config.payloadTemplate || ''}
-                    onChange={(val) => handleUpdate({ payloadTemplate: val })}
-                    fullWidth
-                    className="space-y-1.5"
-                >
-                    <Label className="text-sm font-semibold mb-1">Custom Payload</Label>
-                    <TextArea
-                        placeholder='{ "orderId": "{{order.id}}", "status": "processing" }'
-                        rows={6}
-                        className="bg-secondary/10 border-separator/30 rounded-xl p-4 font-mono text-xs focus:ring-1 focus:ring-accent"
-                    />
-                </TextField>
+                <div className="bg-secondary/5 p-4 mx-[-1rem] border-y border-separator/10 space-y-4">
+                    <TextField
+                        value={config.payloadTemplate || ''}
+                        onChange={(val) => handleUpdate({ payloadTemplate: val })}
+                        fullWidth
+                    >
+                        <Label className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground mb-1 block">
+                            Custom Payload
+                        </Label>
+                        <TextArea
+                            placeholder='{ "orderId": "{{order.id}}", "status": "processing" }'
+                            rows={6}
+                            className="bg-secondary/20 border-separator/20 rounded-2xl p-4 font-mono text-xs"
+                        />
+                    </TextField>
 
-                <div className="bg-accent/5 rounded-2xl p-4 space-y-3">
-                    <div className="flex items-center gap-2">
-                        <Icon icon="lucide:info" className="w-4 h-4 text-accent" />
-                        <span className="text-xs font-bold text-accent uppercase tracking-wider">Dynamic Variables</span>
-                    </div>
-                    <p className="text-[10px] text-muted-foreground leading-relaxed">
-                        Use double curly braces to inject data from the order:
-                    </p>
-                    <div className="flex flex-wrap gap-2">
-                        {['order.id', 'order.status', 'project.id', 'client.email'].map((variable) => (
-                            <code key={variable} className="px-1.5 py-0.5 rounded bg-background border border-accent/10 text-[9px] text-accent font-mono">
-                                {"{{" + variable + "}}"}
-                            </code>
-                        ))}
+                    <div className="bg-content2/50 rounded-2xl p-4 border border-divider/10 space-y-3">
+                        <div className="flex items-center gap-2">
+                            <Icon icon="lucide:info" className="w-4 h-4 text-accent" />
+                            <span className="text-[10px] font-bold text-accent uppercase tracking-wider">Dynamic Variables</span>
+                        </div>
+                        <p className="text-[10px] text-muted-foreground leading-relaxed">
+                            Inject data from the order using double curly braces:
+                        </p>
+                        <div className="flex flex-wrap gap-2">
+                            {['order.id', 'order.status', 'project.id', 'client.email'].map((variable) => (
+                                <code key={variable} className="px-1.5 py-0.5 rounded bg-background border border-accent/10 text-[9px] text-accent font-mono">
+                                    {"{{" + variable + "}}"}
+                                </code>
+                            ))}
+                        </div>
                     </div>
                 </div>
             </section>
 
-            <Separator className="opacity-30" />
-
             {/* Connection Test */}
-            <section className="bg-secondary/5 border border-separator/20 rounded-2xl p-6 space-y-5">
-                <div className="space-y-2">
-                    <div className="flex items-center gap-2">
-                        <Icon icon="lucide:cable" className="w-4 h-4 text-accent" />
-                        <h4 className="text-sm font-bold">Integration Status</h4>
-                    </div>
-                    <p className="text-xs text-muted-foreground leading-relaxed">
-                        When this block is reached, Splento will send a POST request to your URL.
-                        Your system can then manage order statuses via our API.
-                    </p>
+            <section>
+                <div className="flex items-center gap-2 mb-2.5">
+                    <Icon icon="lucide:cable" className="w-4 h-4 text-accent" />
+                    <Label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+                        Integration Testing
+                    </Label>
                 </div>
 
-                <div className="flex flex-col sm:flex-row gap-4 items-center justify-between">
-                    <Button
-                        variant="secondary"
-                        onPress={() => { /* TODO: Implement webhook test logic */ }}
-                        className="w-full sm:w-auto font-semibold px-6 rounded-xl shadow-sm hover:shadow-md transition-all"
-                    >
-                        <Icon icon="lucide:zap" className="w-4 h-4 mr-2 text-accent" />
-                        Test Connection
-                    </Button>
+                <div className="bg-secondary/5 p-4 mx-[-1rem] border-y border-separator/10 space-y-4">
+                    <div className="space-y-1">
+                        <Label className="text-sm font-semibold block">Integration Status</Label>
+                        <Description className="text-[10px] block m-0 p-0">
+                            When reached, Splento will send a POST request. Manage order statuses via our API.
+                        </Description>
+                    </div>
 
-                    <div className="flex items-center gap-1.5 text-accent hover:underline cursor-pointer transition-all decoration-accent/30 underline-offset-4">
-                        <Icon icon="lucide:book-open" className="w-4 h-4" />
-                        <span className="text-xs font-bold uppercase tracking-wide">Developer Docs</span>
+                    <div className="flex flex-col gap-3">
+                        <Button
+                            variant="primary"
+                            onPress={() => { /* TODO: Implement webhook test logic */ }}
+                            className="w-full font-semibold px-6 rounded-xl shadow-sm hover:shadow-md transition-all h-10 text-sm"
+                        >
+                            <Icon icon="lucide:zap" className="w-4 h-4" />
+                            Test Connection
+                        </Button>
+
+                        <div className="flex items-center justify-center gap-1.5 text-accent hover:underline cursor-pointer transition-all decoration-accent/30 underline-offset-4 py-2">
+                            <Icon icon="lucide:book-open" className="w-4 h-4" />
+                            <span className="text-[10px] font-bold uppercase tracking-wider">Developer Documentation</span>
+                        </div>
                     </div>
                 </div>
             </section>

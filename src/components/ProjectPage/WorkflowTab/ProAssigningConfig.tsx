@@ -20,132 +20,150 @@ export function ProAssigningConfig({ config, onUpdate }: ProAssigningConfigProps
     return (
         <div className="space-y-8 animate-in fade-in slide-in-from-right-2 duration-500">
             {/* Assignment Strategy */}
-            <section className="space-y-4">
-                <div className="flex items-center gap-2 mb-1">
+            <section>
+                <div className="flex items-center gap-2 mb-2.5">
                     <Icon icon="lucide:users" className="w-4 h-4 text-accent" />
                     <Label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
                         Assignment Strategy
                     </Label>
                 </div>
 
-                <RadioGroup
-                    value={config.whoHasAccess}
-                    onChange={(val) => handleUpdate({ whoHasAccess: val as ProAssigningConfigType['whoHasAccess'] })}
-                    className="gap-4"
-                >
-                    {PRO_ASSIGNMENT_STRATEGIES.map((strategy) => (
-                        <Radio key={strategy.id} value={strategy.id} className="data-[selected=true]:border-accent transition-all">
-                            <Radio.Control><Radio.Indicator /></Radio.Control>
-                            <Radio.Content>
-                                <Label className="font-semibold text-sm">{strategy.label}</Label>
-                                <Description className="text-[10px]">{strategy.description}</Description>
-                            </Radio.Content>
-                        </Radio>
-                    ))}
-                </RadioGroup>
+                <div className="bg-secondary/5 pt-1 px-4 pb-4 mx-[-1rem] border-y border-separator/10">
+                    <RadioGroup
+                        value={config.whoHasAccess}
+                        onChange={(val) => handleUpdate({ whoHasAccess: val as ProAssigningConfigType['whoHasAccess'] })}
+                        className="gap-4 p-0"
+                    >
+                        {PRO_ASSIGNMENT_STRATEGIES.map((strategy) => (
+                            <Radio key={strategy.id} value={strategy.id} className="data-[selected=true]:border-accent transition-all">
+                                <Radio.Control><Radio.Indicator /></Radio.Control>
+                                <Radio.Content>
+                                    <Label className="font-semibold text-sm block">{strategy.label}</Label>
+                                    <Description className="text-[10px] block">{strategy.description}</Description>
+                                </Radio.Content>
+                            </Radio>
+                        ))}
+                    </RadioGroup>
+                </div>
             </section>
 
             {/* Messaging */}
-            <section className="space-y-4">
-                <div className="flex items-center gap-2 mb-1">
+            <section>
+                <div className="flex items-center gap-2 mb-2.5">
                     <Icon icon="lucide:message-square" className="w-4 h-4 text-accent" />
                     <Label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
                         Communication
                     </Label>
                 </div>
 
-                <TextField
-                    value={config.welcomeText || ''}
-                    onChange={(val) => handleUpdate({ welcomeText: val })}
-                    fullWidth
-                >
-                    <Label className="text-xs font-medium mb-1.5">Welcome Message</Label>
-                    <Input
-                        placeholder="Welcome to the project! Please review guidelines..."
-                        className="bg-secondary/5 border-separator/20 rounded-xl"
-                    />
-                    <Description className="text-[10px] mt-1">Message shown to the professional upon assignment.</Description>
-                </TextField>
+                <div className="bg-secondary/5 p-4 mx-[-1rem] border-y border-separator/10">
+                    <TextField
+                        value={config.welcomeText || ''}
+                        onChange={(val) => handleUpdate({ welcomeText: val })}
+                        fullWidth
+                    >
+                        <Label className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground mb-1 block">
+                            Welcome Message
+                        </Label>
+                        <Input
+                            placeholder="Welcome to the project! Please review guidelines..."
+                            className="bg-secondary/20 border-separator/20 rounded-xl"
+                        />
+                        <Description className="text-[10px] block mt-1">Message shown to the professional upon assignment.</Description>
+                    </TextField>
+                </div>
             </section>
 
             {/* Capacity & Duration */}
-            <section className="space-y-4">
-                <div className="flex items-center gap-2 mb-1">
+            <section>
+                <div className="flex items-center gap-2 mb-2.5">
                     <Icon icon="lucide:clock" className="w-4 h-4 text-accent" />
                     <Label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
                         Capacity & Duration
                     </Label>
                 </div>
 
-                <div className="grid grid-cols-2 gap-4">
-                    <NumberField
-                        value={config.photographerSlots}
-                        onChange={(val) => handleUpdate({ photographerSlots: val })}
-                        minValue={0}
-                        className="space-y-1.5"
-                    >
-                        <Label className="text-xs font-medium ml-1">Photo Slots</Label>
-                        <NumberField.Group className="flex items-center gap-1 bg-secondary/5 border border-separator/20 rounded-xl p-1">
-                            <NumberField.DecrementButton className="w-8 h-8 rounded-lg bg-background shadow-sm hover:bg-secondary/10 flex items-center justify-center">-</NumberField.DecrementButton>
-                            <NumberField.Input className="flex-1 text-center bg-transparent border-none text-sm" />
-                            <NumberField.IncrementButton className="w-8 h-8 rounded-lg bg-background shadow-sm hover:bg-secondary/10 flex items-center justify-center">+</NumberField.IncrementButton>
-                        </NumberField.Group>
-                    </NumberField>
+                <div className="bg-secondary/5 p-4 mx-[-1rem] border-y border-separator/10 space-y-4">
+                    <div className="grid grid-cols-2 gap-4">
+                        <NumberField
+                            value={config.photographerSlots}
+                            onChange={(val) => handleUpdate({ photographerSlots: val })}
+                            minValue={0}
+                            className="w-full"
+                        >
+                            <Label className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground mb-1 block">
+                                Photo Slots
+                            </Label>
+                            <NumberField.Group className="bg-content2 border border-divider rounded-lg overflow-hidden flex items-center h-10">
+                                <NumberField.DecrementButton className="h-full px-1 hover:bg-content3 flex items-center justify-center opacity-70 hover:opacity-100 transition-opacity min-w-[32px]" />
+                                <NumberField.Input className="flex-1 bg-transparent px-1 text-sm tabular-nums text-center min-w-0" />
+                                <NumberField.IncrementButton className="h-full px-1 hover:bg-content3 flex items-center justify-center opacity-70 hover:opacity-100 transition-opacity min-w-[32px]" />
+                            </NumberField.Group>
+                        </NumberField>
 
-                    <NumberField
-                        value={config.videographerSlots}
-                        onChange={(val) => handleUpdate({ videographerSlots: val })}
-                        minValue={0}
-                        className="space-y-1.5"
-                    >
-                        <Label className="text-xs font-medium ml-1">Video Slots</Label>
-                        <NumberField.Group className="flex items-center gap-1 bg-secondary/5 border border-separator/20 rounded-xl p-1">
-                            <NumberField.DecrementButton className="w-8 h-8 rounded-lg bg-background shadow-sm hover:bg-secondary/10 flex items-center justify-center">-</NumberField.DecrementButton>
-                            <NumberField.Input className="flex-1 text-center bg-transparent border-none text-sm" />
-                            <NumberField.IncrementButton className="w-8 h-8 rounded-lg bg-background shadow-sm hover:bg-secondary/10 flex items-center justify-center">+</NumberField.IncrementButton>
-                        </NumberField.Group>
-                    </NumberField>
-                </div>
+                        <NumberField
+                            value={config.videographerSlots}
+                            onChange={(val) => handleUpdate({ videographerSlots: val })}
+                            minValue={0}
+                            className="w-full"
+                        >
+                            <Label className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground mb-1 block">
+                                Video Slots
+                            </Label>
+                            <NumberField.Group className="bg-content2 border border-divider rounded-lg overflow-hidden flex items-center h-10">
+                                <NumberField.DecrementButton className="h-full px-1 hover:bg-content3 flex items-center justify-center opacity-70 hover:opacity-100 transition-opacity min-w-[32px]" />
+                                <NumberField.Input className="flex-1 bg-transparent px-1 text-sm tabular-nums text-center min-w-0" />
+                                <NumberField.IncrementButton className="h-full px-1 hover:bg-content3 flex items-center justify-center opacity-70 hover:opacity-100 transition-opacity min-w-[32px]" />
+                            </NumberField.Group>
+                        </NumberField>
+                    </div>
 
-                <div className="grid grid-cols-2 gap-4">
-                    <NumberField
-                        value={config.defaultPhotoshootDuration}
-                        onChange={(val) => handleUpdate({ defaultPhotoshootDuration: val })}
-                        minValue={0}
-                    >
-                        <Label className="text-xs font-medium mb-1.5">Photo Dur. (min)</Label>
-                        <NumberField.Group className="flex items-center gap-1 bg-secondary/5 border border-separator/20 rounded-xl p-1">
-                            <NumberField.DecrementButton className="w-8 h-8 rounded-lg bg-background shadow-sm hover:bg-secondary/10 flex items-center justify-center">-</NumberField.DecrementButton>
-                            <NumberField.Input className="flex-1 text-center bg-transparent border-none text-sm" />
-                            <NumberField.IncrementButton className="w-8 h-8 rounded-lg bg-background shadow-sm hover:bg-secondary/10 flex items-center justify-center">+</NumberField.IncrementButton>
-                        </NumberField.Group>
-                    </NumberField>
+                    <div className="grid grid-cols-2 gap-4">
+                        <NumberField
+                            value={config.defaultPhotoshootDuration}
+                            onChange={(val) => handleUpdate({ defaultPhotoshootDuration: val })}
+                            minValue={0}
+                            className="w-full"
+                        >
+                            <Label className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground mb-1 block">
+                                Photo Dur. (min)
+                            </Label>
+                            <NumberField.Group className="bg-content2 border border-divider rounded-lg overflow-hidden flex items-center h-10">
+                                <NumberField.DecrementButton className="h-full px-1 hover:bg-content3 flex items-center justify-center opacity-70 hover:opacity-100 transition-opacity min-w-[32px]" />
+                                <NumberField.Input className="flex-1 bg-transparent px-1 text-sm tabular-nums text-center min-w-0" />
+                                <NumberField.IncrementButton className="h-full px-1 hover:bg-content3 flex items-center justify-center opacity-70 hover:opacity-100 transition-opacity min-w-[32px]" />
+                            </NumberField.Group>
+                        </NumberField>
 
-                    <NumberField
-                        value={config.defaultVideoshootDuration}
-                        onChange={(val) => handleUpdate({ defaultVideoshootDuration: val })}
-                        minValue={0}
-                    >
-                        <Label className="text-xs font-medium mb-1.5">Video Dur. (min)</Label>
-                        <NumberField.Group className="flex items-center gap-1 bg-secondary/5 border border-separator/20 rounded-xl p-1">
-                            <NumberField.DecrementButton className="w-8 h-8 rounded-lg bg-background shadow-sm hover:bg-secondary/10 flex items-center justify-center">-</NumberField.DecrementButton>
-                            <NumberField.Input className="flex-1 text-center bg-transparent border-none text-sm" />
-                            <NumberField.IncrementButton className="w-8 h-8 rounded-lg bg-background shadow-sm hover:bg-secondary/10 flex items-center justify-center">+</NumberField.IncrementButton>
-                        </NumberField.Group>
-                    </NumberField>
+                        <NumberField
+                            value={config.defaultVideoshootDuration}
+                            onChange={(val) => handleUpdate({ defaultVideoshootDuration: val })}
+                            minValue={0}
+                            className="w-full"
+                        >
+                            <Label className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground mb-1 block">
+                                Video Dur. (min)
+                            </Label>
+                            <NumberField.Group className="bg-content2 border border-divider rounded-lg overflow-hidden flex items-center h-10">
+                                <NumberField.DecrementButton className="h-full px-1 hover:bg-content3 flex items-center justify-center opacity-70 hover:opacity-100 transition-opacity min-w-[32px]" />
+                                <NumberField.Input className="flex-1 bg-transparent px-1 text-sm tabular-nums text-center min-w-0" />
+                                <NumberField.IncrementButton className="h-full px-1 hover:bg-content3 flex items-center justify-center opacity-70 hover:opacity-100 transition-opacity min-w-[32px]" />
+                            </NumberField.Group>
+                        </NumberField>
+                    </div>
                 </div>
             </section>
 
             {/* Visibility & Quality */}
-            <section className="space-y-4">
-                <div className="flex items-center gap-2 mb-1">
+            <section>
+                <div className="flex items-center gap-2 mb-2.5">
                     <Icon icon="lucide:eye" className="w-4 h-4 text-accent" />
                     <Label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
                         Visibility & Quality
                     </Label>
                 </div>
 
-                <div className="flex flex-col gap-4 bg-secondary/5 p-4 rounded-2xl border border-separator/10">
+                <div className="bg-secondary/5 pt-2 px-4 pb-4 mx-[-1rem] border-y border-separator/10 flex flex-col gap-4">
                     <Switch
                         isSelected={config.proMustBeConfirmed}
                         onChange={(checked) => handleUpdate({ proMustBeConfirmed: checked })}
@@ -154,9 +172,9 @@ export function ProAssigningConfig({ config, onUpdate }: ProAssigningConfigProps
                         <Switch.Control>
                             <Switch.Thumb />
                         </Switch.Control>
-                        <div className="space-y-0.5">
-                            <Label className="text-sm font-semibold">Pro Must Confirm</Label>
-                            <Description className="text-[10px]">Require pro to manually accept assignment.</Description>
+                        <div className="flex flex-col gap-0.5">
+                            <Label className="text-sm font-semibold block">Pro Must Confirm</Label>
+                            <Description className="text-[10px] block m-0 p-0">Require pro to manually accept assignment.</Description>
                         </div>
                     </Switch>
 
@@ -170,9 +188,9 @@ export function ProAssigningConfig({ config, onUpdate }: ProAssigningConfigProps
                         <Switch.Control>
                             <Switch.Thumb />
                         </Switch.Control>
-                        <div className="space-y-0.5">
-                            <Label className="text-sm font-semibold">Show Pro to Client</Label>
-                            <Description className="text-[10px]">Allow clients to see pro profile and details.</Description>
+                        <div className="flex flex-col gap-0.5">
+                            <Label className="text-sm font-semibold block">Show Pro to Client</Label>
+                            <Description className="text-[10px] block m-0 p-0">Allow clients to see pro profile and details.</Description>
                         </div>
                     </Switch>
 
@@ -185,17 +203,17 @@ export function ProAssigningConfig({ config, onUpdate }: ProAssigningConfigProps
                         maxValue={5}
                         className="w-full"
                     >
-                        <div className="flex items-center justify-between mb-2 px-1">
-                            <div className="space-y-0.5 flex-1">
-                                <Label className="text-sm font-semibold">Minimum Pro Level</Label>
-                                <Description className="text-[10px]">Filter pros by their system rating (1-5).</Description>
-                            </div>
-                            <NumberField.Group className="flex items-center gap-1 bg-background border border-separator/20 rounded-lg p-1 w-24 h-9">
-                                <NumberField.DecrementButton className="w-6 h-6 rounded bg-secondary/10 flex items-center justify-center text-xs">-</NumberField.DecrementButton>
-                                <NumberField.Input className="flex-1 text-center bg-transparent border-none text-xs font-bold" />
-                                <NumberField.IncrementButton className="w-6 h-6 rounded bg-secondary/10 flex items-center justify-center text-xs">+</NumberField.IncrementButton>
-                            </NumberField.Group>
+                        <div className="mb-2.5">
+                            <Label className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground block mb-0.5">
+                                Minimum Pro Level
+                            </Label>
+                            <Description className="text-[10px] block m-0 p-0">Filter pros by their system rating (1-5).</Description>
                         </div>
+                        <NumberField.Group className="bg-content2 border border-divider rounded-lg overflow-hidden flex items-center h-10">
+                            <NumberField.DecrementButton className="h-full px-1 hover:bg-content3 flex items-center justify-center opacity-70 hover:opacity-100 transition-opacity min-w-[32px]" />
+                            <NumberField.Input className="flex-1 bg-transparent px-1 text-sm tabular-nums text-center min-w-0" />
+                            <NumberField.IncrementButton className="h-full px-1 hover:bg-content3 flex items-center justify-center opacity-70 hover:opacity-100 transition-opacity min-w-[32px]" />
+                        </NumberField.Group>
                     </NumberField>
                 </div>
             </section>

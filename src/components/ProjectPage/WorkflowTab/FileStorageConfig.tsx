@@ -1,4 +1,4 @@
-import { Label, Description, NumberField, Separator } from '@heroui/react';
+import { Label, Description, NumberField } from '@heroui/react';
 import { Icon } from '@iconify/react';
 import type { FileStorageConfig as FileStorageConfigType } from '../../../types/workflow';
 
@@ -19,63 +19,57 @@ export function FileStorageConfig({ config, onUpdate }: FileStorageConfigProps) 
     return (
         <div className="space-y-8 animate-in fade-in slide-in-from-right-2 duration-500">
             {/* Retention Settings */}
-            <section className="space-y-4">
-                <div className="flex items-center gap-2 mb-1">
+            <section>
+                <div className="flex items-center gap-2 mb-2.5">
                     <Icon icon="lucide:hard-drive" className="w-4 h-4 text-accent" />
                     <Label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
                         Storage Retention
                     </Label>
                 </div>
 
-                <div className="bg-secondary/5 border border-separator/10 rounded-2xl p-6 space-y-6">
+                <div className="bg-secondary/5 p-4 mx-[-1rem] border-y border-separator/10">
                     <NumberField
                         value={config.timeToLife}
                         onChange={(val) => handleUpdate({ timeToLife: val })}
                         minValue={0}
                         fullWidth
                     >
-                        <div className="flex items-center justify-between mb-2">
+                        <div className="flex items-center justify-between mb-2 px-0.5">
                             <div className="space-y-0.5">
-                                <Label className="text-sm font-semibold italic">Time to Life</Label>
-                                <Description className="text-[10px]">How many days to keep files after the step is completed.</Description>
+                                <Label className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground block">Time to Life</Label>
+                                <Description className="text-[10px] block m-0 p-0 text-muted-foreground/60">Days to keep files after completion.</Description>
                             </div>
-                            <div className="text-xs font-bold px-2 py-1 bg-accent/10 text-accent rounded-lg border border-accent/20">
-                                {config.timeToLife === 0 ? 'Indefinite' : `${config.timeToLife} Days`}
-                            </div>
+                            {config.timeToLife === 0 && (
+                                <div className="text-[10px] font-bold px-2 py-0.5 bg-accent/10 text-accent rounded-full border border-accent/20 uppercase tracking-tight animate-in fade-in zoom-in-95 duration-200">
+                                    Indefinite
+                                </div>
+                            )}
                         </div>
 
-                        <NumberField.Group className="flex items-center gap-1 bg-background border border-separator/20 rounded-xl p-1.5 shadow-sm focus-within:border-accent/50 transition-colors">
-                            <NumberField.DecrementButton className="w-10 h-10 rounded-lg bg-secondary/10 flex items-center justify-center hover:bg-secondary/20 transition-colors">
-                                <Icon icon="lucide:minus" className="w-4 h-4" />
-                            </NumberField.DecrementButton>
-
-                            <NumberField.Input className="flex-1 text-center bg-transparent border-none text-lg font-bold" />
-
-                            <NumberField.IncrementButton className="w-10 h-10 rounded-lg bg-secondary/10 flex items-center justify-center hover:bg-secondary/20 transition-colors">
-                                <Icon icon="lucide:plus" className="w-4 h-4" />
-                            </NumberField.IncrementButton>
+                        <NumberField.Group className="bg-content2 border border-divider rounded-lg overflow-hidden flex items-center h-10">
+                            <NumberField.DecrementButton className="h-full px-1 hover:bg-content3 flex items-center justify-center opacity-70 hover:opacity-100 transition-opacity min-w-[32px]" />
+                            <NumberField.Input className="flex-1 bg-transparent px-1 text-sm tabular-nums text-center min-w-0" />
+                            <NumberField.IncrementButton className="h-full px-1 hover:bg-content3 flex items-center justify-center opacity-70 hover:opacity-100 transition-opacity min-w-[32px]" />
                         </NumberField.Group>
 
-                        <Description className="text-[10px] mt-3 flex items-center gap-1.5 text-muted-foreground italic">
-                            <Icon icon="lucide:info" className="w-3.5 h-3.5" />
-                            Set to <span className="font-bold text-accent">0</span> to disable automatic deletion (archived forever).
-                        </Description>
+                        <div className="mt-3 px-1 flex items-start gap-1.5 opacity-60">
+                            <Icon icon="lucide:info" className="w-3 h-3 mt-0.5" />
+                            <p className="text-[10px] leading-tight m-0 p-0 italic">Set to 0 to disable automatic deletion (archived forever).</p>
+                        </div>
                     </NumberField>
                 </div>
             </section>
 
-            <Separator className="opacity-30" />
-
             {/* Cost Info */}
-            <div className="bg-warning/5 rounded-2xl p-4 border border-warning/20 flex gap-4 items-start">
+            <div className="bg-warning/5 p-4 mx-[-1rem] border-y border-warning/10 flex gap-4 items-start animate-in slide-in-from-bottom-2 duration-300">
                 <div className="p-2 bg-warning/10 rounded-xl text-warning">
-                    <Icon icon="lucide:alert-circle" className="w-5 h-5" />
+                    <Icon icon="lucide:zap" className="w-4 h-4" />
                 </div>
                 <div className="space-y-1">
-                    <span className="text-xs font-bold uppercase tracking-wider text-warning/80">Cost Optimization</span>
-                    <p className="text-[10px] text-muted-foreground leading-relaxed">
-                        Extended retention policies (TTL {'>'} 90 days) or choosing "Indefinite" storage
-                        will incur higher cloud storage fees. We recommend 30-60 days for raw assets.
+                    <span className="text-[10px] font-bold uppercase tracking-widest text-warning/80">Infrastructure Note</span>
+                    <p className="text-[10px] text-muted-foreground/80 leading-relaxed font-medium">
+                        Extended retention policies (TTL {'>'} 90 days) will incur higher cloud storage fees.
+                        We recommend 30-60 days for raw assets.
                     </p>
                 </div>
             </div>

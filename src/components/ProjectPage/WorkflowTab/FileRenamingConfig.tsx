@@ -1,13 +1,13 @@
-import { Label, Description, Select, ListBox, TextField, Input, Switch, Separator } from '@heroui/react';
+import { Label, Description, TextField, Input, RadioGroup, Radio, Switch } from '@heroui/react';
 import { Icon } from '@iconify/react';
 import type { FileRenamingConfig as FileRenamingConfigType } from '../../../types/workflow';
+import { FILE_RENAMING_MODES } from '../../../data/workflow-options';
 
 interface FileRenamingConfigProps {
     config: FileRenamingConfigType;
     onUpdate: (config: FileRenamingConfigType) => void;
 }
 
-import { FILE_RENAMING_MODES } from '../../../data/workflow-options';
 
 /**
  * FileRenamingConfig Component
@@ -21,104 +21,118 @@ export function FileRenamingConfig({ config, onUpdate }: FileRenamingConfigProps
     return (
         <div className="space-y-8 animate-in fade-in slide-in-from-right-2 duration-500">
             {/* Rename Mode Section */}
-            <Select
-                placeholder="Select renaming mode"
-                value={config.autoRenameMode}
-                onChange={(val) => handleUpdate({ autoRenameMode: val as FileRenamingConfigType['autoRenameMode'] })}
-                className="space-y-4"
-            >
-                <Label className="text-xs font-bold uppercase tracking-wider text-muted-foreground ml-1">
-                    Renaming Strategy
-                </Label>
-                <Select.Trigger className="h-12 rounded-2xl bg-secondary/5 border-separator/20 hover:border-accent/40 transition-colors">
-                    <Select.Value />
-                    <Select.Indicator><Icon icon="lucide:chevron-down" className="w-4 h-4" /></Select.Indicator>
-                </Select.Trigger>
-                <Select.Popover>
-                    <ListBox>
+            <section>
+                <div className="flex items-center gap-2 mb-2.5">
+                    <Icon icon="lucide:shuffle" className="w-4 h-4 text-accent" />
+                    <Label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+                        Renaming Strategy
+                    </Label>
+                </div>
+
+                <div className="bg-secondary/5 pt-1 px-4 pb-4 mx-[-1rem] border-y border-separator/10">
+                    <RadioGroup
+                        value={config.autoRenameMode}
+                        onChange={(val: string) => handleUpdate({ autoRenameMode: val as FileRenamingConfigType['autoRenameMode'] })}
+                        className="gap-4"
+                    >
                         {FILE_RENAMING_MODES.map((mode) => (
-                            <ListBox.Item key={mode.id} id={mode.id} textValue={mode.label}>
-                                <Label className="text-sm font-semibold">{mode.label}</Label>
-                                <Description className="text-[10px]">{mode.description}</Description>
-                            </ListBox.Item>
+                            <Radio key={mode.id} value={mode.id} className="data-[selected=true]:border-accent transition-all">
+                                <Radio.Control><Radio.Indicator /></Radio.Control>
+                                <Radio.Content>
+                                    <Label className="font-semibold text-sm block">{mode.label}</Label>
+                                    <Description className="text-[10px] block line-clamp-2">{mode.description}</Description>
+                                </Radio.Content>
+                            </Radio>
                         ))}
-                    </ListBox>
-                </Select.Popover>
-            </Select>
+                    </RadioGroup>
+                </div>
+            </section>
 
             {config.autoRenameMode !== 'MANUAL' && (
-                <>
-                    <Separator className="opacity-30" />
+                <section className="animate-in slide-in-from-top-2 duration-300">
+                    <div className="flex items-center gap-2 mb-2.5">
+                        <Icon icon="lucide:binary" className="w-4 h-4 text-accent" />
+                        <Label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+                            Pattern Settings
+                        </Label>
+                    </div>
 
-                    {/* Pattern Configuration */}
-                    <section className="space-y-6 animate-in slide-in-from-top-2 duration-300">
-                        <div className="flex items-center gap-2 mb-1">
-                            <Icon icon="lucide:binary" className="w-4 h-4 text-accent" />
-                            <Label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
-                                Pattern Settings
-                            </Label>
-                        </div>
-
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="bg-secondary/5 p-4 mx-[-1rem] border-y border-separator/10 space-y-5">
+                        <div className="grid grid-cols-2 gap-4">
                             <TextField
                                 value={config.customPrefix || ''}
                                 onChange={(val) => handleUpdate({ customPrefix: val })}
                                 fullWidth
-                                className="space-y-1.5"
                             >
-                                <Label className="text-xs font-medium text-muted-foreground ml-1 italic">Format Prefix</Label>
+                                <Label className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground mb-1 block">Prefix</Label>
                                 <Input
                                     placeholder="e.g. PRJ_"
-                                    className="bg-secondary/5 border-separator/20 rounded-xl"
+                                    className="bg-secondary/20 border-separator/20 rounded-xl h-10 px-3 text-sm"
                                 />
-                                <Description className="text-[10px] ml-1">Example: <span className="text-accent underline">PRJ_</span>001.jpg</Description>
                             </TextField>
 
                             <TextField
                                 value={config.pattern || ''}
                                 onChange={(val) => handleUpdate({ pattern: val })}
                                 fullWidth
-                                className="space-y-1.5"
                             >
-                                <Label className="text-xs font-medium text-muted-foreground ml-1 italic">Sequence Pattern</Label>
+                                <Label className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground mb-1 block">Sequence</Label>
                                 <Input
                                     placeholder="e.g. 000"
-                                    className="bg-secondary/5 border-separator/20 rounded-xl"
+                                    className="bg-secondary/20 border-separator/20 rounded-xl h-10 px-3 text-sm"
                                 />
-                                <Description className="text-[10px] ml-1">Defines digit count (000 = 001, 002...)</Description>
                             </TextField>
                         </div>
 
-                        <Switch
-                            isSelected={config.includeDate}
-                            onChange={(checked) => handleUpdate({ includeDate: checked })}
-                            className="flex-row-reverse justify-between w-full p-4 bg-accent/5 rounded-2xl border border-accent/10"
-                        >
-                            <Switch.Control>
-                                <Switch.Thumb />
-                            </Switch.Control>
-                            <div className="space-y-0.5">
-                                <Label className="text-sm font-semibold italic text-accent/90">Include Date</Label>
-                                <Description className="text-[10px]">Append current date (YYYYMMDD) to filename.</Description>
-                            </div>
-                        </Switch>
+                        <div className="flex flex-col gap-4">
+                            <Switch
+                                isSelected={config.includeDate}
+                                onChange={(checked) => handleUpdate({ includeDate: checked })}
+                                className="flex-row-reverse justify-between w-full"
+                            >
+                                <Switch.Control>
+                                    <Switch.Thumb />
+                                </Switch.Control>
+                                <div className="flex flex-col gap-0.5">
+                                    <Label className="text-sm font-semibold block">Include Date</Label>
+                                    <Description className="text-[10px] block m-0 p-0">Append YYYYMMDD to filename.</Description>
+                                </div>
+                            </Switch>
+
+                            <Switch
+                                isSelected={config.includeTime}
+                                onChange={(checked) => handleUpdate({ includeTime: checked })}
+                                className="flex-row-reverse justify-between w-full"
+                            >
+                                <Switch.Control>
+                                    <Switch.Thumb />
+                                </Switch.Control>
+                                <div className="flex flex-col gap-0.5">
+                                    <Label className="text-sm font-semibold block">Include Time</Label>
+                                    <Description className="text-[10px] block m-0 p-0">Append HHMMSS to filename.</Description>
+                                </div>
+                            </Switch>
+                        </div>
 
                         {/* Live Preview of filename */}
-                        <div className="p-4 bg-secondary/10 rounded-2xl border border-separator/20">
+                        <div className="p-4 bg-content2/50 rounded-2xl border border-divider/10">
                             <div className="flex items-center gap-2 mb-2">
-                                <Icon icon="lucide:eye" className="w-3.5 h-3.5 text-muted-foreground" />
-                                <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Preview:</span>
+                                <Icon icon="lucide:eye" className="w-3.5 h-3.5 text-accent opacity-70" />
+                                <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">Filename Preview</span>
                             </div>
-                            <code className="text-sm font-mono text-foreground/80 break-all">
-                                {config.customPrefix || 'PREFIX'}
-                                {config.includeDate ? '_' + new Date().toISOString().split('T')[0].replace(/-/g, '') : ''}
-                                _
-                                {config.pattern || '001'}
-                                .jpg
-                            </code>
+                            <div className="bg-background/50 p-4 rounded-xl border border-divider/5 flex items-center justify-center min-h-[50px]">
+                                <code className="text-xs font-mono text-accent break-all text-center leading-relaxed">
+                                    {config.customPrefix || 'PREFIX'}
+                                    {config.includeDate ? '_' + new Date().toISOString().split('T')[0].replace(/-/g, '') : ''}
+                                    {config.includeTime ? '_' + new Date().toTimeString().split(' ')[0].replace(/:/g, '') : ''}
+                                    _
+                                    {config.pattern || '001'}
+                                    .jpg
+                                </code>
+                            </div>
                         </div>
-                    </section>
-                </>
+                    </div>
+                </section>
             )}
         </div>
     );

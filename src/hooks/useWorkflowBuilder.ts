@@ -10,6 +10,7 @@ import {
     BlockCategory
 } from '../types/workflow';
 import { BLOCK_LIBRARY, BlockCategoryUI } from '../data/block-ui-categories';
+import { MASTER_BLOCKS } from '../data/master-blocks';
 
 const UI_TO_BLOCK_CATEGORY: Record<BlockCategoryUI, BlockCategory> = {
     'SETUP_ONBOARDING': 'STARTING',
@@ -102,6 +103,7 @@ export function useWorkflowBuilder(initialConfig?: ProjectWorkflowConfig) {
         const newBlockId = crypto.randomUUID();
 
         setCanvasState(prev => {
+            const masterBlock = MASTER_BLOCKS[blockType];
             const newBlock: CanvasBlock = {
                 id: newBlockId,
                 type: blockType,
@@ -109,7 +111,8 @@ export function useWorkflowBuilder(initialConfig?: ProjectWorkflowConfig) {
                 category: UI_TO_BLOCK_CATEGORY[info.category],
                 isEnabled: true,
                 position: { id: newBlockId, branchId: 'main', index },
-                validationState: 'unconfigured'
+                validationState: masterBlock?.config ? 'unconfigured' : 'valid',
+                config: masterBlock?.config ? { ...masterBlock.config } : undefined
             };
 
             const updatedBlocks = [...prev.blocks];

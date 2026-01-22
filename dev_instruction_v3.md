@@ -20,6 +20,18 @@
 
 **When stuck:** Check `./docs/heroui-docs.txt` → Official docs → Ask team
 
+### Current Technology Stack
+
+| Layer | Technology | Actual Version | Standard |
+| :--- | :--- | :--- | :--- |
+| **Framework** | React | `^19.2.3` | `19.x` |
+| **Build** | Vite | `^7.3.1` | `7.x` |
+| **Styling** | Tailwind CSS | `^4.1.18` | `4.x` |
+| **UI Library** | HeroUI | `^3.0.0-beta.5` | `v3.0.0-beta.x` |
+| **Routing** | TanStack Router | `^1.153.2` | `1.x` |
+| **Data** | TanStack Query | `^5.90.19` | `5.x` |
+| **Icons** | Iconify (lucide) | `latest` | `latest` |
+
 ---
 
 ## Table of Contents
@@ -55,7 +67,9 @@ We build **premium, accessible, and maintainable** interfaces. We do not build "
 
 1. **Check** the [Components List](https://v3.heroui.com/docs/components-list)
 2. **Search** the [Full Documentation](./docs/heroui-docs.txt)
-3. **Use MCP Tools** (for AI): `list_components`, `get_component_info`, `get_component_props`, `get_component_examples`.
+3. **Use MCP Tools** (for AI):
+   - **HeroUI**: `list_components`, `get_component_docs`, `get_component_source_code`.
+   - **Latest Docs**: Use `context7` MCP (`resolve-library-id` followed by `query-docs`) for up-to-date documentation on TanStack, React 19, Tailwind v4, etc.
 
 **Decision Tree:**
 
@@ -466,6 +480,7 @@ npm run lint    # Run ESLint
 ### 2. Pre-commit Hooks (Husky + lint-staged)
 
 **Commits will automatically:**
+
 1. Run **Prettier** to format staged `.ts`/`.tsx` files.
 2. Run **ESLint** with auto-fix on staged files.
 
@@ -517,10 +532,11 @@ npm run lint    # Run ESLint
 
 1. **[Official HeroUI v3 Documentation](https://v3.heroui.com/)**
 2. **[Components List](https://v3.heroui.com/docs/components-list)**
-3. **[Component Source (React)](https://github.com/heroui-inc/heroui/tree/v3/packages/react/src/components)**
-4. **[Tailwind CSS v4](https://tailwindcss.com/docs)**
-5. **[TanStack Router Docs](https://tanstack.com/router/latest/docs/overview)**
-6. **[TanStack Query Docs](https://tanstack.com/query/latest/docs/overview)**
+3. **HeroUI v3 MCP**: Primary tool for HeroUI component docs, props, and source code.
+4. **Context7 MCP**: Use for any other library (e.g., `/tanstack/query`, `/tanstack/router`, `/react`).
+5. **[Tailwind CSS v4](https://tailwindcss.com/docs)**
+6. **[TanStack Router Docs](https://tanstack.com/router/latest/docs/overview)**
+7. **[TanStack Query Docs](https://tanstack.com/query/latest/docs/overview)**
 
 **Local References:**
 

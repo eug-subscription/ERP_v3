@@ -105,7 +105,7 @@ const RETOUCHER_ASSIGN_BLOCK: WorkflowBlock = {
     config: {
         whoHasAccess: 'PROJECT_TEAMS',
         welcomeText: 'Please review the guidelines before starting.',
-        guidelines: 'Standard retouching: Color correction, exposure, and basic skin cleaning.',
+        guidelines: '',
         needAcceptGuidelines: true,
         showRetoucherToClient: false,
         minRetoucherLevel: 2

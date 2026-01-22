@@ -10,11 +10,11 @@ Provides quick access to project structure and conventions without reading full 
 ## Tech Stack
 
 | Layer | Technology | Version |
-|-------|------------|---------|
+| :--- | :--- | :--- |
 | Framework | React | 19.x |
 | Build | Vite | 7.x |
 | Styling | Tailwind CSS | 4.x |
-| UI Library | HeroUI v3 Beta 3 | @heroui/react |
+| UI Library | HeroUI v3 Beta 5 | @heroui/react |
 | Routing | TanStack Router | 1.x |
 | Data | TanStack Query | 5.x |
 | Icons | Iconify (lucide) | latest |
@@ -41,14 +41,17 @@ src/
 5. **TanStack Router** for navigation: `<Link to="/path">`
 6. **TanStack Query** for data: `useQuery({ queryKey, queryFn })`
 
-## HeroUI MCP Tools
+## MCP Tools
 
-Before creating any UI component, use these tools:
+Before creating any UI component or implementing new logic, use these tools:
 
-- `mcp_heroui-react_list_components` — Check availability
-- `mcp_heroui-react_get_component_info` — Understand anatomy
-- `mcp_heroui-react_get_component_props` — Get TypeScript types
-- `mcp_heroui-react_get_component_examples` — See correct patterns
+- **HeroUI**:
+  - `mcp_heroui-react_list_components` — Check availability
+  - `mcp_heroui-react_get_component_docs` — Full anatomy, props, and examples
+  - `mcp_heroui-react_get_component_source_code` — Understand internal logic
+- **Documentation**:
+  - `mcp_context7_resolve-library-id` — Find library ID (e.g., TanStack, React 19)
+  - `mcp_context7_query-docs` — Query latest documentation and code snippets
 
 ## References
 
