@@ -1,4 +1,5 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useMemo, useEffect, useRef } from 'react';
+import { useBlockValidation } from './useBlockValidation';
 import { arrayMove } from "@dnd-kit/sortable";
 import {
     ProjectWorkflowConfig,
@@ -7,12 +8,15 @@ import {
     BlockConfig,
     CanvasBlock,
     ValidationResult,
-    ValidationError,
     BlockCategory
 } from '../types/workflow';
 import { BLOCK_LIBRARY, BlockCategoryUI } from '../data/block-ui-categories';
 import { MASTER_BLOCKS } from '../data/master-blocks';
 import { STANDARD_BRANCHES } from '../data/branch-structure';
+import { autoFixCanvasBlocks, getAutoFixActions } from '../data/block-dependencies';
+import { useSaveWorkflow } from './useProjectWorkflow';
+import { serializeCanvasToConfig } from '../utils/workflow-serializer';
+import { START_NODE_ID } from '../components/ProjectPage/WorkflowBuilder/constants';
 
 const isBlockAllowedInBranch = (blockType: WorkflowBlockType, branchId: 'main' | 'photo' | 'video'): boolean => {
     if (branchId === 'photo') {
@@ -49,12 +53,12 @@ export function useWorkflowBuilder(initialConfig?: ProjectWorkflowConfig) {
     // Initial state setup
     const initialBlocks: CanvasBlock[] = initialConfig ? [] : [
         {
-            id: 'start-node',
+            id: START_NODE_ID,
             type: 'ORDER_CREATED',
             label: 'Order Created',
             category: 'STARTING',
             isEnabled: true,
-            position: { id: 'start-node', branchId: 'main', index: 0 },
+            position: { id: START_NODE_ID, branchId: 'main', index: 0 },
             validationState: 'valid'
         }
     ];
@@ -66,6 +70,43 @@ export function useWorkflowBuilder(initialConfig?: ProjectWorkflowConfig) {
         hasUnsavedChanges: false,
         lastAddedBlockId: null
     });
+
+    const hydrationRef = useRef(false);
+
+    // Hydrate state when initialConfig becomes available (since it's usually async)
+    useEffect(() => {
+        if (!initialConfig || hydrationRef.current) return;
+
+        // Transform WorkflowConfig branches back into flat CanvasBlocks
+        const configBlocks: CanvasBlock[] = initialConfig.branches.flatMap(branch =>
+            branch.blocks.map((block, idx) => ({
+                ...block,
+                position: { id: block.id, branchId: branch.id as 'main' | 'photo' | 'video', index: idx },
+                validationState: 'valid' // Initial assumption, re-validated by standard flow
+            }))
+        );
+
+        // Only hydrate if we have blocks and haven't already hydrated
+        // Schedule update to avoid synchronous setState in effect and cascading renders
+        const timer = setTimeout(() => {
+            setCanvasState(prev => {
+                if (hydrationRef.current) return prev;
+
+                // Note: initialBlocks has exactly 1 block (START_NODE_ID)
+                if (configBlocks.length > 0 && prev.blocks.length === 1 && prev.blocks[0].id === START_NODE_ID) {
+                    hydrationRef.current = true;
+                    return {
+                        ...prev,
+                        blocks: configBlocks,
+                        hasUnsavedChanges: false
+                    };
+                }
+                return prev;
+            });
+        }, 0);
+
+        return () => clearTimeout(timer);
+    }, [initialConfig]);
 
     /**
      * Helper to lookup basic block info from library
@@ -82,7 +123,7 @@ export function useWorkflowBuilder(initialConfig?: ProjectWorkflowConfig) {
      */
     const removeBlock = useCallback((blockId: string) => {
         // Prevent deleting Start node
-        if (blockId === 'start-node') return;
+        if (blockId === START_NODE_ID) return;
 
         setCanvasState(prev => ({
             ...prev,
@@ -228,51 +269,75 @@ export function useWorkflowBuilder(initialConfig?: ProjectWorkflowConfig) {
     }, []);
 
     /**
-     * Validate the entire canvas
+     * Automatically fix common validation issues
+     */
+    const autoFix = useCallback(() => {
+        setCanvasState(prev => ({
+            ...prev,
+            blocks: autoFixCanvasBlocks(prev.blocks),
+            hasUnsavedChanges: true
+        }));
+    }, []);
+
+    /**
+     * Merge validation results into blocks for the UI
+     */
+    const validationResult = useBlockValidation(canvasState.blocks);
+
+    const { mutateAsync: saveMutation, isPending: isSaving } = useSaveWorkflow();
+
+    /**
+     * Save the current canvas state to the project configuration
+     */
+    const saveWorkflow = useCallback(async (projectId: string = 'current-project') => {
+        const config = serializeCanvasToConfig(
+            projectId,
+            initialConfig?.templateId || 'custom-workflow',
+            canvasState.blocks
+        );
+
+        try {
+            await saveMutation(config);
+            setCanvasState(prev => ({ ...prev, hasUnsavedChanges: false }));
+            return true;
+        } catch {
+            return false;
+        }
+    }, [canvasState.blocks, saveMutation, initialConfig?.templateId]);
+
+    const validatedBlocks = useMemo(() => {
+        return canvasState.blocks.map(block => {
+            const blockError = validationResult.errors.find(e => e.blockId === block.id);
+
+            // Determine the state based on validation and config status
+            let newState: CanvasBlock['validationState'] = block.validationState;
+
+            if (blockError) {
+                newState = blockError.level === 'ERROR' ? 'error' : 'warning';
+            } else if (block.validationState !== 'unconfigured') {
+                newState = 'valid';
+            }
+
+            return {
+                ...block,
+                validationState: newState,
+                validationMessage: blockError?.message
+            };
+        });
+    }, [canvasState.blocks, validationResult]);
+
+    /**
+     * Legacy manual validation (now mostly redundant but kept for sync calls)
      */
     const validateCanvas = useCallback((): ValidationResult => {
-        const hasIfElse = canvasState.blocks.some(b => b.type === 'IF_ELSE');
-        const hasMerge = canvasState.blocks.some(b => b.type === 'MERGE');
-        const ifElseIndex = canvasState.blocks.findIndex(b => b.type === 'IF_ELSE');
-        const mergeIndex = canvasState.blocks.findIndex(b => b.type === 'MERGE');
-
-        const errors: ValidationError[] = [];
-
-        if (hasIfElse && !hasMerge) {
-            errors.push({
-                type: 'IF_ELSE',
-                message: 'Workflow with branching must be rejoined with a Merge block.',
-                level: 'ERROR'
-            });
-        }
-
-        if (hasMerge && !hasIfElse) {
-            errors.push({
-                type: 'MERGE',
-                message: 'Merge block can only be used after an If/Else branch.',
-                level: 'ERROR'
-            });
-        }
-
-        if (hasMerge && hasIfElse && mergeIndex < ifElseIndex) {
-            errors.push({
-                type: 'MERGE',
-                message: 'Merge block must be placed after the If/Else branch.',
-                level: 'ERROR'
-            });
-        }
-
-        return {
-            isValid: errors.length === 0,
-            errors
-        };
-    }, [canvasState.blocks]);
+        return validationResult;
+    }, [validationResult]);
 
     return {
         state: {
             canvasState,
             hasUnsavedChanges: canvasState.hasUnsavedChanges,
-            blocks: canvasState.blocks // Convenience accessor
+            blocks: validatedBlocks // Return blocks with merged validation info
         },
         actions: {
             insertBlock,
@@ -280,11 +345,15 @@ export function useWorkflowBuilder(initialConfig?: ProjectWorkflowConfig) {
             removeBlock,
             selectBlock,
             updateBlockConfig,
-            setCanvasState
+            autoFix,
+            setCanvasState,
+            saveWorkflow
         },
         validation: {
             validate: validateCanvas,
+            getAutoFixActions: () => getAutoFixActions(canvasState.blocks),
             isBlockAllowedInBranch
-        }
+        },
+        isSaving
     };
 }

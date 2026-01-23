@@ -35,7 +35,7 @@ export function CanvasBlockCard({ block, isSelected, className, style }: CanvasB
         <div
             className={cn(
                 "group relative select-none outline-none transition-transform active:scale-[0.98]",
-                "rounded-xl overflow-hidden", // Double-clip layer 1: Wrapper
+                "rounded-xl overflow-hidden",
                 isSelected && "z-10",
                 className
             )}
@@ -45,9 +45,10 @@ export function CanvasBlockCard({ block, isSelected, className, style }: CanvasB
             <Card
                 variant="default"
                 className={cn(
-                    "w-full border border-default shadow-sm hover:shadow-md transition-shadow",
+                    "w-full border shadow-sm hover:shadow-md transition-shadow",
                     "p-0 flex flex-row items-stretch !rounded-xl relative overflow-hidden isolate",
-                    "gpu-clipping-fix"
+                    "gpu-clipping-fix",
+                    validationStatus === "error" ? "border-danger" : "border-default"
                 )}
                 style={{ height: CANVAS_BLOCK_HEIGHT }}
             >
@@ -105,9 +106,13 @@ export function CanvasBlockCard({ block, isSelected, className, style }: CanvasB
                                         <Icon icon="lucide:alert-circle" width={16} height={16} className="text-warning" />
                                     )}
                                     {validationStatus === "error" && (
-                                        <div className="relative flex w-3 h-3">
-                                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-danger opacity-75"></span>
-                                            <span className="relative inline-flex rounded-full h-3 w-3 bg-danger"></span>
+                                        <div className="relative flex w-4 h-4 items-center justify-center">
+                                            <Icon
+                                                icon="lucide:alert-circle"
+                                                width={16}
+                                                height={16}
+                                                className="text-danger animate-error-pulse"
+                                            />
                                         </div>
                                     )}
                                 </div>
@@ -117,6 +122,8 @@ export function CanvasBlockCard({ block, isSelected, className, style }: CanvasB
                     </div>
                 </Card.Content>
             </Card>
+
+            {/* Selection Border Overlay */}
 
             {/* Selection Border Overlay - Adjusted for perfect concentric curvature */}
             {isSelected && (

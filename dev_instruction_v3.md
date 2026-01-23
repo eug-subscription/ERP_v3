@@ -361,7 +361,7 @@ import { Button } from "./components/ui/button";
     </Card.Content>
 </Card>
 
-// ✅ Correct: Modal
+// ✅ Correct: Modal (CRITICAL: Container/Dialog MUST be nested INSIDE Backdrop)
 <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
     <Modal.Backdrop>
         <Modal.Container>
@@ -377,6 +377,12 @@ import { Button } from "./components/ui/button";
             </Modal.Dialog>
         </Modal.Container>
     </Modal.Backdrop>
+</Modal>
+
+// ❌ Incorrect: Sibling Backdrop (Causes stacking/visibility issues)
+<Modal>
+    <Modal.Backdrop />
+    <Modal.Container>...</Modal.Container>
 </Modal>
 
 // ✅ Correct: Select (v3 Pattern)

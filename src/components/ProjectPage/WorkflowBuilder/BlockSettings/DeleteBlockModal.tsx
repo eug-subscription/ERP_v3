@@ -34,6 +34,7 @@ export function DeleteBlockModal({
             <AlertDialog.Backdrop className="backdrop-blur-md bg-black/40">
                 <AlertDialog.Container>
                     <AlertDialog.Dialog className="sm:max-w-[420px]">
+                        <AlertDialog.CloseTrigger />
                         <AlertDialog.Header>
                             <AlertDialog.Icon status="danger" />
                             <AlertDialog.Heading>Delete "{blockLabel}"?</AlertDialog.Heading>
@@ -87,7 +88,6 @@ export function DeleteBlockModal({
 
                         <AlertDialog.Footer>
                             <Button
-                                slot="close"
                                 variant="ghost"
                                 className="text-default-500"
                                 onPress={() => {

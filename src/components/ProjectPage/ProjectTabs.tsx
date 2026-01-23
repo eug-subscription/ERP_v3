@@ -18,14 +18,11 @@ export function ProjectTabs() {
         { id: "managers", name: "Managers", icon: "lucide:users", path: "/project/managers" },
         { id: "prices", name: "Prices", icon: "lucide:tag", path: "/project/prices" },
         { id: "workflow", name: "Workflow", icon: "lucide:git-branch", path: "/project/workflow" },
-        { id: "workflow-builder", name: "Builder (Beta)", icon: "lucide:hammer", path: "/project/workflow-builder" },
         { id: "guidelines", name: "Guidelines", icon: "lucide:file-text", path: "/project/guidelines" },
         { id: "settings", name: "Settings", icon: "lucide:settings", path: "/project/settings" },
     ];
 
     // Determine active tab based on current pathname
-    // We filter for matching paths and sort by length (descending) to match the most specific route first
-    // This prevents "/project/workflow" from partially matching "/project/workflow-builder"
     const activeTab = sections
         .filter((s) => routerState.location.pathname.includes(s.path))
         .sort((a, b) => b.path.length - a.path.length)[0]?.id || "account";

@@ -1,13 +1,13 @@
-import { ProAssigningConfig } from "../../WorkflowTab/ProAssigningConfig";
-import { ModerationConfig } from "../../WorkflowTab/ModerationConfig";
-import { ConditionalConfig } from "../../WorkflowTab/ConditionalConfig";
-import { SSTConfig } from "../../WorkflowTab/SSTConfig";
-import { RetoucherAssigningConfig } from "../../WorkflowTab/RetoucherAssigningConfig";
-import { ExternalProcessConfig } from "../../WorkflowTab/ExternalProcessConfig";
-import { SendNotificationConfig } from "../../WorkflowTab/SendNotificationConfig";
-import { FileStorageConfig } from "../../WorkflowTab/FileStorageConfig";
-import { FileRenamingConfig } from "../../WorkflowTab/FileRenamingConfig";
-import { BlockDescriptionPanel } from "../../WorkflowTab/BlockDescriptionPanel";
+import { ProAssigningConfig } from "../../WorkflowShared/ProAssigningConfig";
+import { ModerationConfig } from "../../WorkflowShared/ModerationConfig";
+import { ConditionalConfig } from "../../WorkflowShared/ConditionalConfig";
+import { SSTConfig } from "../../WorkflowShared/SSTConfig";
+import { RetoucherAssigningConfig } from "../../WorkflowShared/RetoucherAssigningConfig";
+import { ExternalProcessConfig } from "../../WorkflowShared/ExternalProcessConfig";
+import { SendNotificationConfig } from "../../WorkflowShared/SendNotificationConfig";
+import { FileStorageConfig } from "../../WorkflowShared/FileStorageConfig";
+import { FileRenamingConfig } from "../../WorkflowShared/FileRenamingConfig";
+import { BlockDescriptionPanel } from "../../WorkflowShared/BlockDescriptionPanel";
 import {
     CanvasBlock,
     BlockConfig,

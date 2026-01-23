@@ -20,6 +20,15 @@ export interface ValidationResult {
 }
 
 /**
+ * Action describing an automated fix to be applied.
+ */
+export interface AutoFixAction {
+    type: 'ENABLE' | 'INSERT' | 'REORDER';
+    blockType: WorkflowBlockType;
+    reason: string;
+}
+
+/**
  * All possible types of blocks that can exist in a workflow.
  */
 export type WorkflowBlockType =
@@ -299,6 +308,46 @@ export interface BranchDefinition {
 export interface WorkflowTemplate extends WorkflowPreset {
     /** Existing branches kept for backward compatibility if needed */
     branches?: WorkflowBranch[];
+}
+
+/**
+ * Source of a workflow template.
+ */
+export type TemplateSource = 'SYSTEM' | 'USER';
+
+/**
+ * User-created workflow template extending base WorkflowTemplate.
+ */
+export interface UserWorkflowTemplate extends WorkflowTemplate {
+    /** Source of the template (system-provided or user-created). */
+    source: TemplateSource;
+    /** User ID who created this template. */
+    createdBy?: string;
+    /** ISO timestamp when template was created. */
+    createdAt: string;
+    /** ISO timestamp when template was last modified. */
+    updatedAt: string;
+    /** Optional thumbnail for template preview. */
+    thumbnailUrl?: string;
+}
+
+/**
+ * Request payload for saving a workflow as template.
+ */
+export interface SaveAsTemplateRequest {
+    name: string;
+    description: string;
+    category: TemplateCategory;
+    sourceProjectId: string;
+}
+
+/**
+ * Response from template operations.
+ */
+export interface TemplateOperationResult {
+    success: boolean;
+    templateId?: string;
+    error?: string;
 }
 
 /**

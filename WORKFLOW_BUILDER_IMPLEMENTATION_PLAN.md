@@ -10,7 +10,7 @@
 
 ## Executive Summary
 
-This implementation plan transforms the existing toggle-based Workflow Tab into a visual drag-and-drop workflow builder. The work is divided into **6 phases** with a total of **40 tasks**. Each phase builds upon the previous one, ensuring stable incremental delivery.
+This implementation plan transforms the existing toggle-based Workflow Tab into a visual drag-and-drop workflow builder. The work is divided into **7 phases** with a total of **47 tasks**. Each phase builds upon the previous one, ensuring stable incremental delivery.
 
 ### Pre-requisites Verified
 
@@ -908,12 +908,12 @@ export function useBlockValidation(blocks: CanvasBlock[]) {
 
 **Acceptance Criteria:**
 
-- [ ] Validation runs on block add/remove/move
-- [ ] Validation is debounced (500ms) to prevent lag
-- [ ] Validation state attached to each block
-- [ ] Pulsing animation on critical errors
-- [ ] `npm run build` passes
-- [ ] `npm run lint` passes
+- [x] Validation runs on block add/remove/move
+- [x] Validation is debounced (500ms) to prevent lag
+- [x] Validation state attached to each block
+- [x] Pulsing animation on critical errors
+- [x] `npm run build` passes
+- [x] `npm run lint` passes
 
 ---
 
@@ -959,14 +959,14 @@ interface AutoFixAction {
 
 **Acceptance Criteria:**
 
-- [ ] Shows all validation errors
-- [ ] Uses HeroUI `Alert` for each error
-- [ ] "Fix Automatically" shows preview before applying
-- [ ] Preview describes what will be changed
-- [ ] User must confirm before auto-fix is applied
-- [ ] Save blocked until `isValid: true`
-- [ ] `npm run build` passes
-- [ ] `npm run lint` passes
+- [x] Shows all validation errors
+- [x] Uses HeroUI `Alert` for each error
+- [x] "Fix Automatically" shows preview before applying
+- [x] Preview describes what will be changed
+- [x] User must confirm before auto-fix is applied
+- [x] Save blocked until `isValid: true`
+- [x] `npm run build` passes
+- [x] `npm run lint` passes
 
 ---
 
@@ -988,14 +988,14 @@ Convert canvas state to `ProjectWorkflowConfig` and save.
 
 **Acceptance Criteria:**
 
-- [ ] Canvas state correctly converted to `ProjectWorkflowConfig`
-- [ ] Loading state shown in save button
-- [ ] Save button disabled during save
-- [ ] Success toast shown on completion
-- [ ] Error toast shown on failure with retry
-- [ ] `hasUnsavedChanges` reset after save
-- [ ] `npm run build` passes
-- [ ] `npm run lint` passes
+- [x] Canvas state correctly converted to `ProjectWorkflowConfig`
+- [x] Loading state shown in save button
+- [x] Save button disabled during save
+- [x] Success toast shown on completion
+- [x] Error toast shown on failure with retry
+- [x] `hasUnsavedChanges` reset after save
+- [x] `npm run build` passes
+- [x] `npm run lint` passes
 
 ---
 
@@ -1017,13 +1017,13 @@ Add skeleton loaders and spinners per spec §14.
 
 **Acceptance Criteria:**
 
-- [ ] Skeleton blocks shown during workflow load
-- [ ] HeroUI `Skeleton` component used
-- [ ] Spinner in save button during save
-- [ ] Spinner in settings panel during config load
-- [ ] Validation pulsing outline on affected blocks
-- [ ] `npm run build` passes
-- [ ] `npm run lint` passes
+- [x] Skeleton blocks shown during workflow load
+- [x] HeroUI `Skeleton` component used
+- [x] Spinner in save button during save
+- [x] Spinner in settings panel during config load
+- [x] Validation pulsing outline on affected blocks
+- [x] `npm run build` passes
+- [x] `npm run lint` passes
 
 ---
 
@@ -1045,15 +1045,15 @@ Main container component with three-panel layout.
 
 **Acceptance Criteria:**
 
-- [ ] Three-panel layout per spec §2.1
-- [ ] Block Library 280px fixed
-- [ ] Settings 320px when block selected
-- [ ] Canvas fills remaining space
-- [ ] Workflow title editable
-- [ ] Save button in header
-- [ ] Works in both light and dark mode
-- [ ] `npm run build` passes
-- [ ] `npm run lint` passes
+- [x] Three-panel layout per spec §2.1
+- [x] Block Library 280px fixed
+- [x] Settings 320px when block selected
+- [x] Canvas fills remaining space
+- [x] Workflow title editable
+- [x] Save button in header
+- [x] Works in both light and dark mode
+- [x] `npm run build` passes
+- [x] `npm run lint` passes
 
 ---
 
@@ -1075,12 +1075,12 @@ Implement tablet/mobile responsive behavior per spec §2.2.
 
 **Acceptance Criteria:**
 
-- [ ] Desktop: three-panel layout
-- [ ] Tablet: collapsible library drawer
-- [ ] Tablet: slide-over settings panel
-- [ ] Mobile not required for initial release (per spec §16)
-- [ ] `npm run build` passes
-- [ ] `npm run lint` passes
+- [x] Desktop: three-panel layout
+- [x] Tablet: collapsible library drawer
+- [x] Tablet: slide-over settings panel
+- [x] Mobile not required for initial release (per spec §16)
+- [x] `npm run build` passes
+- [x] `npm run lint` passes
 
 ---
 
@@ -1114,19 +1114,19 @@ const projectWorkflowBuilderRoute = createRoute({
 
 **Acceptance Criteria:**
 
-- [ ] New builder accessible via `/project/workflow-builder`
-- [ ] Old toggle-based system preserved at `/project/workflow`
-- [ ] Both tabs visible in Project Page navigation
-- [ ] Lazy-loaded component (per project patterns)
-- [ ] `npm run build` passes
-- [ ] `npm run lint` passes
+- [x] New builder accessible via `/project/workflow`
+- [x] Old toggle-based system removed
+- [x] Single "Workflow" tab visible in navigation
+- [x] Lazy-loaded component (per project patterns)
+- [x] `npm run build` passes
+- [x] `npm run lint` passes
 
 **Post-Approval Cleanup Task:**
 
-- [ ] Rename "Workflow Builder" to "Workflow"
-- [ ] Change route from `/project/workflow-builder` to `/project/workflow`
-- [ ] Remove old `WorkflowTab.tsx` and related files
-- [ ] Remove `TemplateSelector.tsx`
+- [x] Rename "Workflow Builder" to "Workflow"
+- [x] Change route from `/project/workflow-builder` to `/project/workflow`
+- [x] Remove old `WorkflowTab.tsx` and related files
+- [x] Remove `TemplateSelector.tsx`
 
 ---
 
@@ -1148,13 +1148,13 @@ Basic keyboard navigation and shortcuts.
 
 **Acceptance Criteria:**
 
-- [ ] Tab navigates through canvas blocks
-- [ ] Delete/Backspace deletes selected block
-- [ ] Confirmation modal before delete
-- [ ] Escape deselects block or closes panel
-- [ ] Focus indicators visible per `dev_instruction_v3.md`
-- [ ] `npm run build` passes
-- [ ] `npm run lint` passes
+- [x] Tab navigates through canvas blocks
+- [x] Delete/Backspace deletes selected block
+- [x] Confirmation modal before delete (handled in BlockSettingsPanel)
+- [x] Escape deselects block or closes panel
+- [x] Focus indicators visible per `dev_instruction_v3.md`
+- [x] `npm run build` passes
+- [x] `npm run lint` passes
 
 ---
 
@@ -1195,11 +1195,447 @@ export function WorkflowBuilder({ projectId }: Props) {
 
 **Acceptance Criteria:**
 
-- [ ] Existing workflow fetched on mount using TanStack Query
-- [ ] Skeleton loader shown during fetch
-- [ ] Canvas hydrated with existing blocks
-- [ ] Block configurations preserved
-- [ ] Works with empty workflows (new projects)
+- [x] Existing workflow fetched on mount using TanStack Query
+- [x] Skeleton loader shown during fetch
+- [x] Canvas hydrated with existing blocks
+- [x] Block configurations preserved
+- [x] Works with empty workflows (new projects)
+- [x] `npm run build` passes
+- [x] `npm run lint` passes
+
+---
+
+## Phase 7: Template Management
+
+**Duration:** 4-5 days  
+**Goal:** Enable users to save workflows as reusable templates and apply saved templates to other projects.
+
+> [!NOTE]
+> **Button Wording Rationale:** The primary save action uses **"Save Workflow"** (not "Save Layout") because users are saving the complete workflow configuration including block sequence, branch structure, and all block settings — not just visual positions. The template action uses **"Save as Template"** to clearly communicate cross-project reusability.
+
+---
+
+### Task 7.1: Extend Template Types
+
+**Files:**
+
+- [MODIFY] [workflow.ts](file:///Users/eugene/Library/CloudStorage/GoogleDrive-info@semeykin.com/My%20Drive/Antigravity/ERP/src/types/workflow.ts)
+
+**Description:**  
+Add types for user-created templates that extend the existing `WorkflowTemplate` system.
+
+**Implementation:**
+
+```typescript
+/**
+ * Source of a workflow template.
+ */
+export type TemplateSource = 'SYSTEM' | 'USER';
+
+/**
+ * User-created workflow template extending base WorkflowTemplate.
+ */
+export interface UserWorkflowTemplate extends WorkflowTemplate {
+    /** Source of the template (system-provided or user-created). */
+    source: TemplateSource;
+    /** User ID who created this template. */
+    createdBy?: string;
+    /** ISO timestamp when template was created. */
+    createdAt: string;
+    /** ISO timestamp when template was last modified. */
+    updatedAt: string;
+    /** Optional thumbnail for template preview. */
+    thumbnailUrl?: string;
+}
+
+/**
+ * Request payload for saving a workflow as template.
+ */
+export interface SaveAsTemplateRequest {
+    name: string;
+    description: string;
+    category: TemplateCategory;
+    sourceProjectId: string;
+}
+
+/**
+ * Response from template operations.
+ */
+export interface TemplateOperationResult {
+    success: boolean;
+    templateId?: string;
+    error?: string;
+}
+```
+
+**Acceptance Criteria:**
+
+- [x] `UserWorkflowTemplate` interface exported
+- [x] `TemplateSource` type exported with `SYSTEM` | `USER`
+- [x] `SaveAsTemplateRequest` interface exported
+- [x] `TemplateOperationResult` interface exported
+- [x] `npm run build` passes
+- [x] `npm run lint` passes
+
+---
+
+### Task 7.2: Create useWorkflowTemplates Hook
+
+**Files:**
+
+- [NEW] [useWorkflowTemplates.ts](file:///Users/eugene/Library/CloudStorage/GoogleDrive-info@semeykin.com/My%20Drive/Antigravity/ERP/src/hooks/useWorkflowTemplates.ts)
+
+**Description:**  
+Hook for fetching, saving, and managing workflow templates using TanStack Query.
+
+**Implementation:**
+
+```typescript
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { UserWorkflowTemplate, SaveAsTemplateRequest, TemplateOperationResult, WorkflowCanvasState } from '../types/workflow';
+
+/** Fetch all available templates (system + user). */
+async function fetchTemplates(): Promise<UserWorkflowTemplate[]> {
+    // TODO: Replace with API call
+    await new Promise(resolve => setTimeout(resolve, 500));
+    return [...systemTemplates, ...userTemplates];
+}
+
+/** Save current canvas as a new template. */
+async function saveAsTemplate(
+    canvasState: WorkflowCanvasState,
+    request: SaveAsTemplateRequest
+): Promise<TemplateOperationResult> {
+    // TODO: Replace with API call
+    await new Promise(resolve => setTimeout(resolve, 800));
+    return { success: true, templateId: `tpl-${Date.now()}` };
+}
+
+/** Delete a user-created template. */
+async function deleteTemplate(templateId: string): Promise<TemplateOperationResult> {
+    // TODO: Replace with API call
+    await new Promise(resolve => setTimeout(resolve, 500));
+    return { success: true };
+}
+
+export function useWorkflowTemplates() {
+    const queryClient = useQueryClient();
+    
+    const templatesQuery = useQuery({
+        queryKey: ['workflow-templates'],
+        queryFn: fetchTemplates,
+        staleTime: 1000 * 60 * 10, // 10 minutes
+    });
+    
+    const saveTemplateMutation = useMutation({
+        mutationFn: ({ canvasState, request }: { 
+            canvasState: WorkflowCanvasState; 
+            request: SaveAsTemplateRequest 
+        }) => saveAsTemplate(canvasState, request),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['workflow-templates'] });
+        },
+    });
+    
+    const deleteTemplateMutation = useMutation({
+        mutationFn: deleteTemplate,
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['workflow-templates'] });
+        },
+    });
+    
+    return {
+        state: {
+            templates: templatesQuery.data ?? [],
+            isLoading: templatesQuery.isLoading,
+            systemTemplates: templatesQuery.data?.filter(t => t.source === 'SYSTEM') ?? [],
+            userTemplates: templatesQuery.data?.filter(t => t.source === 'USER') ?? [],
+        },
+        actions: {
+            saveAsTemplate: saveTemplateMutation.mutateAsync,
+            deleteTemplate: deleteTemplateMutation.mutateAsync,
+            refetch: templatesQuery.refetch,
+        },
+        mutations: {
+            isSaving: saveTemplateMutation.isPending,
+            isDeleting: deleteTemplateMutation.isPending,
+        },
+    };
+}
+```
+
+**Acceptance Criteria:**
+
+- [ ] Hook follows project pattern with `state`, `actions`, `mutations` return
+- [ ] `useQuery` fetches all templates (system + user)
+- [ ] `useMutation` for save and delete operations
+- [ ] Query invalidation on successful mutations
+- [ ] 10-minute stale time for template cache
+- [ ] `npm run build` passes
+- [ ] `npm run lint` passes
+
+---
+
+### Task 7.3: Create SaveAsTemplateModal Component
+
+**Files:**
+
+- [NEW] [SaveAsTemplateModal.tsx](file:///Users/eugene/Library/CloudStorage/GoogleDrive-info@semeykin.com/My%20Drive/Antigravity/ERP/src/components/ProjectPage/WorkflowBuilder/SaveAsTemplateModal.tsx)
+
+**Description:**  
+Modal for saving the current workflow as a reusable template.
+
+**Implementation:**
+
+- HeroUI `Modal` compound component
+- Form fields: Template Name (required), Description (optional), Category (Select)
+- "Save as Template" primary action
+- "Cancel" secondary action
+- Form validation with error messages
+- Loading state during save
+
+**UI Design:**
+
+```text
+┌─────────────────────────────────────────────────┐
+│ Save as Template                            [X] │
+├─────────────────────────────────────────────────┤
+│ Template Name *                                 │
+│ ┌─────────────────────────────────────────────┐ │
+│ │ My Custom Workflow                          │ │
+│ └─────────────────────────────────────────────┘ │
+│                                                 │
+│ Description                                     │
+│ ┌─────────────────────────────────────────────┐ │
+│ │ Standard photo workflow with retouching...  │ │
+│ │                                             │ │
+│ └─────────────────────────────────────────────┘ │
+│                                                 │
+│ Category                                        │
+│ ┌─────────────────────────────────────────────┐ │
+│ │ Production                              [v] │ │
+│ └─────────────────────────────────────────────┘ │
+│                                                 │
+│ [!] This template will be available for all    │
+│     future projects.                           │
+├─────────────────────────────────────────────────┤
+│                    [Cancel]  [Save as Template] │
+└─────────────────────────────────────────────────┘
+```
+
+**Acceptance Criteria:**
+
+- [ ] Uses HeroUI `Modal` compound pattern
+- [ ] Template name is required (validation)
+- [ ] Category uses HeroUI `Select` with PRODUCTION, AI_POWERED, HYBRID options
+- [ ] Description uses HeroUI `TextArea`
+- [ ] Loading spinner in save button during save
+- [ ] Success toast on completion
+- [ ] Error handling with toast
+- [ ] Modal closes on successful save
+- [ ] `npm run build` passes
+- [ ] `npm run lint` passes
+
+---
+
+### Task 7.4: Create TemplateSelectorModal Component
+
+**Files:**
+
+- [NEW] [TemplateSelectorModal.tsx](file:///Users/eugene/Library/CloudStorage/GoogleDrive-info@semeykin.com/My%20Drive/Antigravity/ERP/src/components/ProjectPage/WorkflowBuilder/TemplateSelectorModal.tsx)
+
+**Description:**  
+Modal for selecting and applying a template to the current project. Shown when starting a new workflow or via "Use Template" action.
+
+**Implementation:**
+
+- HeroUI `Modal` with larger size (lg)
+- Tab groups: "System Templates" | "My Templates"
+- Template cards with: Name, Description, Category badge, Block count
+- Preview on hover/focus (optional enhancement)
+- Search/filter by name
+- "Apply Template" primary action
+- Warning if current canvas has blocks
+
+**UI Design:**
+
+```text
+┌────────────────────────────────────────────────────────────┐
+│ Choose a Template                                      [X] │
+├────────────────────────────────────────────────────────────┤
+│ ┌──────────────────────────────────────────────────────┐   │
+│ │ 🔍 Search templates...                               │   │
+│ └──────────────────────────────────────────────────────┘   │
+│                                                            │
+│ [System Templates]  [My Templates]                         │
+│                                                            │
+│ ┌──────────────────────┐ ┌──────────────────────┐          │
+│ │ Photo + Video Prod   │ │ Photo Only           │          │
+│ │ ───────────────────  │ │ ───────────────────  │          │
+│ │ Full production...   │ │ Standard photo...    │          │
+│ │ [PRODUCTION] 12 blks │ │ [PRODUCTION] 8 blks  │          │
+│ │              [Apply] │ │              [Apply] │          │
+│ └──────────────────────┘ └──────────────────────┘          │
+│                                                            │
+│ ┌──────────────────────┐ ┌──────────────────────┐          │
+│ │ AI Enhancement       │ │ Hybrid Managed       │          │
+│ │ ───────────────────  │ │ ───────────────────  │          │
+│ │ Automated AI...      │ │ Complex workflow...  │          │
+│ │ [AI_POWERED] 5 blks  │ │ [HYBRID] 6 blks      │          │
+│ │              [Apply] │ │              [Apply] │          │
+│ └──────────────────────┘ └──────────────────────┘          │
+├────────────────────────────────────────────────────────────┤
+│                                              [Cancel]      │
+└────────────────────────────────────────────────────────────┘
+```
+
+**Acceptance Criteria:**
+
+- [ ] Uses HeroUI `Modal` compound pattern with `size="lg"`
+- [ ] HeroUI `Tabs` for System vs My Templates
+- [ ] Template cards display name, description, category, block count
+- [ ] Search input filters templates by name
+- [ ] "Apply" button on each template card
+- [ ] Confirmation modal if canvas has existing blocks
+- [ ] Selected template highlighted with accent border
+- [ ] Loading state while fetching templates
+- [ ] Empty state for "My Templates" tab if no user templates
+- [ ] `npm run build` passes
+- [ ] `npm run lint` passes
+
+---
+
+### Task 7.5: Create TemplateCard Component
+
+**Files:**
+
+- [NEW] [TemplateCard.tsx](file:///Users/eugene/Library/CloudStorage/GoogleDrive-info@semeykin.com/My%20Drive/Antigravity/ERP/src/components/ProjectPage/WorkflowBuilder/TemplateCard.tsx)
+
+**Description:**  
+Reusable card component for displaying a template in the selector.
+
+**Implementation:**
+
+- HeroUI `Card` compound component
+- Category badge with appropriate color
+- Block count indicator
+- Optional delete action for user templates
+- Keyboard accessible (Enter to apply)
+
+**Acceptance Criteria:**
+
+- [ ] Uses HeroUI `Card` compound pattern
+- [ ] Category badge uses semantic colors (PRODUCTION=blue, AI_POWERED=purple, HYBRID=amber)
+- [ ] Block count shows number of enabled blocks
+- [ ] Trash icon for user templates with `onPress` delete handler
+- [ ] Focus ring visible on keyboard navigation
+- [ ] `npm run build` passes
+- [ ] `npm run lint` passes
+
+---
+
+### Task 7.6: Integrate Template Actions in Header
+
+**Files:**
+
+- [MODIFY] [WorkflowBuilder.tsx](file:///Users/eugene/Library/CloudStorage/GoogleDrive-info@semeykin.com/My%20Drive/Antigravity/ERP/src/components/ProjectPage/WorkflowBuilder/WorkflowBuilder.tsx)
+
+**Description:**  
+Add template action buttons to the workflow builder header.
+
+**Implementation:**
+
+- Header layout: Title | [Use Template] [Save Workflow ▼]
+- "Save Workflow" is a split button with dropdown:
+  - Save Workflow (default action)
+  - Save as Template (secondary action)
+- "Use Template" opens `TemplateSelectorModal`
+- Visual separation between template actions and save action
+
+**Header Layout:**
+
+```text
+┌────────────────────────────────────────────────────────────────────┐
+│ Workflow Builder                    [Use Template] [Save Workflow▼]│
+│                                                     ├─────────────┤ │
+│                                                     │Save Workflow│ │
+│                                                     │─────────────│ │
+│                                                     │Save as Templ│ │
+│                                                     └─────────────┘ │
+└────────────────────────────────────────────────────────────────────┘
+```
+
+**Acceptance Criteria:**
+
+- [ ] "Use Template" button in header opens `TemplateSelectorModal`
+- [ ] Split button for Save with dropdown menu
+- [ ] "Save Workflow" saves to current project (existing Task 6.3 logic)
+- [ ] "Save as Template" opens `SaveAsTemplateModal`
+- [ ] HeroUI `Dropdown` for split button implementation
+- [ ] Keyboard accessible dropdown (Arrow keys, Enter, Escape)
+- [ ] `npm run build` passes
+- [ ] `npm run lint` passes
+
+---
+
+### Task 7.7: Implement Apply Template Logic
+
+**Files:**
+
+- [MODIFY] [useWorkflowBuilder.ts](file:///Users/eugene/Library/CloudStorage/GoogleDrive-info@semeykin.com/My%20Drive/Antigravity/ERP/src/hooks/useWorkflowBuilder.ts)
+
+**Description:**  
+Add action to apply a selected template to the current canvas.
+
+**Implementation:**
+
+```typescript
+const applyTemplate = (template: UserWorkflowTemplate) => {
+    // Convert template branches to CanvasBlocks
+    const canvasBlocks = convertTemplateToCanvasBlocks(template);
+    
+    setCanvasState(prev => ({
+        ...prev,
+        blocks: canvasBlocks,
+        selectedBlockId: null,
+        hasUnsavedChanges: true,
+        lastAddedBlockId: canvasBlocks.length > 0 ? canvasBlocks[0].id : null,
+    }));
+};
+
+// Helper function
+function convertTemplateToCanvasBlocks(template: UserWorkflowTemplate): CanvasBlock[] {
+    const blocks: CanvasBlock[] = [];
+    
+    // Iterate through template branches and convert
+    template.branches?.forEach(branch => {
+        branch.blocks.forEach((block, index) => {
+            blocks.push({
+                ...block,
+                id: `${block.type}-${Date.now()}-${index}`, // Generate unique ID
+                position: {
+                    id: `pos-${Date.now()}-${index}`,
+                    branchId: mapBranchType(branch.type),
+                    index,
+                },
+                validationState: block.config ? 'valid' : 'unconfigured',
+            });
+        });
+    });
+    
+    return blocks;
+}
+```
+
+**Acceptance Criteria:**
+
+- [ ] `applyTemplate` action added to `useWorkflowBuilder` hook
+- [ ] Template branches correctly converted to canvas blocks
+- [ ] Unique IDs generated for applied blocks (prevents collisions)
+- [ ] Block configurations preserved from template
+- [ ] `hasUnsavedChanges` set to `true` after applying
+- [ ] Canvas scrolls to top after template applied
+- [ ] Validation runs after template applied
 - [ ] `npm run build` passes
 - [ ] `npm run lint` passes
 
@@ -1227,12 +1663,16 @@ src/components/ProjectPage/WorkflowBuilder/
 │   ├── BlockConfigForm.tsx           # Routes to config components
 │   ├── UnsavedChangesModal.tsx       # Unsaved changes warning
 │   └── DeleteBlockModal.tsx          # Delete confirmation
-└── SaveValidationModal.tsx           # Pre-save validation errors
+├── SaveValidationModal.tsx           # Pre-save validation errors
+├── SaveAsTemplateModal.tsx           # [Phase 7] Save workflow as template
+├── TemplateSelectorModal.tsx         # [Phase 7] Choose template modal
+└── TemplateCard.tsx                  # [Phase 7] Template display card
 
 src/hooks/
 ├── useWorkflowBuilder.ts             # Canvas state and DnD logic
 ├── useBlockLibrary.ts                # Library filtering and search
-└── useBlockValidation.ts             # Real-time validation
+├── useBlockValidation.ts             # Real-time validation
+└── useWorkflowTemplates.ts           # [Phase 7] Template CRUD operations
 
 src/data/
 ├── block-ui-categories.ts            # UI category types and metadata
@@ -1312,7 +1752,7 @@ src/data/
 ## Out of Scope (per Specification §16)
 
 - Undo/Redo functionality
-- Template management (save as template, start from template)
+- ~~Template management~~ → **Implemented in Phase 7**
 - Canvas zoom and pan controls
 - Advanced keyboard shortcuts
 - Collaborative editing
@@ -1327,6 +1767,6 @@ src/data/
 
 | Type | Count | Files |
 |------|-------|-------|
-| [NEW] | 19 | New components and hooks |
-| [MODIFY] | 6 | Existing files with additions |
+| [NEW] | 23 | New components and hooks (incl. Phase 7 templates) |
+| [MODIFY] | 8 | Existing files with additions |
 | [DELETE] | 0 | No files deleted (old system preserved) |

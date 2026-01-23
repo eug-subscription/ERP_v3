@@ -1,4 +1,4 @@
-import { WorkflowBlockType, ProjectWorkflowConfig, ValidationError, ValidationResult, CanvasBlock } from "../types/workflow";
+import { WorkflowBlockType, ProjectWorkflowConfig, ValidationError, ValidationResult, CanvasBlock, AutoFixAction } from "../types/workflow";
 
 /**
  * Definition of dependency rules for a specific block type.
@@ -283,4 +283,79 @@ export function validateCanvasBlocks(blocks: CanvasBlock[]): ValidationResult {
         isValid: errors.filter(e => e.level === 'ERROR').length === 0,
         errors
     };
+}
+
+/**
+ * Automatically fixes common validation errors in a flat list of CanvasBlocks.
+ * @param blocks The current blocks on the canvas.
+ */
+/**
+ * Calculates a list of actions that would fix the current validation errors.
+ * Useful for showing a preview to the user.
+ */
+export function getAutoFixActions(blocks: CanvasBlock[]): AutoFixAction[] {
+    const validation = validateCanvasBlocks(blocks);
+    const actions: AutoFixAction[] = [];
+    const enabledBlockTypes = new Set<WorkflowBlockType>(
+        blocks.filter(b => b.isEnabled).map(b => b.type)
+    );
+
+    // 1. Mandatory blocks
+    if (!enabledBlockTypes.has('ORDER_CREATED')) {
+        actions.push({
+            type: 'ENABLE',
+            blockType: 'ORDER_CREATED',
+            reason: 'Enable mandatory Order Created block'
+        });
+    }
+
+    // 2. Requires
+    validation.errors.forEach(error => {
+        if (error.suggestion?.startsWith('Add')) {
+            const dependencyMatch = ACTION_DEPENDENCIES.find(d =>
+                error.message.includes(d.blockType) || error.suggestion?.includes(d.blockType)
+            );
+
+            const blockTypeToAdd = dependencyMatch?.requires?.[0];
+
+            if (blockTypeToAdd && !enabledBlockTypes.has(blockTypeToAdd)) {
+                // Check if the required block exists
+                const exists = blocks.find(b => b.type === blockTypeToAdd);
+                if (exists) {
+                    actions.push({
+                        type: 'ENABLE',
+                        blockType: blockTypeToAdd,
+                        reason: `Enable ${blockTypeToAdd.replace(/_/g, ' ')} required by ${error.type.replace(/_/g, ' ')}`
+                    });
+                }
+            }
+        }
+    });
+
+    return actions;
+}
+
+/**
+ * Automatically fixes common validation errors in a flat list of CanvasBlocks.
+ * @param blocks The current blocks on the canvas.
+ */
+export function autoFixCanvasBlocks(blocks: CanvasBlock[]): CanvasBlock[] {
+    const plannedActions = getAutoFixActions(blocks);
+    if (plannedActions.length === 0) return blocks;
+
+    let fixedBlocks = [...blocks];
+
+    plannedActions.forEach(action => {
+        if (action.type === 'ENABLE') {
+            fixedBlocks = fixedBlocks.map(b =>
+                b.type === action.blockType ? { ...b, isEnabled: true } : b
+            );
+        }
+        // FutureInsert/Reorder logic would go here
+    });
+
+    return fixedBlocks.map((b, i) => ({
+        ...b,
+        position: { ...b.position, index: i }
+    }));
 }

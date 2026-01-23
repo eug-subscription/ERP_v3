@@ -22,6 +22,7 @@ export function UnsavedChangesModal({
             <Modal.Backdrop className="backdrop-blur-md bg-black/40">
                 <Modal.Container>
                     <Modal.Dialog className="sm:max-w-[400px]">
+                        <Modal.CloseTrigger />
                         <Modal.Header>
                             <Modal.Icon className="bg-warning-100 text-warning">
                                 <Icon icon="lucide:alert-triangle" className="h-6 w-6" />

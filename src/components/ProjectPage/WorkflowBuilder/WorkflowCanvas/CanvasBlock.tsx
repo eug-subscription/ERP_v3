@@ -3,7 +3,7 @@ import { CSS } from "@dnd-kit/utilities";
 import { Button } from "@heroui/react";
 import type { CanvasBlock as CanvasBlockType } from "../../../../types/workflow";
 import { CanvasBlockCard } from "./CanvasBlockCard";
-import { ANIMATION_DURATION_MS } from "../constants";
+import { ANIMATION_DURATION_MS, PLACEHOLDER_PREFIX } from "../constants";
 
 interface CanvasBlockProps {
     block: CanvasBlockType;
@@ -21,7 +21,7 @@ export function CanvasBlock({ block, isSelected, onSelect }: CanvasBlockProps) {
         isDragging,
     } = useSortable({ id: block.id });
 
-    const isPlaceholder = block.id.startsWith('placeholder-');
+    const isPlaceholder = block.id.startsWith(PLACEHOLDER_PREFIX);
 
     const style = {
         transform: CSS.Translate.toString(transform),
@@ -40,11 +40,7 @@ export function CanvasBlock({ block, isSelected, onSelect }: CanvasBlockProps) {
             className="w-auto h-auto p-0 border-none bg-transparent hover:bg-transparent data-[hover=true]:bg-transparent touch-none overflow-visible"
             onPress={() => onSelect?.(block.id)}
         >
-            {/* 
-                CR-010: Using HeroUI Button as a clickable container. 
-                This provides proper keyboard accessibility and focus management 
-                while allowing dnd-kit listeners to handle drag interactions.
-            */}
+            {/* HeroUI Button provides keyboard accessibility for dnd-kit interactions */}
             <CanvasBlockCard block={block} isSelected={isSelected} />
         </Button>
     );

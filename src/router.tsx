@@ -130,12 +130,6 @@ const projectPricesRoute = createRoute({
 const projectWorkflowRoute = createRoute({
   getParentRoute: () => projectRoute,
   path: "/workflow",
-  component: React.lazy(() => import("./components/ProjectPage/WorkflowTab/WorkflowTab").then(m => ({ default: m.WorkflowTab }))),
-});
-
-const projectWorkflowBuilderRoute = createRoute({
-  getParentRoute: () => projectRoute,
-  path: "/workflow-builder",
   component: React.lazy(() => import("./components/ProjectPage/WorkflowBuilder/WorkflowBuilder").then(m => ({ default: m.WorkflowBuilder }))),
 });
 
@@ -171,7 +165,6 @@ const routeTree = rootRoute.addChildren([
     projectManagersRoute,
     projectPricesRoute,
     projectWorkflowRoute,
-    projectWorkflowBuilderRoute,
     projectGuidelinesRoute,
     projectSettingsRoute,
   ]),

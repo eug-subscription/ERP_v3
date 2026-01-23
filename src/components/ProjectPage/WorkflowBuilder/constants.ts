@@ -1,6 +1,7 @@
 /** Canvas block card dimensions */
 export const CANVAS_BLOCK_WIDTH = 280; // px
 export const CANVAS_BLOCK_HEIGHT = 56; // px
+export const CANVAS_DOT_GRID_SIZE = 20; // px
 
 /** Connection line dimensions */
 export const CONNECTION_LINE_HEIGHT = 32; // px
@@ -21,3 +22,7 @@ export const FLOW_DOT_LOOP_MS = 2000;
 export const MERGE_ZONE_HEIGHT_COLLAPSED = 16;
 export const MERGE_ZONE_HEIGHT_EXPANDED = 400;
 export const MERGE_ZONE_MARGIN_TOP_EXPANDED = -100;
+
+/** Node IDs */
+export const START_NODE_ID = 'start-node';
+export const PLACEHOLDER_PREFIX = 'placeholder-';

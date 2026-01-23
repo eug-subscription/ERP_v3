@@ -4,6 +4,7 @@ import { StartNode } from "./StartNode";
 import { ConnectionLine } from "./ConnectionLine";
 import { EmptyCanvasState } from "./EmptyCanvasState";
 import { CanvasBlock } from "./CanvasBlock";
+import { WorkflowSkeleton } from "./WorkflowSkeleton";
 import { DropZone } from "./DropZone";
 import { CanvasBlock as CanvasBlockType } from "../../../../types/workflow"; // Import type alias to avoid conflict
 
@@ -13,7 +14,11 @@ import {
     CONNECTOR_AREA_HEIGHT,
     CONNECTION_GAP_HEIGHT,
     MERGE_ZONE_HEIGHT_EXPANDED,
-    MERGE_ZONE_MARGIN_TOP_EXPANDED
+    MERGE_ZONE_MARGIN_TOP_EXPANDED,
+    CANVAS_BLOCK_WIDTH,
+    START_NODE_ID,
+    PLACEHOLDER_PREFIX,
+    CANVAS_DOT_GRID_SIZE
 } from "../constants";
 import { LaneContainer } from "./LaneContainer";
 
@@ -28,6 +33,7 @@ interface WorkflowCanvasProps {
     activeLibraryItem?: BlockLibraryItem | null;
     projectionIndex?: number | null;
     projectionBranchId?: 'main' | 'photo' | 'video';
+    isLoading?: boolean;
 }
 
 export function WorkflowCanvas({
@@ -38,7 +44,8 @@ export function WorkflowCanvas({
     onBlockSelect,
     activeLibraryItem,
     projectionIndex,
-    projectionBranchId = 'main'
+    projectionBranchId = 'main',
+    isLoading = false
 }: WorkflowCanvasProps) {
 
     const blockRefs = useRef<Map<string, HTMLDivElement>>(new Map());
@@ -58,7 +65,7 @@ export function WorkflowCanvas({
 
     // PREPARE BLOCKS FOR RENDERING
     // 1. Filter out start node
-    const realBlocks = blocks.filter(b => b.id !== 'start-node' && !b.id.startsWith('placeholder-'));
+    const realBlocks = blocks.filter(b => b.id !== START_NODE_ID && !b.id.startsWith(PLACEHOLDER_PREFIX));
 
     // 2. Determine flow split points based only on REAL blocks (prevents layout loops during IF_ELSE drag)
     const ifElseIndex = realBlocks.findIndex(b => b.type === 'IF_ELSE');
@@ -68,7 +75,7 @@ export function WorkflowCanvas({
     let placeholderBlock: CanvasBlockType | null = null;
     if (activeLibraryItem && projectionIndex !== null && projectionIndex !== undefined) {
         placeholderBlock = {
-            id: `placeholder-${activeLibraryItem.type}`,
+            id: `${PLACEHOLDER_PREFIX}${activeLibraryItem.type}`,
             type: activeLibraryItem.type,
             label: activeLibraryItem.label,
             category: 'PROCESSING',
@@ -85,16 +92,20 @@ export function WorkflowCanvas({
             className={`flex-1 relative bg-background overflow-hidden flex flex-col items-center ${className}`}
             style={{
                 backgroundImage: "radial-gradient(circle, var(--heroui-default-200) 1px, transparent 1px)",
-                backgroundSize: "20px 20px",
+                backgroundSize: `${CANVAS_DOT_GRID_SIZE}px ${CANVAS_DOT_GRID_SIZE}px`,
             }}
         >
             <div className="w-full max-w-4xl h-full overflow-y-auto p-8 flex flex-col items-center gap-0">
-                <div className="flex flex-col items-center w-full">
-                    <StartNode />
-                </div>
+                {!isLoading && (
+                    <div className="flex flex-col items-center w-full">
+                        <StartNode />
+                    </div>
+                )}
 
-                {!hasBlocks ? (
+                {!hasBlocks && !isLoading ? (
                     <EmptyCanvasState />
+                ) : isLoading ? (
+                    <WorkflowSkeleton />
                 ) : (
                     <div className="flex-1 w-full flex flex-col items-center">
                         <div
@@ -107,7 +118,8 @@ export function WorkflowCanvas({
                             <DropZone
                                 id="drop-zone-root"
                                 data={{ branchId: 'main', index: 1 }}
-                                className="absolute inset-0 z-10"
+                                className="absolute inset-y-0 z-10 left-1/2 -translate-x-1/2"
+                                style={{ width: CANVAS_BLOCK_WIDTH }}
                                 baseHeight="h-full"
                                 hideVisuals={!!activeLibraryItem}
                             />
@@ -178,7 +190,7 @@ export function WorkflowCanvas({
                                             strategy={verticalListSortingStrategy}
                                         >
                                             {mainBlocksTop.map((block, idx) => {
-                                                const isPlaceholder = block.id.startsWith('placeholder-');
+                                                const isPlaceholder = block.id.startsWith(PLACEHOLDER_PREFIX);
                                                 const isIfElse = block.type === 'IF_ELSE' && !isPlaceholder;
 
                                                 return (
@@ -198,7 +210,8 @@ export function WorkflowCanvas({
                                                                 <DropZone
                                                                     id={`drop-zone-main-${idx + 1}`}
                                                                     data={{ branchId: 'main', index: realBlocks.indexOf(block) + 2 }}
-                                                                    className="absolute inset-0 z-10"
+                                                                    className="absolute inset-y-0 z-10 left-1/2 -translate-x-1/2"
+                                                                    style={{ width: CANVAS_BLOCK_WIDTH }}
                                                                     baseHeight="h-full"
                                                                 />
                                                             </div>
@@ -252,7 +265,8 @@ export function WorkflowCanvas({
                                                             <DropZone
                                                                 id="drop-zone-after-merge"
                                                                 data={{ branchId: 'main', index: mergeIndex + 2 }}
-                                                                className="absolute inset-0 z-10"
+                                                                className="absolute inset-y-0 z-10 left-1/2 -translate-x-1/2"
+                                                                style={{ width: CANVAS_BLOCK_WIDTH }}
                                                                 baseHeight="h-full"
                                                             />
                                                         </div>
@@ -271,7 +285,8 @@ export function WorkflowCanvas({
                                                         <DropZone
                                                             id="drop-zone-main-after-lanes"
                                                             data={{ branchId: 'main', index: realBlocks.length + 1 }}
-                                                            className="absolute inset-x-0 inset-y-0 z-50"
+                                                            className="absolute inset-y-0 inset-x-auto z-50 left-1/2 -translate-x-1/2"
+                                                            style={{ width: CANVAS_BLOCK_WIDTH }}
                                                             baseHeight="h-full"
                                                             label="Drop Merge Block to Rejoin"
                                                         />
@@ -289,7 +304,7 @@ export function WorkflowCanvas({
                                                 strategy={verticalListSortingStrategy}
                                             >
                                                 {mainBlocksBottom.map((block, idx) => {
-                                                    const isPlaceholder = block.id.startsWith('placeholder-');
+                                                    const isPlaceholder = block.id.startsWith(PLACEHOLDER_PREFIX);
 
                                                     return (
                                                         <div key={block.id} className="flex flex-col items-center w-full">
@@ -307,7 +322,8 @@ export function WorkflowCanvas({
                                                                     <DropZone
                                                                         id={`drop-zone-post-${idx}`}
                                                                         data={{ branchId: 'main', index: realBlocks.indexOf(block) + 2 }}
-                                                                        className="absolute inset-0 z-10"
+                                                                        className="absolute inset-y-0 z-10 left-1/2 -translate-x-1/2"
+                                                                        style={{ width: CANVAS_BLOCK_WIDTH }}
                                                                         baseHeight="h-full"
                                                                     />
                                                                 </div>

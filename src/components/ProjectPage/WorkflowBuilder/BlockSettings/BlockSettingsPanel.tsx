@@ -1,4 +1,4 @@
-import { Button, ScrollShadow } from "@heroui/react";
+import { Button, ScrollShadow, Spinner } from "@heroui/react";
 import { Icon } from "@iconify/react";
 import { CanvasBlock, BlockConfig } from "../../../../types/workflow";
 import { BLOCK_LIBRARY, UI_CATEGORIES, CategoryMeta, BlockLibraryItem } from "../../../../data/block-ui-categories";
@@ -7,6 +7,7 @@ import { BlockConfigForm } from "./BlockConfigForm";
 import { UnsavedChangesModal } from "./UnsavedChangesModal";
 import { DeleteBlockModal } from "./DeleteBlockModal";
 import { getDependentBlocks } from "../../../../utils/workflow-dependencies";
+import { START_NODE_ID } from "../constants";
 
 export interface BlockSettingsRef {
     promptUnsavedChanges: (onConfirm: () => void) => boolean;
@@ -20,6 +21,7 @@ interface BlockSettingsPanelProps {
     onSave: (config: BlockConfig) => void;
     onDirtyChange?: (isDirty: boolean) => void;
     onCancelPendingAction?: () => void;
+    isLoading?: boolean;
 }
 
 /**
@@ -67,7 +69,8 @@ export const BlockSettingsPanel = forwardRef<BlockSettingsRef, BlockSettingsPane
     onDelete,
     onSave,
     onDirtyChange,
-    onCancelPendingAction
+    onCancelPendingAction,
+    isLoading = false
 }, ref) => {
     const [hasChanges, setHasChanges] = useState(false);
     const [localConfig, setLocalConfig] = useState<BlockConfig | undefined>(undefined);
@@ -207,7 +210,12 @@ export const BlockSettingsPanel = forwardRef<BlockSettingsRef, BlockSettingsPane
 
                     {/* Content Area */}
                     <ScrollShadow className="flex-grow p-4">
-                        {block && (
+                        {isLoading ? (
+                            <div className="flex h-40 flex-col items-center justify-center gap-3">
+                                <Spinner size="lg" />
+                                <p className="text-xs font-medium text-default-500">Loading configuration...</p>
+                            </div>
+                        ) : block ? (
                             <BlockSettingsContent
                                 key={block.id}
                                 block={block}
@@ -215,6 +223,11 @@ export const BlockSettingsPanel = forwardRef<BlockSettingsRef, BlockSettingsPane
                                 onDirtyChange={handleDirtyChange}
                                 onConfigUpdate={setLocalConfig}
                             />
+                        ) : (
+                            <div className="flex h-40 flex-col items-center justify-center gap-2 text-center">
+                                <Icon icon="lucide:mouse-pointer-click" className="h-8 w-8 text-default-300" />
+                                <p className="text-sm text-default-400">Select a block to configure its settings</p>
+                            </div>
                         )}
                     </ScrollShadow>
 
@@ -232,7 +245,7 @@ export const BlockSettingsPanel = forwardRef<BlockSettingsRef, BlockSettingsPane
                             variant="danger-soft"
                             className="w-full text-xs"
                             onPress={handleDeleteTrigger}
-                            isDisabled={block?.id === 'start-node'}
+                            isDisabled={block?.id === START_NODE_ID}
                         >
                             <Icon icon="lucide:trash-2" className="h-4 w-4 mr-2" />
                             Delete Block

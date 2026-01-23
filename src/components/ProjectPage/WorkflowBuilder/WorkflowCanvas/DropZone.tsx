@@ -21,6 +21,8 @@ interface DropZoneProps {
     data?: Record<string, unknown>;
     /** If true, the drop zone will not react to drags */
     disabled?: boolean;
+    /** Optional style overrides */
+    style?: React.CSSProperties;
 }
 
 export function DropZone({
@@ -32,7 +34,8 @@ export function DropZone({
     hideVisuals = false,
     label = "Drop Here",
     data,
-    disabled = false
+    disabled = false,
+    style
 }: DropZoneProps) {
     const { isOver, setNodeRef } = useDroppable({
         id,
@@ -49,6 +52,7 @@ export function DropZone({
     return (
         <div
             ref={setNodeRef}
+            style={style}
             className={cn(
                 "w-full transition-all duration-200 ease-out flex items-center justify-center rounded-lg",
                 // Base state: small gap, invisible but droppable
