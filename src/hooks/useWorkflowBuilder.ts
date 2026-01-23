@@ -8,7 +8,10 @@ import {
     BlockConfig,
     CanvasBlock,
     ValidationResult,
-    BlockCategory
+    BlockCategory,
+    UserWorkflowTemplate,
+    WorkflowBranch,
+    WorkflowBlock
 } from '../types/workflow';
 import { BLOCK_LIBRARY, BlockCategoryUI } from '../data/block-ui-categories';
 import { MASTER_BLOCKS } from '../data/master-blocks';
@@ -280,6 +283,52 @@ export function useWorkflowBuilder(initialConfig?: ProjectWorkflowConfig) {
     }, []);
 
     /**
+     * Apply a workflow template to the canvas
+     */
+    const applyTemplate = useCallback((template: UserWorkflowTemplate) => {
+        // We'll transform its branches back into flat CanvasBlocks with new IDs
+        const newBlocks: CanvasBlock[] = (template.branches || []).flatMap((branch: WorkflowBranch) =>
+            (branch.blocks || []).map((block: WorkflowBlock, idx: number) => {
+                const newId = crypto.randomUUID();
+                return {
+                    ...block,
+                    id: newId,
+                    position: {
+                        id: newId,
+                        branchId: branch.id as 'main' | 'photo' | 'video',
+                        index: idx
+                    },
+                    validationState: 'valid' // Templates are assumed valid or will be re-validated
+                };
+            })
+        );
+
+        // Ensure we have at least the Start node if the template is empty or missing it
+        if (newBlocks.length === 0 || newBlocks[0].id !== START_NODE_ID) {
+            const hasStartNode = newBlocks.some(b => b.type === 'ORDER_CREATED');
+            if (!hasStartNode) {
+                newBlocks.unshift({
+                    id: START_NODE_ID,
+                    type: 'ORDER_CREATED',
+                    label: 'Order Created',
+                    category: 'STARTING',
+                    isEnabled: true,
+                    position: { id: START_NODE_ID, branchId: 'main', index: 0 },
+                    validationState: 'valid'
+                });
+            }
+        }
+
+        setCanvasState(prev => ({
+            ...prev,
+            blocks: newBlocks,
+            selectedBlockId: null,
+            hasUnsavedChanges: true,
+            lastAddedBlockId: null
+        }));
+    }, []);
+
+    /**
      * Merge validation results into blocks for the UI
      */
     const validationResult = useBlockValidation(canvasState.blocks);
@@ -346,6 +395,7 @@ export function useWorkflowBuilder(initialConfig?: ProjectWorkflowConfig) {
             selectBlock,
             updateBlockConfig,
             autoFix,
+            applyTemplate,
             setCanvasState,
             saveWorkflow
         },

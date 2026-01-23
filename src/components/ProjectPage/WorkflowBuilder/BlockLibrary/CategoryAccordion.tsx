@@ -30,7 +30,7 @@ export function CategoryAccordion({ category, blocks }: CategoryAccordionProps) 
                             <span className="text-small font-medium text-foreground">
                                 {category.label}
                             </span>
-                            <span className="text-[10px] leading-tight text-default-400">
+                            <span className="text-tiny leading-tight text-default-400">
                                 {category.description}
                             </span>
                         </div>

@@ -1215,7 +1215,7 @@ export function WorkflowBuilder({ projectId }: Props) {
 
 ---
 
-### Task 7.1: Extend Template Types
+### Task 7.1: Extend Template Types (Verify and Align) [DONE]
 
 **Files:**
 
@@ -1366,13 +1366,13 @@ export function useWorkflowTemplates() {
 
 **Acceptance Criteria:**
 
-- [ ] Hook follows project pattern with `state`, `actions`, `mutations` return
-- [ ] `useQuery` fetches all templates (system + user)
-- [ ] `useMutation` for save and delete operations
-- [ ] Query invalidation on successful mutations
-- [ ] 10-minute stale time for template cache
-- [ ] `npm run build` passes
-- [ ] `npm run lint` passes
+- [x] Hook follows project pattern with `state`, `actions`, `mutations` return
+- [x] `useQuery` fetches all templates (system + user)
+- [x] `useMutation` for save and delete operations
+- [x] Query invalidation on successful mutations
+- [x] 10-minute stale time for template cache
+- [x] `npm run build` passes
+- [x] `npm run lint` passes
 
 ---
 
@@ -1425,16 +1425,16 @@ Modal for saving the current workflow as a reusable template.
 
 **Acceptance Criteria:**
 
-- [ ] Uses HeroUI `Modal` compound pattern
-- [ ] Template name is required (validation)
-- [ ] Category uses HeroUI `Select` with PRODUCTION, AI_POWERED, HYBRID options
-- [ ] Description uses HeroUI `TextArea`
-- [ ] Loading spinner in save button during save
-- [ ] Success toast on completion
-- [ ] Error handling with toast
-- [ ] Modal closes on successful save
-- [ ] `npm run build` passes
-- [ ] `npm run lint` passes
+- [x] Uses HeroUI `Modal` compound pattern
+- [x] Template name is required (validation)
+- [x] Category uses HeroUI `Select` with PRODUCTION, AI_POWERED, HYBRID options
+- [x] Description uses HeroUI `TextArea`
+- [x] Loading spinner in save button during save
+- [x] Success toast on completion
+- [x] Error handling with toast
+- [x] Modal closes on successful save
+- [x] `npm run build` passes
+- [x] `npm run lint` passes
 
 ---
 
@@ -1491,17 +1491,17 @@ Modal for selecting and applying a template to the current project. Shown when s
 
 **Acceptance Criteria:**
 
-- [ ] Uses HeroUI `Modal` compound pattern with `size="lg"`
-- [ ] HeroUI `Tabs` for System vs My Templates
-- [ ] Template cards display name, description, category, block count
-- [ ] Search input filters templates by name
-- [ ] "Apply" button on each template card
-- [ ] Confirmation modal if canvas has existing blocks
-- [ ] Selected template highlighted with accent border
-- [ ] Loading state while fetching templates
-- [ ] Empty state for "My Templates" tab if no user templates
-- [ ] `npm run build` passes
-- [ ] `npm run lint` passes
+- [x] Uses HeroUI `Modal` compound pattern with `size="lg"`
+- [x] HeroUI `Tabs` for System vs My Templates
+- [x] Template cards display name, description, category, block count
+- [x] Search input filters templates by name
+- [x] "Apply" button on each template card
+- [ ] Confirmation modal if canvas has existing blocks (Deferred to Task 7.7)
+- [x] Selected template highlighted with accent border
+- [x] Loading state while fetching templates
+- [x] Empty state for "My Templates" tab if no user templates
+- [x] `npm run build` passes
+- [x] `npm run lint` passes
 
 ---
 
@@ -1524,13 +1524,13 @@ Reusable card component for displaying a template in the selector.
 
 **Acceptance Criteria:**
 
-- [ ] Uses HeroUI `Card` compound pattern
-- [ ] Category badge uses semantic colors (PRODUCTION=blue, AI_POWERED=purple, HYBRID=amber)
-- [ ] Block count shows number of enabled blocks
-- [ ] Trash icon for user templates with `onPress` delete handler
-- [ ] Focus ring visible on keyboard navigation
-- [ ] `npm run build` passes
-- [ ] `npm run lint` passes
+- [x] Uses HeroUI `Card` compound pattern
+- [x] Category badge uses semantic colors (PRODUCTION=blue, AI_POWERED=purple, HYBRID=amber)
+- [x] Block count shows number of enabled blocks
+- [x] Trash icon for user templates with `onPress` delete handler
+- [x] Focus ring visible on keyboard navigation
+- [x] `npm run build` passes
+- [x] `npm run lint` passes
 
 ---
 
@@ -1567,14 +1567,14 @@ Add template action buttons to the workflow builder header.
 
 **Acceptance Criteria:**
 
-- [ ] "Use Template" button in header opens `TemplateSelectorModal`
-- [ ] Split button for Save with dropdown menu
-- [ ] "Save Workflow" saves to current project (existing Task 6.3 logic)
-- [ ] "Save as Template" opens `SaveAsTemplateModal`
-- [ ] HeroUI `Dropdown` for split button implementation
-- [ ] Keyboard accessible dropdown (Arrow keys, Enter, Escape)
-- [ ] `npm run build` passes
-- [ ] `npm run lint` passes
+- [x] "Use Template" button in header opens `TemplateSelectorModal`
+- [x] Split button for Save with dropdown menu
+- [x] "Save Workflow" saves to current project (existing Task 6.3 logic)
+- [x] "Save as Template" opens `SaveAsTemplateModal`
+- [x] HeroUI `Dropdown` for split button implementation
+- [x] Keyboard accessible dropdown (Arrow keys, Enter, Escape)
+- [x] `npm run build` passes
+- [x] `npm run lint` passes
 
 ---
 
@@ -1629,15 +1629,15 @@ function convertTemplateToCanvasBlocks(template: UserWorkflowTemplate): CanvasBl
 
 **Acceptance Criteria:**
 
-- [ ] `applyTemplate` action added to `useWorkflowBuilder` hook
-- [ ] Template branches correctly converted to canvas blocks
-- [ ] Unique IDs generated for applied blocks (prevents collisions)
-- [ ] Block configurations preserved from template
-- [ ] `hasUnsavedChanges` set to `true` after applying
-- [ ] Canvas scrolls to top after template applied
-- [ ] Validation runs after template applied
-- [ ] `npm run build` passes
-- [ ] `npm run lint` passes
+- [x] `applyTemplate` action added to `useWorkflowBuilder` hook
+- [x] Template branches correctly converted to canvas blocks
+- [x] Unique IDs generated for applied blocks (prevents collisions)
+- [x] Block configurations preserved from template
+- [x] `hasUnsavedChanges` set to `true` after applying
+- [x] Canvas scrolls to top after template applied
+- [x] Validation runs after template applied
+- [x] `npm run build` passes
+- [x] `npm run lint` passes
 
 ---
 

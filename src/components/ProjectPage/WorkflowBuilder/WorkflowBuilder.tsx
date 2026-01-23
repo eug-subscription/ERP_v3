@@ -18,12 +18,16 @@ import { WorkflowCanvas } from "./WorkflowCanvas/WorkflowCanvas";
 import { useWorkflowBuilder } from "../../../hooks/useWorkflowBuilder";
 import { useProjectWorkflow } from "../../../hooks/useProjectWorkflow";
 import { CanvasBlockCard } from "./WorkflowCanvas/CanvasBlockCard";
-import type { CanvasBlock as CanvasBlockType } from "../../../types/workflow";
+import type { CanvasBlock as CanvasBlockType, UserWorkflowTemplate, TemplateCategory } from "../../../types/workflow";
 import { CANVAS_BLOCK_WIDTH, PLACEHOLDER_PREFIX } from "./constants";
 import { BlockSettingsPanel, BlockSettingsRef } from "./BlockSettings/BlockSettingsPanel";
-import { Button, Chip, Modal, Alert, Tooltip } from "@heroui/react";
+import { Button, Chip, Modal, Alert, Tooltip, ButtonGroup, Dropdown, Label as HeroLabel } from "@heroui/react";
 import { SaveNamingModal } from "./SaveNamingModal";
 import { useResponsive } from "../../../hooks/useMediaQuery";
+import { TemplateSelectorModal } from "./TemplateSelectorModal";
+import { SaveAsTemplateModal } from "./SaveAsTemplateModal";
+import { useWorkflowTemplates } from "../../../hooks/useWorkflowTemplates";
+import { TemplateApplyConfirmModal } from "./TemplateApplyConfirmModal";
 
 type ActiveDragState =
     | { kind: 'LIBRARY', item: BlockLibraryItem }
@@ -50,7 +54,10 @@ export function WorkflowBuilder({ projectId = 'current-project' }: { projectId?:
     const { state, actions, validation, isSaving } = useWorkflowBuilder(initialWorkflow || undefined);
     const [showSaveModal, setShowSaveModal] = useState(false);
     const [showNamingModal, setShowNamingModal] = useState(false);
+    const [showTemplateSelector, setShowTemplateSelector] = useState(false);
+    const [showSaveAsTemplate, setShowSaveAsTemplate] = useState(false);
     const [isPreviewingFixes, setIsPreviewingFixes] = useState(false);
+    const [pendingTemplate, setPendingTemplate] = useState<UserWorkflowTemplate | null>(null);
 
     // Default naming logic: "Custom Workflow 1"
     const [workflowName, setWorkflowName] = useState('Custom Workflow 1');
@@ -275,12 +282,42 @@ export function WorkflowBuilder({ projectId = 'current-project' }: { projectId?:
         }
     };
 
+    const { actions: templateActions, mutations: templateMutations } = useWorkflowTemplates();
+
     const errorCount = state.blocks.filter(b => b.validationState === 'error').length;
     const warningCount = state.blocks.filter(b => b.validationState === 'warning').length;
 
     // Memoize validation state to prevent excessive re-renders
     const validationResult = useMemo(() => validation.validate(), [validation]);
     const hasErrors = validationResult.errors.some(e => e.level === 'ERROR');
+
+    const handleTemplateApply = (template: UserWorkflowTemplate) => {
+        if (state.blocks.length > 0) {
+            setPendingTemplate(template);
+        } else {
+            actions.applyTemplate(template);
+            setShowTemplateSelector(false);
+        }
+    };
+
+    const handleConfirmTemplateApply = () => {
+        if (!pendingTemplate) return;
+        actions.applyTemplate(pendingTemplate);
+        setPendingTemplate(null);
+        setShowTemplateSelector(false);
+    };
+
+    const handleSaveAsTemplate = async (data: { name: string; description: string; category: TemplateCategory }) => {
+        // Prepare template data from current state
+        await templateActions.saveAsTemplate({
+            canvasState: state.canvasState,
+            request: {
+                ...data,
+                sourceProjectId: projectId
+            }
+        });
+        setShowSaveAsTemplate(false);
+    };
 
     return (
         <div className="flex flex-col min-h-[calc(100vh-350px)] h-full gap-4">
@@ -373,15 +410,51 @@ export function WorkflowBuilder({ projectId = 'current-project' }: { projectId?:
                     )}
 
                     <Button
-                        variant="primary"
-                        className="rounded-2xl h-11 px-6 font-bold shadow-lg shadow-primary/20 transition-all hover:scale-[1.02] active:scale-[0.98]"
-                        onPress={handleSave}
-                        isPending={isSaving}
-                        isDisabled={isSaving || isWorkflowLoading}
+                        variant="ghost"
+                        className="rounded-2xl h-11 px-6 font-bold text-primary hover:bg-primary-50 dark:hover:bg-primary-900/10"
+                        onPress={() => setShowTemplateSelector(true)}
+                        isDisabled={isWorkflowLoading}
                     >
-                        <Icon icon="lucide:save" width={18} className="mr-2" />
-                        Save Workflow
+                        <Icon icon="lucide:layout-template" width={18} className="mr-2" />
+                        Use Template
                     </Button>
+
+                    <ButtonGroup variant="primary" className="shadow-lg shadow-primary/20">
+                        <Button
+                            className="h-11 px-6 font-bold transition-all hover:bg-primary-600 active:scale-[0.98]"
+                            onPress={handleSave}
+                            isPending={isSaving}
+                            isDisabled={isSaving || isWorkflowLoading}
+                        >
+                            <Icon icon="lucide:save" width={18} className="mr-2" />
+                            Save Workflow
+                        </Button>
+                        <Dropdown>
+                            <Dropdown.Trigger>
+                                <Button
+                                    isIconOnly
+                                    className="h-11 w-10 min-w-10 transition-all hover:bg-primary-600"
+                                    aria-label="More save options"
+                                >
+                                    <Icon icon="lucide:chevron-down" width={16} />
+                                </Button>
+                            </Dropdown.Trigger>
+                            <Dropdown.Popover placement="bottom end">
+                                <Dropdown.Menu
+                                    onAction={(key) => {
+                                        if (key === 'save-as-template') setShowSaveAsTemplate(true);
+                                    }}
+                                >
+                                    <Dropdown.Item id="save-as-template" textValue="Save as Template">
+                                        <div className="flex items-center gap-2">
+                                            <Icon icon="lucide:layout-template" width={16} />
+                                            <HeroLabel>Save as Template</HeroLabel>
+                                        </div>
+                                    </Dropdown.Item>
+                                </Dropdown.Menu>
+                            </Dropdown.Popover>
+                        </Dropdown>
+                    </ButtonGroup>
                 </div>
             </div>
 
@@ -646,6 +719,26 @@ export function WorkflowBuilder({ projectId = 'current-project' }: { projectId?:
                 onClose={() => setShowNamingModal(false)}
                 onConfirm={handleConfirmName}
                 currentName={workflowName}
+            />
+
+            <TemplateSelectorModal
+                isOpen={showTemplateSelector}
+                onClose={() => setShowTemplateSelector(false)}
+                onSelect={handleTemplateApply}
+            />
+
+            <SaveAsTemplateModal
+                isOpen={showSaveAsTemplate}
+                onClose={() => setShowSaveAsTemplate(false)}
+                onSave={handleSaveAsTemplate}
+                isSaving={templateMutations.isSaving}
+            />
+
+            <TemplateApplyConfirmModal
+                isOpen={!!pendingTemplate}
+                onClose={() => setPendingTemplate(null)}
+                onConfirm={handleConfirmTemplateApply}
+                templateName={pendingTemplate?.name || ""}
             />
         </div>
     );
