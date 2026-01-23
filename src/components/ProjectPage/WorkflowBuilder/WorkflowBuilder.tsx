@@ -59,7 +59,7 @@ export function WorkflowBuilder({ projectId = 'current-project' }: { projectId?:
     const [isPreviewingFixes, setIsPreviewingFixes] = useState(false);
     const [pendingTemplate, setPendingTemplate] = useState<UserWorkflowTemplate | null>(null);
 
-    // Default naming logic: "Custom Workflow 1"
+    // Default naming logic
     const [workflowName, setWorkflowName] = useState('Custom Workflow 1');
     const settingsRef = useRef<BlockSettingsRef>(null);
 
@@ -277,7 +277,6 @@ export function WorkflowBuilder({ projectId = 'current-project' }: { projectId?:
         if (!result.isValid || result.errors.length > 0) {
             setShowSaveModal(true);
         } else {
-            // In a real app, we'd pass the name to the save action
             await actions.saveWorkflow();
         }
     };
@@ -356,8 +355,8 @@ export function WorkflowBuilder({ projectId = 'current-project' }: { projectId?:
                                     </div>
                                 </Chip>
                             </Tooltip.Trigger>
-                            <Tooltip.Content className="max-w-xs p-4 bg-white text-foreground rounded-2xl shadow-premium border border-default-100">
-                                <Tooltip.Arrow className="fill-white" />
+                            <Tooltip.Content className="max-w-xs p-4 bg-background text-foreground rounded-2xl shadow-premium border border-default-100">
+                                <Tooltip.Arrow className="fill-background" />
                                 <div className="space-y-1.5">
                                     <div className="flex items-center gap-2 mb-2">
                                         <Icon icon="lucide:alert-circle" className="text-danger" width={16} />
@@ -389,8 +388,8 @@ export function WorkflowBuilder({ projectId = 'current-project' }: { projectId?:
                                     </div>
                                 </Chip>
                             </Tooltip.Trigger>
-                            <Tooltip.Content className="max-w-xs p-4 bg-white text-foreground rounded-2xl shadow-premium border border-default-100">
-                                <Tooltip.Arrow className="fill-white" />
+                            <Tooltip.Content className="max-w-xs p-4 bg-background text-foreground rounded-2xl shadow-premium border border-default-100">
+                                <Tooltip.Arrow className="fill-background" />
                                 <div className="space-y-1.5">
                                     <div className="flex items-center gap-2 mb-2">
                                         <Icon icon="lucide:alert-triangle" className="text-warning" width={16} />
@@ -411,34 +410,33 @@ export function WorkflowBuilder({ projectId = 'current-project' }: { projectId?:
 
                     <Button
                         variant="ghost"
-                        className="rounded-2xl h-11 px-6 font-bold text-primary hover:bg-primary-50 dark:hover:bg-primary-900/10"
+                        className="rounded-2xl h-9 px-4 font-bold text-primary hover:bg-primary-50 dark:hover:bg-primary-900/10 text-sm"
                         onPress={() => setShowTemplateSelector(true)}
                         isDisabled={isWorkflowLoading}
                     >
-                        <Icon icon="lucide:layout-template" width={18} className="mr-2" />
+                        <Icon icon="lucide:layout-template" width={16} className="mr-2" />
                         Use Template
                     </Button>
 
-                    <ButtonGroup variant="primary" className="shadow-lg shadow-primary/20">
+                    <ButtonGroup variant="primary" className="shadow-lg shadow-primary/20 rounded-full overflow-hidden">
                         <Button
-                            className="h-11 px-6 font-bold transition-all hover:bg-primary-600 active:scale-[0.98]"
+                            className="h-9 px-4 font-bold text-sm"
                             onPress={handleSave}
                             isPending={isSaving}
                             isDisabled={isSaving || isWorkflowLoading}
                         >
-                            <Icon icon="lucide:save" width={18} className="mr-2" />
+                            <Icon icon="lucide:save" width={16} className="mr-2" />
                             Save Workflow
                         </Button>
                         <Dropdown>
-                            <Dropdown.Trigger>
-                                <Button
-                                    isIconOnly
-                                    className="h-11 w-10 min-w-10 transition-all hover:bg-primary-600"
-                                    aria-label="More save options"
-                                >
-                                    <Icon icon="lucide:chevron-down" width={16} />
-                                </Button>
-                            </Dropdown.Trigger>
+                            <Button
+                                isIconOnly
+                                variant="primary"
+                                className="h-9 w-9 min-w-9"
+                                aria-label="More save options"
+                            >
+                                <Icon icon="lucide:chevron-down" width={14} />
+                            </Button>
                             <Dropdown.Popover placement="bottom end">
                                 <Dropdown.Menu
                                     onAction={(key) => {
@@ -472,8 +470,9 @@ export function WorkflowBuilder({ projectId = 'current-project' }: { projectId?:
                         {/* Tablet/Mobile Backdrop */}
                         {!isDesktop && (
                             <div
+                                role="presentation"
                                 className={`absolute inset-0 bg-black/40 backdrop-blur-sm transition-opacity duration-300 pointer-events-auto ${isLibraryOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
-                                onClick={() => setIsLibraryOpen(false)}
+                                onPointerDown={() => setIsLibraryOpen(false)}
                             />
                         )}
                         <div
@@ -500,8 +499,9 @@ export function WorkflowBuilder({ projectId = 'current-project' }: { projectId?:
                         {/* Tablet/Mobile Backdrop for Settings */}
                         {!isDesktop && state.canvasState.selectedBlockId && (
                             <div
+                                role="presentation"
                                 className="absolute inset-0 bg-black/20 backdrop-blur-[2px] transition-opacity duration-300 pointer-events-auto opacity-100"
-                                onClick={() => actions.selectBlock(null)}
+                                onPointerDown={() => actions.selectBlock(null)}
                             />
                         )}
                         <div className={`transition-all duration-300 ease-in-out h-full pointer-events-auto ${!isDesktop && state.canvasState.selectedBlockId ? 'absolute inset-y-0 right-0 z-50 shadow-2xl border-l border-default-200' : 'relative'}`}>
