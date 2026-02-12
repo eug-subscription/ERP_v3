@@ -1,4 +1,4 @@
-# Developer Instructions v3.0 (Photography Order Management)
+# Developer Instructions v3.1 (Photography Order Management)
 
 > [!IMPORTANT]
 > **READ THIS BEFORE STARTING ANY WORK**
@@ -92,10 +92,13 @@ Does HeroUI have it?
 
 Break monolithic components into domain-specific sub-components.
 
-- **Anti-Pattern**: One 500-line `OrderInfo.tsx`.
-- **Standard**: `OrderInfo.tsx` should orchestrate smaller parts.
-  - `components/OrderInfo/ClientDetails.tsx`
-  - `components/OrderInfo/LocationDetails.tsx`
+- **Anti-Pattern**: One 500-line component handling UI, state, and business logic.
+- **Standard**: A parent component orchestrates focused child components.
+  - `components/OrderBilling/OrderBillingTab.tsx` — orchestrator
+  - `components/OrderBilling/BillingLinesSection.tsx` — table
+  - `components/OrderBilling/BillingLineRow.tsx` — single row
+  - `components/OrderBilling/BillingLineDetail.tsx` — expanded detail
+  - `components/OrderBilling/OrderBillingSummary.tsx` — totals card
 
 ### 2. Logic Extraction
 
@@ -104,7 +107,7 @@ Separate business logic from UI rendering using custom hooks.
 - **Standard**: Create `hooks/useFeatureName.ts` for state and effects.
 - **Example**: `useUnmatchedItems.ts` handles all drag-and-drop state and handlers, leaving `UnmatchedItems.tsx` purely for layout.
 
-**Hook Return Pattern:**
+**Hook Return Pattern (flat object):**
 
 ```tsx
 // hooks/useFeatureName.ts
@@ -112,19 +115,19 @@ export function useFeatureName() {
     // ... state and logic
     
     return {
-        state: {
-            items,
-            isLoading,
-            // ... other state
-        },
-        actions: {
-            handleAction,
-            setFilter,
-            // ... other handlers
-        }
+        // State
+        items,
+        isLoading,
+        selectedItem,
+        // Actions
+        handleAction,
+        setFilter,
     };
 }
 ```
+
+> [!NOTE]
+> Hooks return flat objects — do **not** nest into `{ state, actions }` groups. This keeps destructuring simple: `const { items, handleAction } = useFeatureName();`
 
 ### 3. Routing (TanStack Router)
 
@@ -346,12 +349,12 @@ src/
 │   │   └── WorkflowBuilder/ # Workflow builder
 │   └── ...                 # Top-level page components
 ├── constants/              # App-wide constants (kebab-case)
-│   ├── ui-tokens.ts        # Shared UI styling tokens
+│   ├── ui-tokens.ts        # Shared UI styling tokens (see §UI Tokens)
 │   ├── pricing.ts          # Pricing enums and labels
 │   ├── pricing-data.ts     # Pricing static data
 │   ├── query-config.ts     # TanStack Query staleTime defaults
 │   └── timeline.ts         # Timeline/workflow constants
-├── data/                   # Mock data (kebab-case)
+├── data/                   # Mock API responses (kebab-case)
 │   ├── mock-order.ts
 │   ├── mock-billing-lines.ts
 │   ├── mock-rate-cards.ts
@@ -377,6 +380,44 @@ src/
 ├── App.tsx                 # Entry with QueryProvider + RouterProvider
 ├── main.tsx                # ReactDOM.createRoot
 └── index.css               # Global styles (Tailwind + HeroUI)
+```
+
+### Constants vs Data
+
+| Directory | Purpose | Example |
+| :--- | :--- | :--- |
+| `constants/` | Enums, labels, config, UI tokens, static lookup tables | `ui-tokens.ts`, `pricing.ts` |
+| `data/` | Mock API responses that simulate backend data | `mock-order.ts`, `mock-rate-cards.ts` |
+
+- **Rule**: If the value would come from an API in production → `data/`. If it's a static config or UI constant → `constants/`.
+
+### UI Tokens (`constants/ui-tokens.ts`)
+
+Shared Tailwind class strings used across 20+ components to prevent style drift. Always import from `ui-tokens.ts` instead of writing ad-hoc classes.
+
+**Categories:**
+
+| Category | Examples | Purpose |
+| :--- | :--- | :--- |
+| **Containers** | `CONTAINER_BASE_RATES`, `CONTAINER_INFO_ITEM` | Consistent card/panel styling |
+| **Typography** | `TEXT_SECTION_LABEL`, `TEXT_TINY_LABEL` | Uniform label hierarchy |
+| **Layout** | `FLEX_COL_GAP_2`, `SPACE_Y_4` | Reusable spacing patterns |
+| **Sizing** | `DENSITY_CHIP_HEIGHT`, `SKELETON_ROW_HEIGHT` | Consistent element heights |
+| **Modals** | `MODAL_BACKDROP`, `MODAL_WIDTH_MD` | Unified modal chrome |
+| **Formatting** | `CURRENCY_DECIMALS`, `PERCENTAGE_DECIMALS` | Number precision constants |
+
+```tsx
+// ✅ Correct: import shared token
+import { CONTAINER_INFO_ITEM, TEXT_SECTION_LABEL } from "../constants/ui-tokens";
+
+<div className={CONTAINER_INFO_ITEM}>
+    <span className={TEXT_SECTION_LABEL}>Section</span>
+</div>
+
+// ❌ Incorrect: ad-hoc classes that duplicate tokens
+<div className="p-3 rounded-xl border border-default-200 bg-default-50/50">
+    <span className="text-xs font-bold uppercase tracking-wider">Section</span>
+</div>
 ```
 
 **Naming Conventions:**
@@ -505,13 +546,17 @@ const customButton = tv({
 
 ### 1. 🌓 Theme Setup
 
-**Themes are applied via body class.**
+**Theme classes are applied via a wrapper `<div>` in `main.tsx`.**
 
 ```tsx
 // main.tsx
-<main className="text-foreground bg-background">
-    <App />
-</main>
+ReactDOM.createRoot(document.getElementById("root")!).render(
+  <React.StrictMode>
+    <div className="text-foreground bg-background">
+      <App />
+    </div>
+  </React.StrictMode>
+);
 ```
 
 ### 2. 🎨 CSS Variables & Custom Theming
@@ -550,11 +595,15 @@ const customButton = tv({
 
 ### 3. ✨ Interactive States
 
-**Use data attributes for state-based styling.**
+**Use Tailwind `hover:` / `focus:` utilities as the default.** HeroUI also exposes data attributes (`data-hovered`, `data-pressed`, `data-focus-visible`) for advanced cases where CSS pseudo-classes are insufficient.
 
-```css
-/* ✅ Correct: Data attributes */
-.button[data-hover="true"] { background: var(--accent-hover); }
+```tsx
+// ✅ Default: Tailwind utilities
+<Button className="hover:bg-accent/10 focus:ring-2">
+
+// ✅ Advanced: Data attributes (when you need state-driven styling in CSS)
+// .button[data-hovered="true"] { background: var(--accent-hover); }
+// .button[data-pressed="true"] { transform: scale(0.97); }
 ```
 
 ---
@@ -600,8 +649,11 @@ npm run lint    # Run ESLint
   - [ ] Named exports (`export function`) used everywhere.
   - [ ] No `any` types.
   - [ ] **No wrapper components**.
+  - [ ] No `console.*` calls in production code.
 - [ ] **Data & Logic**:
   - [ ] Mock data lives in `src/data/`.
+  - [ ] Static constants live in `src/constants/`.
+  - [ ] UI class strings use tokens from `ui-tokens.ts`.
   - [ ] Complex logic extracted to `src/hooks/`.
   - [ ] Data fetching uses `useQuery` from TanStack Query.
 - [ ] **Routing**:
@@ -611,7 +663,8 @@ npm run lint    # Run ESLint
   - [ ] **Tested in both light AND dark themes**.
   - [ ] CSS variables used for all colors.
 - [ ] **Accessibility**:
-  - [ ] `onPress` used for interactions.
+  - [ ] `onPress` used for interactions (not `onClick`).
+  - [ ] `onSelectionChange` used for Select (not `onChange`).
   - [ ] Keyboard navigation verified.
   - [ ] Focus indicators visible.
 - [ ] **Performance**:
@@ -632,7 +685,7 @@ npm run lint    # Run ESLint
 
 **Local References:**
 
-- `./docs/dev_instruction_v3.md` (This file — Developer Instructions)
+- `./docs/dev_instruction_v3.1.md` (This file — Developer Instructions)
 - `./docs/erp_pricing_spec_v1_7.md` (Pricing Engine Specification)
 - `./docs/erp_timeline_spec_v1.md` (Timeline Specification)
 - `./docs/pricing-concepts-guide.md` (Pricing Concepts Guide)
