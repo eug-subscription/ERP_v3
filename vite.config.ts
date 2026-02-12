@@ -10,4 +10,20 @@ export default defineConfig({
   server: {
     allowedHosts: true,
   },
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          'vendor-heroui-styles': ['@heroui/styles'],
+          'vendor-tanstack': ['@tanstack/react-query', '@tanstack/react-router'],
+          'vendor-react': ['react', 'react-dom'],
+          'vendor-dnd': [
+            '@dnd-kit/core',
+            '@dnd-kit/sortable',
+            '@dnd-kit/utilities'
+          ],
+        },
+      },
+    },
+  },
 });
