@@ -18,19 +18,19 @@
 9. **Test Dark Mode** - Every component must work in both themes.
 10. **No Hardcoded Values** - Use tokens for colors (`bg-accent`) and sizing.
 
-**When stuck:** Check `./docs/heroui-docs.txt` → Official docs → Ask team
+**When stuck:** Official HeroUI v3 docs → HeroUI MCP tools → Context7 MCP → Ask team
 
 ### Current Technology Stack
 
 | Layer | Technology | Actual Version | Standard |
 | :--- | :--- | :--- | :--- |
-| **Framework** | React | `^19.2.3` | `19.x` |
+| **Framework** | React | `^19.2.4` | `19.x` |
 | **Build** | Vite | `^7.3.1` | `7.x` |
 | **Styling** | Tailwind CSS | `^4.1.18` | `4.x` |
 | **UI Library** | HeroUI | `^3.0.0-beta.6` | `v3.0.0-beta.x` |
-| **Routing** | TanStack Router | `^1.153.2` | `1.x` |
-| **Data** | TanStack Query | `^5.90.19` | `5.x` |
-| **Icons** | Iconify (lucide) | `latest` | `latest` |
+| **Routing** | TanStack Router | `^1.159.5` | `1.x` |
+| **Data** | TanStack Query | `^5.90.21` | `5.x` |
+| **Icons** | Iconify (lucide) | `^6.0.0` | `6.x` |
 
 ---
 
@@ -66,7 +66,7 @@ We build **premium, accessible, and maintainable** interfaces. We do not build "
 **Before creating ANY component, styling, or pattern:**
 
 1. **Check** the [Components List](https://v3.heroui.com/docs/components-list)
-2. **Search** the [Full Documentation](./docs/heroui-docs.txt)
+2. **Search** the [Official HeroUI v3 Docs](https://v3.heroui.com/)
 3. **Use MCP Tools** (for AI):
    - **HeroUI**: `list_components`, `get_component_docs`, `get_component_source_code`.
    - **Latest Docs**: Use `context7` MCP (`resolve-library-id` followed by `query-docs`) for up-to-date documentation on TanStack, React 19, Tailwind v4, etc.
@@ -135,35 +135,68 @@ export function useFeatureName() {
 
 **Current Route Structure:**
 
-| `/uploading` | `FileUploadSection` |
-| `/original` | `OriginalPhotos` |
-| `/items` | `UnmatchedItems` |
-| `/messages` | `Messages` |
-| `/team` | `TeamMembers` |
-| `/finances` | `FinancialBreakdown` |
-| `/timeline` | `Timeline` |
-| `/project/prices` | `ProjectPrices` |
-| `/project/account` | `Coming Soon` |
-| `/project/managers` | `Coming Soon` |
-| `/project/guidelines` | `Coming Soon` |
-| `/project/settings` | `Coming Soon` |
+Routes are organised into 3 layout groups:
+
+**Order Layout** (pathless `_order` layout → `OrderLayout`):
+
+| Path | Component | Notes |
+| :--- | :--- | :--- |
+| `/` | — | Redirects to `/uploading` |
+| `/uploading` | `FileUploadTabs` | |
+| `/original` | `OriginalPhotos` | |
+| `/items` | `UnmatchedItems` | |
+| `/team` | `TeamMembers` | |
+| `/billing` | `OrderBillingRoute` | |
+| `/timeline` | `Timeline` | |
+| `/messages` | `Messages` | |
+
+**Project Layout** (`/project/$projectId` → `ProjectPage`):
+
+| Path | Component | Notes |
+| :--- | :--- | :--- |
+| `/` | — | Redirects to `/prices` |
+| `/prices` | `ProjectPrices` | |
+| `/workflow` | `WorkflowBuilder` | Lazy loaded |
+| `/pricing-beta` | `ProjectPricingTab` | Lazy loaded |
+| `/account` | `AccountComingSoon` | Eager (< 1KB) |
+| `/notifications` | `NotificationsComingSoon` | Eager |
+| `/security` | `SecurityComingSoon` | Eager |
+| `/managers` | `ManagersComingSoon` | Eager |
+| `/guidelines` | `GuidelinesComingSoon` | Eager |
+| `/settings` | `SettingsComingSoon` | Eager |
+
+**Rates Layout** (pathless `_rates` layout → `RatesLayout`):
+
+| Path | Component | Notes |
+| :--- | :--- | :--- |
+| `/rates` | `RateManagementPage` | Has `?tab=` search param |
+| `/rates/rate-cards/$cardId` | `RateCardDetailPage` | |
 
 **Adding a New Route:**
+
+Routes use nested layouts. Always add to the correct parent:
 
 ```tsx
 // In src/router.tsx
 const newRoute = createRoute({
-    getParentRoute: () => rootRoute,
+    getParentRoute: () => orderLayoutRoute, // or projectRoute, ratesLayoutRoute
     path: "/new-feature",
-    component: NewFeatureComponent,
+    component: React.lazy(() =>
+        import("./components/NewFeature").then(m => ({ default: m.NewFeature }))
+    ),
 });
 
-// Add to routeTree
+// Add to the parent's children in routeTree
 const routeTree = rootRoute.addChildren([
-    // ... existing routes
-    newRoute,
+    orderLayoutRoute.addChildren([
+        // ... existing routes
+        newRoute,
+    ]),
 ]);
 ```
+
+> [!IMPORTANT]
+> **React.lazy + Named Exports:** Since the project uses named exports exclusively, the `React.lazy` bridge pattern `.then(m => ({ default: m.ComponentName }))` is required. This converts named exports to the default export that `React.lazy` expects.
 
 ### 4. Data Management
 
@@ -268,7 +301,21 @@ someCode();
 - **Rule**: Use `onPress` for all interaction handlers in HeroUI components.
 - **Reasoning**: `onPress` handles touch, keyboard (Enter/Space), and screen readers correctly. `onClick` is inconsistent.
 
-### 2. 🎯 Semantic Variants
+### 2. 🎛️ Controlled Select Components
+
+- **Rule**: Use `onSelectionChange` (not `onChange`) for HeroUI `Select` components.
+- **Rule**: Use `selectedKey` (not `value`) for controlled single-select.
+- **Reasoning**: HeroUI v3 Select uses React Aria's collection API, which has its own selection model.
+
+```tsx
+// ✅ Correct
+<Select selectedKey={country} onSelectionChange={(key) => setCountry(key as string)}>
+
+// ❌ Incorrect
+<Select value={country} onChange={(val) => setCountry(val)}>
+```
+
+### 3. 🎯 Semantic Variants
 
 - Use `primary`, `secondary`, `danger`, not visual names (`blue`, `red`).
 - **Hierarchy**:
@@ -277,7 +324,7 @@ someCode();
   - `danger` → Destructive
   - `ghost` → Minimal
 
-### 3. 🧩 Composition
+### 4. 🧩 Composition
 
 - Use dot notation: `<Card.Header>`, `<Modal.Body>`.
 - Avoid "configuration props" like `headerText="..."`.
@@ -289,19 +336,43 @@ someCode();
 ```text
 src/
 ├── components/             # All application components (PascalCase)
-│   ├── OrderInfo.tsx
-│   ├── TabNavigation.tsx
-│   ├── TeamMembers.tsx
-│   └── ...
-├── data/                   # Mock data & constants (kebab-case)
+│   ├── layouts/            # Layout shells (AppLayout, OrderLayout)
+│   ├── shared/             # Shared reusable components (StatisticCard)
+│   ├── pricing/            # Shared pricing UI (CurrencyDisplay, Table)
+│   ├── OrderBilling/       # Order billing domain components
+│   ├── RateManagement/     # Rate management domain components
+│   ├── ProjectPage/        # Project page & sub-features
+│   │   ├── Pricing/        # Project pricing tab
+│   │   └── WorkflowBuilder/ # Workflow builder
+│   └── ...                 # Top-level page components
+├── constants/              # App-wide constants (kebab-case)
+│   ├── ui-tokens.ts        # Shared UI styling tokens
+│   ├── pricing.ts          # Pricing enums and labels
+│   ├── pricing-data.ts     # Pricing static data
+│   ├── query-config.ts     # TanStack Query staleTime defaults
+│   └── timeline.ts         # Timeline/workflow constants
+├── data/                   # Mock data (kebab-case)
 │   ├── mock-order.ts
-│   └── mock-unmatched-items.ts
+│   ├── mock-billing-lines.ts
+│   ├── mock-rate-cards.ts
+│   └── ...
 ├── hooks/                  # Shared hooks (camelCase)
 │   ├── useOrder.ts
-│   └── useUnmatchedItems.ts
+│   ├── useOrderBilling.ts
+│   ├── useRateCards.ts
+│   └── ...
+├── utils/                  # Pure utility functions (camelCase)
+│   ├── currency.ts         # Currency formatting
+│   ├── formatters.ts       # Generic formatters
+│   ├── billingCalculations.ts
+│   └── ...
+├── styles/                 # Shared style definitions
+│   └── modal-variants.ts   # tv() variants for modals
+├── types/                  # Shared TypeScript definitions
+│   ├── workflow.ts
+│   └── pricing.ts
 ├── providers/              # Context Providers
 │   └── QueryProvider.tsx
-├── types/                  # Shared TypeScript definitions
 ├── router.tsx              # TanStack Router configuration
 ├── App.tsx                 # Entry with QueryProvider + RouterProvider
 ├── main.tsx                # ReactDOM.createRoot
@@ -315,6 +386,8 @@ src/
 | Components | PascalCase | `UserProfile.tsx` |
 | Hooks | camelCase | `usePermissions.ts` |
 | Data files | kebab-case | `mock-team.ts` |
+| Constants | kebab-case | `ui-tokens.ts` |
+| Utils | camelCase | `currency.ts` |
 | Providers | PascalCase | `QueryProvider.tsx` |
 
 ---
@@ -451,14 +524,27 @@ const customButton = tv({
 @import "@heroui/styles";
 
 @theme {
-    --color-accent: var(--heroui-primary);
-    --shadow-premium: 0 4px 20px -2px rgba(0, 0, 0, 0.05);
-    --shadow-accent-sm: 0 2px 8px rgba(var(--heroui-primary-rgb), 0.1);
-    --shadow-accent-md: 0 4px 12px rgba(var(--heroui-primary-rgb), 0.2);
-}
+    /* Identity — OKLCH for perceptual uniformity */
+    --color-accent: oklch(0.6 0.18 255);
+    --color-accent-600: oklch(0.5 0.18 255);
 
-:root {
-    --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    /* Surface Layers */
+    --color-surface-base: oklch(1 0 0);
+    --color-glass: rgba(255, 255, 255, 0.7);
+
+    /* Shadows — Premium Elevation */
+    --shadow-premium-sm: 0 2px 8px rgba(0, 0, 0, 0.04);
+    --shadow-premium-md: 0 10px 30px -5px rgba(0, 0, 0, 0.08);
+    --shadow-accent-sm: 0 4px 12px oklch(0.6 0.18 255 / 0.2);
+    --shadow-accent-md: 0 8px 24px oklch(0.6 0.18 255 / 0.3);
+
+    /* Typography — Libre Franklin primary, Inter fallback */
+    --font-sans: 'Libre Franklin', 'Inter', -apple-system, sans-serif;
+
+    /* Custom font sizes */
+    --font-size-tiny: 0.75rem;
+    --font-size-compact: 0.6875rem;
+    --font-size-mini: 0.625rem;
 }
 ```
 
@@ -546,5 +632,8 @@ npm run lint    # Run ESLint
 
 **Local References:**
 
-- `./docs/heroui-docs.txt` (Full API)
-- `./migrationplan.md` (HeroUI v3 Migration Status)
+- `./docs/dev_instruction_v3.md` (This file — Developer Instructions)
+- `./docs/erp_pricing_spec_v1_7.md` (Pricing Engine Specification)
+- `./docs/erp_timeline_spec_v1.md` (Timeline Specification)
+- `./docs/pricing-concepts-guide.md` (Pricing Concepts Guide)
+- `./docs/workflow-logic-blocks.md` (Workflow Logic Blocks)
