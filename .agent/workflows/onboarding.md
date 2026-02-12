@@ -17,7 +17,7 @@ Follow the workflow **strictly and sequentially**.
 
 Read and fully internalise the internal front-end coding standards:
 
-**Primary:** `dev_instruction_v3.md`  
+**Primary:** `dev_instruction_v3.1.md`  
 **Legacy reference:** `dev_instruction_v2.5.md` (for context only)
 
 Focus on:
@@ -37,7 +37,7 @@ Focus on:
 
 ## 2. Styling & Theming Review (Mandatory)
 
-Review the styling section within `dev_instruction_v3.md`:
+Review the styling section within `dev_instruction_v3.1.md`:
 
 Focus on:
 
@@ -108,7 +108,7 @@ This step is strictly observational.
 
 After completing **all steps above**, return with a **short confirmation only**, stating familiarity with:
 
-- `dev_instruction_v3.md` coding standards
+- `dev_instruction_v3.1.md` coding standards
 - Tailwind v4 + HeroUI styling approach
 - HeroUI v3 Beta 3 component patterns
 - Project structure and TanStack Router/Query usage
@@ -124,7 +124,7 @@ Only after this confirmation will the actual task be provided.
 - Do not implement, refactor, analyse, or suggest anything before the confirmation checkpoint.
 - Do not invent or infer missing requirements.
 - Do not apply personal or external stylistic preferences.
-- All future work must strictly follow `dev_instruction_v3.md` and HeroUI v3 Beta 3 MCP.
+- All future work must strictly follow `dev_instruction_v3.1.md` and HeroUI v3 Beta 3 MCP.
 
 ---
 

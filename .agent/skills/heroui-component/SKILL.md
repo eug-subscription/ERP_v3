@@ -64,7 +64,7 @@ export function {ComponentName}({ title, onAction }: {ComponentName}Props) {
 }
 ```
 
-## Rules (from dev_instruction_v3.md)
+## Rules (from dev_instruction_v3.1.md)
 
 | Rule | Example |
 |------|---------|

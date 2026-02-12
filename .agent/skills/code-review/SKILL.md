@@ -1,11 +1,11 @@
 ---
 name: code-review
-description: Validates TypeScript/React code against dev_instruction_v3.md standards. Checks for anti-patterns like export default, onClick usage, wrapper components, and any types. Use before committing or during code review.
+description: Validates TypeScript/React code against dev_instruction_v3.1.md standards. Checks for anti-patterns like export default, onClick usage, wrapper components, and any types. Use before committing or during code review.
 ---
 
 # Code Review Skill
 
-Validates code against project standards from `dev_instruction_v3.md`.
+Validates code against project standards from `dev_instruction_v3.1.md`.
 
 ## Anti-Patterns to Detect
 
@@ -38,4 +38,4 @@ Run the standards check script:
 
 ## Reference
 
-See `dev_instruction_v3.md` for complete coding standards.
+See `dev_instruction_v3.1.md` for complete coding standards.

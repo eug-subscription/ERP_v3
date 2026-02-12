@@ -15,7 +15,7 @@
 | Correctness | ⚠️ Concern | Reconciliation issue is fixed — stable component identity ✅. However, code-splitting is now **lost** for these 6 routes (see below). |
 | Regression risk | ⚠️ Concern | `ComingSoonPages.tsx` is eagerly imported at the top of `router.tsx` (line 3–10). This pulls `ComingSoonPage` + all 6 wrappers into the **entry chunk**, eliminating the lazy-loading that existed before. |
 | Type safety | ✅ Pass | Types are inherited from `ComingSoonPage` props. |
-| Consistency | ❌ Fail | All 6 exports use `export const X = () =>` arrow-function syntax. Project convention mandates `export function X()` declarations (see `dev_instruction_v3.md` key convention #1). |
+| Consistency | ❌ Fail | All 6 exports use `export const X = () =>` arrow-function syntax. Project convention mandates `export function X()` declarations (see `dev_instruction_v3.1.md` key convention #1). |
 | Completeness | ⚠️ Concern | Acceptance criteria says "stable component reference" ✅, but the original routes were `React.lazy()` — losing code-splitting was not an intended trade-off. |
 | Naming & readability | ✅ Pass | File name `ComingSoonPages.tsx` (plural) is clear. Comment on line 3–4 explains intent. |
 | Performance | ⚠️ Concern | 6 placeholder routes (trivial byte size) are now eagerly loaded. Impact is minimal for these tiny components, but sets a bad precedent. |
@@ -48,7 +48,7 @@ import { AccountComingSoon, ... } from "./components/ComingSoonPages";
 
 **What's wrong:** `ComingSoonPages.tsx` lines 5–10 use `export const X = () =>` instead of `export function X()`.
 
-**Why it matters:** Project convention (`dev_instruction_v3.md` rule #1: "Named exports only: `export function ComponentName() {}`"). Arrow-function consts are also flagged by the `react-refresh/only-export-components` ESLint rule (ironic given the comment on line 4 claims compliance).
+**Why it matters:** Project convention (`dev_instruction_v3.1.md` rule #1: "Named exports only: `export function ComponentName() {}`"). Arrow-function consts are also flagged by the `react-refresh/only-export-components` ESLint rule (ironic given the comment on line 4 claims compliance).
 
 **Suggested fix:**
 

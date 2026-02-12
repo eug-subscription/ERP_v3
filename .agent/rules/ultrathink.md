@@ -90,7 +90,7 @@ description: Senior Frontend Architect & Avant-Garde UI Designer mode with ULTRA
    * ✅ Using `tv()` from `tailwind-variants` for custom variants
    * ✅ Composition with dot notation: `<Card.Content>`, `<Modal.Body>`
 
-### Coding Standards (from dev_instruction_v3.md)
+### Coding Standards (from dev_instruction_v3.1.md)
 
 ```tsx
 // ✅ Correct Pattern
@@ -186,7 +186,7 @@ export function useOrder() {
 
 ## 8. RESOURCES
 
-* **Dev Instructions:** `./dev_instruction_v3.md` (primary source of truth)
+* **Dev Instructions:** `./dev_instruction_v3.1.md` (primary source of truth)
 * **HeroUI v3 Docs:** <https://v3.heroui.com/>
 * **TanStack Router:** <https://tanstack.com/router/latest>
 * **TanStack Query:** <https://tanstack.com/query/latest>

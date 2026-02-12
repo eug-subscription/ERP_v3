@@ -57,6 +57,6 @@ Before creating any UI component or implementing new logic, use these tools:
 
 For full details, read these files:
 
-- `dev_instruction_v3.md` — Primary source of truth
+- `dev_instruction_v3.1.md` — Primary source of truth
 - `package.json` — All dependencies
 - `.agent/workflows/onboarding.md` — Onboarding process

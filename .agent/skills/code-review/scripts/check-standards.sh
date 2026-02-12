@@ -1,5 +1,5 @@
 #!/bin/bash
-# Check code against dev_instruction_v3.md standards
+# Check code against dev_instruction_v3.1.md standards
 # Usage: ./check-standards.sh [directory]
 
 DIR="${1:-src}"

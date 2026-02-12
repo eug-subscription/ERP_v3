@@ -13,7 +13,7 @@ Quick reference for all available Agent Skills in this project.
 
 ### `code-review`
 
-**Purpose:** Validates code against `dev_instruction_v3.md` standards.  
+**Purpose:** Validates code against `dev_instruction_v3.1.md` standards.  
 **Triggers:** "code review", "check standards", "pre-commit check"  
 **Script:** `scripts/check-standards.sh src/`
 
