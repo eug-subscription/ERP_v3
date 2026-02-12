@@ -1,13 +1,3 @@
-/**
- * @file FilterBar.tsx
- * @architecture Pricing Module Pattern v1.0
- * @standards dev_instruction_v3.1.md, HeroUI v3 Beta
- * 
- * DESCRIPTION:
- * A standardized filter and search bar for the Pricing module catalog.
- * Provides a consistent layout for search inputs and segmented status filters.
- */
-
 import { SearchField, Tabs, Surface } from "@heroui/react";
 
 interface FilterBarProps<T extends string = string> {
