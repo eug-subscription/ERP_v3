@@ -2,7 +2,7 @@ import { Button, ScrollShadow, Spinner } from "@heroui/react";
 import { Icon } from "@iconify/react";
 import { CanvasBlock, BlockConfig } from "../../../../types/workflow";
 import { BLOCK_LIBRARY, UI_CATEGORIES, CategoryMeta, BlockLibraryItem } from "../../../../data/block-ui-categories";
-import { useMemo, useState, forwardRef, useImperativeHandle } from "react";
+import { useMemo, useState, useEffect, forwardRef, useImperativeHandle } from "react";
 import { BlockConfigForm } from "./BlockConfigForm";
 import { UnsavedChangesModal } from "./UnsavedChangesModal";
 import { DeleteBlockModal } from "./DeleteBlockModal";
@@ -78,6 +78,17 @@ export const BlockSettingsPanel = forwardRef<BlockSettingsRef, BlockSettingsPane
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
     const [pendingAction, setPendingAction] = useState<(() => void) | null>(null);
 
+    // Sync local states when block changes
+    const blockId = block?.id;
+    const blockConfig = block?.config;
+
+    useEffect(() => {
+        setLocalConfig(blockConfig);
+        setHasChanges(false);
+        onDirtyChange?.(false);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [blockId]); // Only reset when block ID changes
+
     const isOpen = !!block;
 
     useImperativeHandle(ref, () => ({
@@ -121,8 +132,11 @@ export const BlockSettingsPanel = forwardRef<BlockSettingsRef, BlockSettingsPane
     };
 
     const handleSave = () => {
-        if (localConfig && block) {
-            onSave(localConfig);
+        if (block) {
+            if (localConfig) {
+                onSave(localConfig);
+            }
+
             setHasChanges(false);
             onDirtyChange?.(false);
             setIsUnsavedModalOpen(false);
@@ -168,7 +182,7 @@ export const BlockSettingsPanel = forwardRef<BlockSettingsRef, BlockSettingsPane
     return (
         <>
             <aside
-                className={`flex h-full flex-col border-l border-default-200 bg-content1 shadow-lg transition-all duration-300 ease-in-out overflow-hidden ${isOpen ? 'w-[320px] opacity-100' : 'w-0 opacity-0 border-l-0'
+                className={`flex h-full flex-col bg-surface shadow-lg transition-all duration-300 ease-in-out overflow-hidden ${isOpen ? 'w-[320px] opacity-100' : 'w-0 opacity-0'
                     }`}
                 id="block-settings-panel"
                 aria-label="Block settings panel"
@@ -268,6 +282,8 @@ export const BlockSettingsPanel = forwardRef<BlockSettingsRef, BlockSettingsPane
                 blockLabel={block?.label || ""}
                 dependentBlocks={dependentBlocks}
             />
+
+
         </>
     );
 });

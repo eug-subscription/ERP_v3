@@ -40,7 +40,7 @@ export function SSTConfig({ config, onUpdate }: SSTConfigProps) {
                         </Switch.Control>
                         <div className="flex flex-col gap-0.5">
                             <Label className="text-sm font-semibold block">Flexible Scenarios</Label>
-                            <Description className="text-[10px] block m-0 p-0">Allow pro to add new items during the session.</Description>
+                            <Description className="t-mini block m-0 p-0">Allow pro to add new items during the session.</Description>
                         </div>
                     </Switch>
                 </div>
@@ -62,7 +62,7 @@ export function SSTConfig({ config, onUpdate }: SSTConfigProps) {
                         onChange={(id) => handleUpdate({ domain: id as string })}
                         fullWidth
                     >
-                        <Label className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground mb-1 block">
+                        <Label className="t-mini font-bold uppercase tracking-wider text-muted-foreground mb-1 block">
                             Industry Domain
                         </Label>
                         <Select.Trigger className="h-10 rounded-xl bg-secondary/20 border-separator/20">
@@ -86,7 +86,7 @@ export function SSTConfig({ config, onUpdate }: SSTConfigProps) {
                         onChange={(id) => handleUpdate({ resourcePack: id as string })}
                         fullWidth
                     >
-                        <Label className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground mb-1 block">
+                        <Label className="t-mini font-bold uppercase tracking-wider text-muted-foreground mb-1 block">
                             Resource Pack
                         </Label>
                         <Select.Trigger className="h-10 rounded-xl bg-secondary/20 border-separator/20">
@@ -128,7 +128,7 @@ export function SSTConfig({ config, onUpdate }: SSTConfigProps) {
                             <Label className="text-sm font-semibold block capitalize">
                                 {config.submitMode.toLowerCase()} Submission
                             </Label>
-                            <Description className="text-[10px] block m-0 p-0">
+                            <Description className="t-mini block m-0 p-0">
                                 {config.submitMode === 'SINGLE'
                                     ? 'Items are submitted one-by-one as they are ready.'
                                     : 'Items must be submitted together as a single batch.'}
@@ -147,15 +147,15 @@ export function SSTConfig({ config, onUpdate }: SSTConfigProps) {
                                     className="w-full"
                                 >
                                     <div className="mb-2.5 px-0.5">
-                                        <Label className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground block mb-0.5">
+                                        <Label className="t-mini font-bold uppercase tracking-wider text-muted-foreground block mb-0.5">
                                             Minimum Photos per Batch
                                         </Label>
-                                        <Description className="text-[10px] block m-0 p-0">Enter 0 if no minimum requirement exists.</Description>
+                                        <Description className="t-mini block m-0 p-0">Enter 0 if no minimum requirement exists.</Description>
                                     </div>
-                                    <NumberField.Group className="bg-content2 border border-divider rounded-lg overflow-hidden flex items-center h-10">
-                                        <NumberField.DecrementButton className="h-full px-1 hover:bg-content3 flex items-center justify-center opacity-70 hover:opacity-100 transition-opacity min-w-[32px]" />
+                                    <NumberField.Group className="bg-field border border-divider rounded-lg overflow-hidden flex items-center h-10">
+                                        <NumberField.DecrementButton className="h-full px-1 hover:bg-field-hover flex items-center justify-center opacity-70 hover:opacity-100 transition-opacity min-w-[32px]" />
                                         <NumberField.Input className="flex-1 bg-transparent px-1 text-sm tabular-nums text-center min-w-0" />
-                                        <NumberField.IncrementButton className="h-full px-1 hover:bg-content3 flex items-center justify-center opacity-70 hover:opacity-100 transition-opacity min-w-[32px]" />
+                                        <NumberField.IncrementButton className="h-full px-1 hover:bg-field-hover flex items-center justify-center opacity-70 hover:opacity-100 transition-opacity min-w-[32px]" />
                                     </NumberField.Group>
                                 </NumberField>
                             </div>

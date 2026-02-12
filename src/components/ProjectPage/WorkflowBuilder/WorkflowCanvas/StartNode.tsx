@@ -5,8 +5,8 @@ export function StartNode() {
     return (
         <div className="flex flex-col items-center select-none">
             <div
-                className="relative z-10 flex items-center gap-3 px-4 py-3 border-2 border-success rounded-xl shadow-sm"
-                style={{ width: CANVAS_BLOCK_WIDTH, backgroundColor: '#f0fdf4' }}
+                className="relative z-10 flex items-center gap-3 px-4 py-3 border-2 border-success rounded-xl shadow-sm bg-success/10"
+                style={{ width: CANVAS_BLOCK_WIDTH }}
             >
                 {/* Fixed Icon container */}
                 <div className="flex items-center justify-center w-8 h-8 rounded-full bg-success text-white shrink-0">

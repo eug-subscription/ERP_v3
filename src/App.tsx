@@ -7,7 +7,7 @@ export function App() {
   return (
     <QueryProvider>
       <RouterProvider router={router} />
-      <Toast.Container />
+      <Toast.Provider />
     </QueryProvider>
   );
 }

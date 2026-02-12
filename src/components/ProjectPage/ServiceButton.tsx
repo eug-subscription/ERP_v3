@@ -11,7 +11,7 @@ const serviceButton = tv({
     variants: {
         isSelected: {
             true: "bg-primary border-primary text-white shadow-sm",
-            false: "bg-white border-primary/40 text-primary hover:border-primary hover:bg-primary/5",
+            false: "bg-surface border-primary/40 text-primary hover:border-primary hover:bg-primary/5",
         },
     },
 });

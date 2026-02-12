@@ -1,4 +1,4 @@
-import { Accordion, InputGroup, TextField } from "@heroui/react";
+import { Accordion, InputGroup, TextField, Separator } from "@heroui/react";
 import { Icon } from "@iconify/react";
 import { CategoryAccordion } from "./CategoryAccordion";
 import { useBlockLibrary } from "../../../../hooks/useBlockLibrary";
@@ -14,7 +14,7 @@ export function BlockLibrary() {
 
     return (
         <div
-            className="flex h-full flex-col border-r border-default bg-content1"
+            className="flex h-full flex-col bg-surface relative"
             style={{ width: LIBRARY_PANEL_WIDTH }}
         >
             <div className="flex flex-col gap-4 p-4">
@@ -56,6 +56,7 @@ export function BlockLibrary() {
                     </div>
                 )}
             </div>
+            <Separator orientation="vertical" className="absolute right-0 top-0 h-full" />
         </div>
     );
 }

@@ -7,8 +7,8 @@ import "./index.css";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
-    <main className="text-foreground bg-background">
+    <div className="text-foreground bg-background">
       <App />
-    </main>
+    </div>
   </React.StrictMode>
 );

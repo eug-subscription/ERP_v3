@@ -1,53 +1,22 @@
 import { useState, useCallback, useMemo, useEffect, useRef } from 'react';
 import { useBlockValidation } from './useBlockValidation';
-import { arrayMove } from "@dnd-kit/sortable";
+import { useCanvasOperations } from './useCanvasOperations';
 import {
     ProjectWorkflowConfig,
     WorkflowCanvasState,
-    WorkflowBlockType,
-    BlockConfig,
     CanvasBlock,
     ValidationResult,
-    BlockCategory,
     UserWorkflowTemplate,
     WorkflowBranch,
-    WorkflowBlock
+    WorkflowBlock,
+    TimelineConfig
 } from '../types/workflow';
-import { BLOCK_LIBRARY, BlockCategoryUI } from '../data/block-ui-categories';
-import { MASTER_BLOCKS } from '../data/master-blocks';
-import { STANDARD_BRANCHES } from '../data/branch-structure';
+
 import { autoFixCanvasBlocks, getAutoFixActions } from '../data/block-dependencies';
+import { isBlockAllowedInBranch } from '../utils/workflow';
 import { useSaveWorkflow } from './useProjectWorkflow';
 import { serializeCanvasToConfig } from '../utils/workflow-serializer';
 import { START_NODE_ID } from '../components/ProjectPage/WorkflowBuilder/constants';
-
-const isBlockAllowedInBranch = (blockType: WorkflowBlockType, branchId: 'main' | 'photo' | 'video'): boolean => {
-    if (branchId === 'photo') {
-        const branch = STANDARD_BRANCHES.find(b => b.id === 'photo');
-        return branch?.allowedBlockTypes.includes(blockType) || false;
-    }
-    if (branchId === 'video') {
-        const branch = STANDARD_BRANCHES.find(b => b.id === 'video');
-        return branch?.allowedBlockTypes.includes(blockType) || false;
-    }
-
-    // 'main' branch covers both 'initial' and 'completion'
-    const initialBranch = STANDARD_BRANCHES.find(b => b.id === 'initial');
-    const completionBranch = STANDARD_BRANCHES.find(b => b.id === 'completion');
-
-    return (initialBranch?.allowedBlockTypes.includes(blockType) ||
-        completionBranch?.allowedBlockTypes.includes(blockType)) || false;
-};
-
-const UI_TO_BLOCK_CATEGORY: Record<BlockCategoryUI, BlockCategory> = {
-    'SETUP_ONBOARDING': 'STARTING',
-    'GATES_PREREQUISITES': 'STARTING',
-    'PRODUCTION_PROCESSING': 'PROCESSING',
-    'FLOW_CONTROL': 'PROCESSING',
-    'QUALITY_ASSURANCE': 'PROCESSING',
-    'ASSET_MANAGEMENT': 'FINALISATION',
-    'DELIVERY_NOTIFICATIONS': 'FINALISATION',
-};
 
 /**
  * Core hook managing the entire builder state including canvas blocks, selection, and DnD coordination.
@@ -74,6 +43,8 @@ export function useWorkflowBuilder(initialConfig?: ProjectWorkflowConfig) {
         lastAddedBlockId: null
     });
 
+    const [timelineConfig, setTimelineConfig] = useState<TimelineConfig | undefined>(initialConfig?.timelineConfig);
+
     const hydrationRef = useRef(false);
 
     // Hydrate state when initialConfig becomes available (since it's usually async)
@@ -98,6 +69,8 @@ export function useWorkflowBuilder(initialConfig?: ProjectWorkflowConfig) {
                 // Note: initialBlocks has exactly 1 block (START_NODE_ID)
                 if (configBlocks.length > 0 && prev.blocks.length === 1 && prev.blocks[0].id === START_NODE_ID) {
                     hydrationRef.current = true;
+                    // Also hydrate timeline config if present
+                    setTimelineConfig(initialConfig.timelineConfig);
                     return {
                         ...prev,
                         blocks: configBlocks,
@@ -111,165 +84,17 @@ export function useWorkflowBuilder(initialConfig?: ProjectWorkflowConfig) {
         return () => clearTimeout(timer);
     }, [initialConfig]);
 
-    /**
-     * Helper to lookup basic block info from library
-     */
-    const getBlockInfo = useCallback((type: WorkflowBlockType) => {
-        return BLOCK_LIBRARY.find(b => b.type === type) || {
-            label: type.replace(/_/g, ' '),
-            category: 'PRODUCTION_PROCESSING' as BlockCategoryUI
-        };
-    }, []);
-
-    /**
-     * Remove a block from the canvas
-     */
-    const removeBlock = useCallback((blockId: string) => {
-        // Prevent deleting Start node
-        if (blockId === START_NODE_ID) return;
-
-        setCanvasState(prev => ({
-            ...prev,
-            blocks: prev.blocks.filter(b => b.id !== blockId),
-            selectedBlockId: prev.selectedBlockId === blockId ? null : prev.selectedBlockId,
-            hasUnsavedChanges: true
-        }));
-    }, []);
-
-    /**
-     * Reorder blocks within the list (for SortableContext)
-     */
-    const reorderBlocks = useCallback((activeId: string, overId: string) => {
-        setCanvasState(prev => {
-            const activeBlock = prev.blocks.find(b => b.id === activeId);
-            const overBlock = prev.blocks.find(b => b.id === overId);
-
-            if (!activeBlock || !overBlock) return prev;
-
-            // Ensure we are reordering within the same branch
-            if (activeBlock.position.branchId !== overBlock.position.branchId) return prev;
-
-            const oldIndex = prev.blocks.findIndex(b => b.id === activeId);
-            const newIndex = prev.blocks.findIndex(b => b.id === overId);
-
-            if (oldIndex === -1 || newIndex === -1) return prev;
-
-            const newBlocks = arrayMove(prev.blocks, oldIndex, newIndex);
-
-            // Re-index all blocks to maintain internal consistency
-            const reindexedBlocks = newBlocks.map((b, i) => ({
-                ...b,
-                position: { ...b.position, index: i }
-            }));
-
-            return {
-                ...prev,
-                blocks: reindexedBlocks,
-                hasUnsavedChanges: true
-            };
-        });
-    }, []);
-
-    /**
-     * Insert a new block at a specific index in a specific branch
-     */
-    const insertBlock = useCallback((
-        blockType: WorkflowBlockType,
-        index: number,
-        branchId: 'main' | 'photo' | 'video' = 'main'
-    ) => {
-        if (!isBlockAllowedInBranch(blockType, branchId)) {
-            console.warn(`Block ${blockType} is not allowed in branch ${branchId}`);
-            return;
-        }
-
-        const info = getBlockInfo(blockType);
-        const newBlockId = crypto.randomUUID();
-
-        setCanvasState(prev => {
-            const masterBlock = MASTER_BLOCKS[blockType];
-
-            const updatedBlocks = [...prev.blocks];
-            let targetGlobalIndex = index;
-
-            // If inserting into a parallel branch (photo/video)
-            if (branchId === 'photo' || branchId === 'video') {
-                // Find all existing blocks in this specific branch
-                const branchBlocks = updatedBlocks.filter(b => b.position.branchId === branchId);
-
-                if (branchBlocks.length === 0) {
-                    // First block in branch: 
-                    // Insert immediately after IF_ELSE or at the end if none
-                    const ifElseIdx = updatedBlocks.findIndex(b => b.type === 'IF_ELSE');
-                    targetGlobalIndex = ifElseIdx !== -1 ? ifElseIdx + 1 : updatedBlocks.length;
-                } else {
-                    // Middle of branch:
-                    // Find the global index of the block at 'index - 1' and insert after it
-                    const targetBranchIdx = Math.min(index, branchBlocks.length);
-                    if (targetBranchIdx === 0) {
-                        // Insert before first block in branch
-                        targetGlobalIndex = updatedBlocks.findIndex(b => b.id === branchBlocks[0].id);
-                    } else {
-                        // Insert after the block at targetBranchIdx - 1
-                        const prevBlockInBranch = branchBlocks[targetBranchIdx - 1];
-                        targetGlobalIndex = updatedBlocks.findIndex(b => b.id === prevBlockInBranch.id) + 1;
-                    }
-                }
-            }
-
-            const newBlock: CanvasBlock = {
-                id: newBlockId,
-                type: blockType,
-                label: info.label,
-                category: UI_TO_BLOCK_CATEGORY[info.category],
-                isEnabled: true,
-                position: { id: newBlockId, branchId, index: 0 }, // internal index will be re-set below
-                validationState: masterBlock?.config ? 'unconfigured' : 'valid',
-                config: masterBlock?.config ? { ...masterBlock.config } : undefined
-            };
-
-            updatedBlocks.splice(targetGlobalIndex, 0, newBlock);
-
-            // Re-index all blocks to maintain consistency
-            const reindexedBlocks = updatedBlocks.map((b, i) => ({
-                ...b,
-                position: { ...b.position, index: i }
-            }));
-
-            return {
-                ...prev,
-                blocks: reindexedBlocks,
-                hasUnsavedChanges: true,
-                lastAddedBlockId: newBlockId
-            };
-        });
-    }, [getBlockInfo]);
-
-    /**
-     * Select or deselect a block
-     */
-    const selectBlock = useCallback((blockId: string | null) => {
-        setCanvasState(prev => ({
-            ...prev,
-            selectedBlockId: blockId,
-            lastAddedBlockId: null // Clear last added when interacting
-        }));
-    }, []);
-
-    /**
-     * Update configuration for a specific block
-     */
-    const updateBlockConfig = useCallback((blockId: string, config: BlockConfig) => {
-        setCanvasState(prev => ({
-            ...prev,
-            blocks: prev.blocks.map(b =>
-                b.id === blockId
-                    ? { ...b, config: config, validationState: 'valid' }
-                    : b
-            ),
-            hasUnsavedChanges: true
-        }));
-    }, []);
+    // Use canvas operations hook for all block manipulation
+    const {
+        insertBlock,
+        reorderBlocks,
+        removeBlock,
+        selectBlock,
+        updateBlockConfig
+    } = useCanvasOperations({
+        setCanvasState,
+        setTimelineConfig
+    });
 
     /**
      * Automatically fix common validation issues
@@ -286,10 +111,16 @@ export function useWorkflowBuilder(initialConfig?: ProjectWorkflowConfig) {
      * Apply a workflow template to the canvas
      */
     const applyTemplate = useCallback((template: UserWorkflowTemplate) => {
+        // Build ID remap: oldId → newId
+        const idRemap = new Map<string, string>();
+
         // We'll transform its branches back into flat CanvasBlocks with new IDs
         const newBlocks: CanvasBlock[] = (template.branches || []).flatMap((branch: WorkflowBranch) =>
             (branch.blocks || []).map((block: WorkflowBlock, idx: number) => {
                 const newId = crypto.randomUUID();
+                // Track the ID mapping for timeline config remapping
+                idRemap.set(block.id, newId);
+
                 return {
                     ...block,
                     id: newId,
@@ -326,6 +157,20 @@ export function useWorkflowBuilder(initialConfig?: ProjectWorkflowConfig) {
             hasUnsavedChanges: true,
             lastAddedBlockId: null
         }));
+
+        // Remap timeline config keys from old IDs to new IDs
+        if (template.timelineConfig) {
+            const remappedSteps: Record<string, TimelineConfig['steps'][string]> = {};
+            for (const [oldId, overrides] of Object.entries(template.timelineConfig.steps)) {
+                const newId = idRemap.get(oldId);
+                if (newId) {
+                    remappedSteps[newId] = overrides;
+                }
+            }
+            setTimelineConfig({ steps: remappedSteps });
+        } else {
+            setTimelineConfig(undefined);
+        }
     }, []);
 
     /**
@@ -342,7 +187,8 @@ export function useWorkflowBuilder(initialConfig?: ProjectWorkflowConfig) {
         const config = serializeCanvasToConfig(
             projectId,
             initialConfig?.templateId || 'custom-workflow',
-            canvasState.blocks
+            canvasState.blocks,
+            timelineConfig
         );
 
         try {
@@ -352,7 +198,7 @@ export function useWorkflowBuilder(initialConfig?: ProjectWorkflowConfig) {
         } catch {
             return false;
         }
-    }, [canvasState.blocks, saveMutation, initialConfig?.templateId]);
+    }, [canvasState.blocks, timelineConfig, saveMutation, initialConfig?.templateId]);
 
     const validatedBlocks = useMemo(() => {
         return canvasState.blocks.map(block => {
@@ -386,7 +232,8 @@ export function useWorkflowBuilder(initialConfig?: ProjectWorkflowConfig) {
         state: {
             canvasState,
             hasUnsavedChanges: canvasState.hasUnsavedChanges,
-            blocks: validatedBlocks // Return blocks with merged validation info
+            blocks: validatedBlocks, // Return blocks with merged validation info
+            timelineConfig
         },
         actions: {
             insertBlock,
@@ -397,7 +244,8 @@ export function useWorkflowBuilder(initialConfig?: ProjectWorkflowConfig) {
             autoFix,
             applyTemplate,
             setCanvasState,
-            saveWorkflow
+            saveWorkflow,
+            setTimelineConfig
         },
         validation: {
             validate: validateCanvas,

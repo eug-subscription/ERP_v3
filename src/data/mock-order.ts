@@ -16,15 +16,19 @@ export interface OrderTag {
 }
 
 export interface OrderData {
+  id: string;
   orderDate: CalendarDateTime;
   tags: OrderTag[];
   client: string | null;
   address: StructuredAddress | null;
   status: "Completed" | "Pending" | "In Progress";
   profit: number;
+  projectId: string;
+  photoCount: number;
 }
 
 export const mockOrderData: OrderData = {
+  id: "order-1",
   orderDate: parseDateTime("2025-01-10T10:00:00"),
   tags: [
     { id: "1", text: "Food photography", color: "accent" },
@@ -43,6 +47,8 @@ export const mockOrderData: OrderData = {
   },
   status: "Completed",
   profit: 45,
+  projectId: "wolt_germany",
+  photoCount: 3,
 };
 
 export const availableTags: OrderTag[] = [

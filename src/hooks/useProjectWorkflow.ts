@@ -5,10 +5,8 @@ import { toast } from "@heroui/react";
 /**
  * Mock API to fetch a project's workflow.
  */
-async function fetchProjectWorkflow(projectId: string): Promise<ProjectWorkflowConfig | null> {
+async function fetchProjectWorkflow(_projectId: string): Promise<ProjectWorkflowConfig | null> {
     await new Promise((resolve) => setTimeout(resolve, 800));
-    // In a real app: return fetch(`/api/projects/${projectId}/workflow`).then(r => r.json());
-    console.log(`Fetching workflow for project ${projectId}`);
     return null; // Return null to simulate a new project by default
 }
 
@@ -17,13 +15,6 @@ async function fetchProjectWorkflow(projectId: string): Promise<ProjectWorkflowC
  */
 async function saveProjectWorkflow(config: ProjectWorkflowConfig): Promise<ProjectWorkflowConfig> {
     await new Promise((resolve) => setTimeout(resolve, 1500));
-    // In a real app: 
-    // const res = await fetch(`/api/projects/${config.projectId}/workflow`, {
-    //   method: 'POST',
-    //   body: JSON.stringify(config)
-    // });
-    // return res.json();
-    console.log("Saving workflow config:", config);
     return config;
 }
 
@@ -50,8 +41,7 @@ export function useSaveWorkflow() {
             queryClient.setQueryData(["project-workflow", data.projectId], data);
             toast.success("Workflow saved successfully!");
         },
-        onError: (error) => {
-            console.error("Failed to save workflow:", error);
+        onError: () => {
             toast.danger("Failed to save workflow. Please try again.");
         },
     });

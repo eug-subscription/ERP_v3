@@ -71,7 +71,7 @@ export function SendNotificationConfig({ config, onUpdate }: SendNotificationCon
                         onChange={(val) => handleUpdate({ title: val })}
                         fullWidth
                     >
-                        <Label className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground mb-1 block">Subject / Title</Label>
+                        <Label className="t-mini font-bold uppercase tracking-wider text-muted-foreground mb-1 block">Subject / Title</Label>
                         <Input
                             placeholder="e.g. Action Required: Your photos are ready"
                             className="bg-secondary/20 border-separator/20 rounded-xl h-10 px-3 text-sm"
@@ -83,12 +83,12 @@ export function SendNotificationConfig({ config, onUpdate }: SendNotificationCon
                         onChange={(val) => handleUpdate({ body: val })}
                         fullWidth
                     >
-                        <Label className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground mb-1 block">Message Body</Label>
+                        <Label className="t-mini font-bold uppercase tracking-wider text-muted-foreground mb-1 block">Message Body</Label>
                         <TextArea
                             placeholder="Hi {{user_name}}, your project has reached a new stage..."
                             className="bg-secondary/20 border-separator/20 rounded-xl p-3 text-sm min-h-[100px] leading-relaxed"
                         />
-                        <Description className="text-[10px] block mt-1.5 opacity-60 italic">
+                        <Description className="t-mini block mt-1.5 opacity-60 italic">
                             Tip: Variables like {"{{project_name}}"} are supported.
                         </Description>
                     </TextField>
@@ -101,8 +101,8 @@ export function SendNotificationConfig({ config, onUpdate }: SendNotificationCon
                     <Icon icon="lucide:sparkles" className="w-4 h-4" />
                 </div>
                 <div className="space-y-1">
-                    <span className="text-[10px] font-bold uppercase tracking-widest text-accent/80">Dynamic Context</span>
-                    <p className="text-[10px] text-muted-foreground/80 leading-relaxed font-medium">
+                    <span className="t-mini font-bold uppercase tracking-widest text-accent/80">Dynamic Context</span>
+                    <p className="t-mini text-muted-foreground/80 leading-relaxed font-medium">
                         Use <code className="text-accent underline font-mono">{"{{client_name}}"}</code> or <code className="text-accent underline font-mono">{"{{order_id}}"}</code>
                         to personalize your message automatically for each recipient.
                     </p>

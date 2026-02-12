@@ -71,28 +71,28 @@ export function ServiceConfigCard({
                         >
                             <Radio
                                 value="existing"
-                                className="bg-content1 border border-default-200 rounded-xl p-4 m-0 flex-1 data-[selected=true]:border-primary data-[selected=true]:bg-primary/5 transition-all cursor-pointer items-center"
+                                className="bg-surface border border-default-200 rounded-xl p-4 m-0 flex-1 data-[selected=true]:border-primary data-[selected=true]:bg-primary/5 transition-all cursor-pointer items-center"
                             >
                                 <Radio.Control>
                                     <Radio.Indicator />
                                 </Radio.Control>
                                 <Radio.Content>
                                     <Label className="font-semibold cursor-pointer text-sm">Use existing rate</Label>
-                                    <Description className="text-[10px] text-default-500">
+                                    <Description className="t-mini text-default-500">
                                         Select from saved rates
                                     </Description>
                                 </Radio.Content>
                             </Radio>
                             <Radio
                                 value="new"
-                                className="bg-content1 border border-default-200 rounded-xl p-4 m-0 flex-1 data-[selected=true]:border-primary data-[selected=true]:bg-primary/5 transition-all cursor-pointer items-center"
+                                className="bg-surface border border-default-200 rounded-xl p-4 m-0 flex-1 data-[selected=true]:border-primary data-[selected=true]:bg-primary/5 transition-all cursor-pointer items-center"
                             >
                                 <Radio.Control>
                                     <Radio.Indicator />
                                 </Radio.Control>
                                 <Radio.Content>
                                     <Label className="font-semibold cursor-pointer text-sm">Create new rate</Label>
-                                    <Description className="text-[10px] text-default-500">
+                                    <Description className="t-mini text-default-500">
                                         Define custom rate
                                     </Description>
                                 </Radio.Content>
@@ -160,28 +160,28 @@ export function ServiceConfigCard({
                             >
                                 <Radio
                                     value="existing"
-                                    className="bg-content1 border border-default-200 rounded-xl p-4 m-0 flex-1 data-[selected=true]:border-primary data-[selected=true]:bg-primary/5 transition-all cursor-pointer items-center"
+                                    className="bg-surface border border-default-200 rounded-xl p-4 m-0 flex-1 data-[selected=true]:border-primary data-[selected=true]:bg-primary/5 transition-all cursor-pointer items-center"
                                 >
                                     <Radio.Control>
                                         <Radio.Indicator />
                                     </Radio.Control>
                                     <Radio.Content>
                                         <Label className="font-semibold cursor-pointer text-sm">Use existing rate</Label>
-                                        <Description className="text-[10px] text-default-500">
+                                        <Description className="t-mini text-default-500">
                                             Select from saved rates
                                         </Description>
                                     </Radio.Content>
                                 </Radio>
                                 <Radio
                                     value="new"
-                                    className="bg-content1 border border-default-200 rounded-xl p-4 m-0 flex-1 data-[selected=true]:border-primary data-[selected=true]:bg-primary/5 transition-all cursor-pointer items-center"
+                                    className="bg-surface border border-default-200 rounded-xl p-4 m-0 flex-1 data-[selected=true]:border-primary data-[selected=true]:bg-primary/5 transition-all cursor-pointer items-center"
                                 >
                                     <Radio.Control>
                                         <Radio.Indicator />
                                     </Radio.Control>
                                     <Radio.Content>
                                         <Label className="font-semibold cursor-pointer text-sm">Create new rate</Label>
-                                        <Description className="text-[10px] text-default-500">
+                                        <Description className="t-mini text-default-500">
                                             Define custom rate
                                         </Description>
                                     </Radio.Content>

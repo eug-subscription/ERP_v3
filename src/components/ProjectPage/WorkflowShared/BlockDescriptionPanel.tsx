@@ -44,7 +44,7 @@ export function BlockDescriptionPanel({ title, icon, description, details }: Blo
                 <div className="space-y-4 px-2 pt-2">
                     <div className="flex items-center gap-2">
                         <Separator className="flex-1 opacity-20" />
-                        <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/50 whitespace-nowrap">
+                        <span className="t-mini font-bold uppercase tracking-widest text-muted-foreground/50 whitespace-nowrap">
                             Key Functions
                         </span>
                         <Separator className="flex-1 opacity-20" />

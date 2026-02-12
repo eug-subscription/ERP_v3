@@ -39,7 +39,7 @@ export function ProAssigningConfig({ config, onUpdate }: ProAssigningConfigProps
                                 <Radio.Control><Radio.Indicator /></Radio.Control>
                                 <Radio.Content>
                                     <Label className="font-semibold text-sm block">{strategy.label}</Label>
-                                    <Description className="text-[10px] block">{strategy.description}</Description>
+                                    <Description className="t-mini block">{strategy.description}</Description>
                                 </Radio.Content>
                             </Radio>
                         ))}
@@ -62,14 +62,14 @@ export function ProAssigningConfig({ config, onUpdate }: ProAssigningConfigProps
                         onChange={(val) => handleUpdate({ welcomeText: val })}
                         fullWidth
                     >
-                        <Label className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground mb-1 block">
+                        <Label className="t-mini font-bold uppercase tracking-wider text-muted-foreground mb-1 block">
                             Welcome Message
                         </Label>
                         <Input
                             placeholder="Welcome to the project! Please review guidelines..."
                             className="bg-secondary/20 border-separator/20 rounded-xl"
                         />
-                        <Description className="text-[10px] block mt-1">Message shown to the professional upon assignment.</Description>
+                        <Description className="t-mini block mt-1">Message shown to the professional upon assignment.</Description>
                     </TextField>
                 </div>
             </section>
@@ -91,13 +91,13 @@ export function ProAssigningConfig({ config, onUpdate }: ProAssigningConfigProps
                             minValue={0}
                             className="w-full"
                         >
-                            <Label className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground mb-1 block">
+                            <Label className="t-mini font-bold uppercase tracking-wider text-muted-foreground mb-1 block">
                                 Photo Slots
                             </Label>
-                            <NumberField.Group className="bg-content2 border border-divider rounded-lg overflow-hidden flex items-center h-10">
-                                <NumberField.DecrementButton className="h-full px-1 hover:bg-content3 flex items-center justify-center opacity-70 hover:opacity-100 transition-opacity min-w-[32px]" />
+                            <NumberField.Group className="bg-field border border-divider rounded-lg overflow-hidden flex items-center h-10">
+                                <NumberField.DecrementButton className="h-full px-1 hover:bg-field-hover flex items-center justify-center opacity-70 hover:opacity-100 transition-opacity min-w-[32px]" />
                                 <NumberField.Input className="flex-1 bg-transparent px-1 text-sm tabular-nums text-center min-w-0" />
-                                <NumberField.IncrementButton className="h-full px-1 hover:bg-content3 flex items-center justify-center opacity-70 hover:opacity-100 transition-opacity min-w-[32px]" />
+                                <NumberField.IncrementButton className="h-full px-1 hover:bg-field-hover flex items-center justify-center opacity-70 hover:opacity-100 transition-opacity min-w-[32px]" />
                             </NumberField.Group>
                         </NumberField>
 
@@ -107,13 +107,13 @@ export function ProAssigningConfig({ config, onUpdate }: ProAssigningConfigProps
                             minValue={0}
                             className="w-full"
                         >
-                            <Label className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground mb-1 block">
+                            <Label className="t-mini font-bold uppercase tracking-wider text-muted-foreground mb-1 block">
                                 Video Slots
                             </Label>
-                            <NumberField.Group className="bg-content2 border border-divider rounded-lg overflow-hidden flex items-center h-10">
-                                <NumberField.DecrementButton className="h-full px-1 hover:bg-content3 flex items-center justify-center opacity-70 hover:opacity-100 transition-opacity min-w-[32px]" />
+                            <NumberField.Group className="bg-field border border-divider rounded-lg overflow-hidden flex items-center h-10">
+                                <NumberField.DecrementButton className="h-full px-1 hover:bg-field-hover flex items-center justify-center opacity-70 hover:opacity-100 transition-opacity min-w-[32px]" />
                                 <NumberField.Input className="flex-1 bg-transparent px-1 text-sm tabular-nums text-center min-w-0" />
-                                <NumberField.IncrementButton className="h-full px-1 hover:bg-content3 flex items-center justify-center opacity-70 hover:opacity-100 transition-opacity min-w-[32px]" />
+                                <NumberField.IncrementButton className="h-full px-1 hover:bg-field-hover flex items-center justify-center opacity-70 hover:opacity-100 transition-opacity min-w-[32px]" />
                             </NumberField.Group>
                         </NumberField>
                     </div>
@@ -125,13 +125,13 @@ export function ProAssigningConfig({ config, onUpdate }: ProAssigningConfigProps
                             minValue={0}
                             className="w-full"
                         >
-                            <Label className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground mb-1 block">
+                            <Label className="t-mini font-bold uppercase tracking-wider text-muted-foreground mb-1 block">
                                 Photo Dur. (min)
                             </Label>
-                            <NumberField.Group className="bg-content2 border border-divider rounded-lg overflow-hidden flex items-center h-10">
-                                <NumberField.DecrementButton className="h-full px-1 hover:bg-content3 flex items-center justify-center opacity-70 hover:opacity-100 transition-opacity min-w-[32px]" />
+                            <NumberField.Group className="bg-field border border-divider rounded-lg overflow-hidden flex items-center h-10">
+                                <NumberField.DecrementButton className="h-full px-1 hover:bg-field-hover flex items-center justify-center opacity-70 hover:opacity-100 transition-opacity min-w-[32px]" />
                                 <NumberField.Input className="flex-1 bg-transparent px-1 text-sm tabular-nums text-center min-w-0" />
-                                <NumberField.IncrementButton className="h-full px-1 hover:bg-content3 flex items-center justify-center opacity-70 hover:opacity-100 transition-opacity min-w-[32px]" />
+                                <NumberField.IncrementButton className="h-full px-1 hover:bg-field-hover flex items-center justify-center opacity-70 hover:opacity-100 transition-opacity min-w-[32px]" />
                             </NumberField.Group>
                         </NumberField>
 
@@ -141,13 +141,13 @@ export function ProAssigningConfig({ config, onUpdate }: ProAssigningConfigProps
                             minValue={0}
                             className="w-full"
                         >
-                            <Label className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground mb-1 block">
+                            <Label className="t-mini font-bold uppercase tracking-wider text-muted-foreground mb-1 block">
                                 Video Dur. (min)
                             </Label>
-                            <NumberField.Group className="bg-content2 border border-divider rounded-lg overflow-hidden flex items-center h-10">
-                                <NumberField.DecrementButton className="h-full px-1 hover:bg-content3 flex items-center justify-center opacity-70 hover:opacity-100 transition-opacity min-w-[32px]" />
+                            <NumberField.Group className="bg-field border border-divider rounded-lg overflow-hidden flex items-center h-10">
+                                <NumberField.DecrementButton className="h-full px-1 hover:bg-field-hover flex items-center justify-center opacity-70 hover:opacity-100 transition-opacity min-w-[32px]" />
                                 <NumberField.Input className="flex-1 bg-transparent px-1 text-sm tabular-nums text-center min-w-0" />
-                                <NumberField.IncrementButton className="h-full px-1 hover:bg-content3 flex items-center justify-center opacity-70 hover:opacity-100 transition-opacity min-w-[32px]" />
+                                <NumberField.IncrementButton className="h-full px-1 hover:bg-field-hover flex items-center justify-center opacity-70 hover:opacity-100 transition-opacity min-w-[32px]" />
                             </NumberField.Group>
                         </NumberField>
                     </div>
@@ -174,7 +174,7 @@ export function ProAssigningConfig({ config, onUpdate }: ProAssigningConfigProps
                         </Switch.Control>
                         <div className="flex flex-col gap-0.5">
                             <Label className="text-sm font-semibold block">Pro Must Confirm</Label>
-                            <Description className="text-[10px] block m-0 p-0">Require pro to manually accept assignment.</Description>
+                            <Description className="t-mini block m-0 p-0">Require pro to manually accept assignment.</Description>
                         </div>
                     </Switch>
 
@@ -190,7 +190,7 @@ export function ProAssigningConfig({ config, onUpdate }: ProAssigningConfigProps
                         </Switch.Control>
                         <div className="flex flex-col gap-0.5">
                             <Label className="text-sm font-semibold block">Show Pro to Client</Label>
-                            <Description className="text-[10px] block m-0 p-0">Allow clients to see pro profile and details.</Description>
+                            <Description className="t-mini block m-0 p-0">Allow clients to see pro profile and details.</Description>
                         </div>
                     </Switch>
 
@@ -204,15 +204,15 @@ export function ProAssigningConfig({ config, onUpdate }: ProAssigningConfigProps
                         className="w-full"
                     >
                         <div className="mb-2.5">
-                            <Label className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground block mb-0.5">
+                            <Label className="t-mini font-bold uppercase tracking-wider text-muted-foreground block mb-0.5">
                                 Minimum Pro Level
                             </Label>
-                            <Description className="text-[10px] block m-0 p-0">Filter pros by their system rating (1-5).</Description>
+                            <Description className="t-mini block m-0 p-0">Filter pros by their system rating (1-5).</Description>
                         </div>
-                        <NumberField.Group className="bg-content2 border border-divider rounded-lg overflow-hidden flex items-center h-10">
-                            <NumberField.DecrementButton className="h-full px-1 hover:bg-content3 flex items-center justify-center opacity-70 hover:opacity-100 transition-opacity min-w-[32px]" />
+                        <NumberField.Group className="bg-field border border-divider rounded-lg overflow-hidden flex items-center h-10">
+                            <NumberField.DecrementButton className="h-full px-1 hover:bg-field-hover flex items-center justify-center opacity-70 hover:opacity-100 transition-opacity min-w-[32px]" />
                             <NumberField.Input className="flex-1 bg-transparent px-1 text-sm tabular-nums text-center min-w-0" />
-                            <NumberField.IncrementButton className="h-full px-1 hover:bg-content3 flex items-center justify-center opacity-70 hover:opacity-100 transition-opacity min-w-[32px]" />
+                            <NumberField.IncrementButton className="h-full px-1 hover:bg-field-hover flex items-center justify-center opacity-70 hover:opacity-100 transition-opacity min-w-[32px]" />
                         </NumberField.Group>
                     </NumberField>
                 </div>

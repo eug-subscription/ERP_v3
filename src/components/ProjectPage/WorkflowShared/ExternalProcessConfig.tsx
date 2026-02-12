@@ -1,4 +1,4 @@
-import { TextField, Input, Label, Description, TextArea, Button } from '@heroui/react';
+import { TextField, Input, Label, Description, TextArea, Button, toast } from '@heroui/react';
 import { Icon } from '@iconify/react';
 import type { ExternalProcessConfig as ExternalProcessConfigType } from '../../../types/workflow';
 
@@ -34,14 +34,14 @@ export function ExternalProcessConfig({ config, onUpdate }: ExternalProcessConfi
                         isRequired
                         fullWidth
                     >
-                        <Label className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground mb-1 block">
+                        <Label className="t-mini font-bold uppercase tracking-wider text-muted-foreground mb-1 block">
                             Webhook URL
                         </Label>
                         <Input
                             placeholder="https://zapier.com/hooks/..."
                             className="bg-secondary/20 border-separator/20 rounded-xl h-10 px-4 text-sm"
                         />
-                        <Description className="text-[10px] block mt-1">
+                        <Description className="t-mini block mt-1">
                             The URL where the workflow will send a POST request when triggered.
                         </Description>
                     </TextField>
@@ -63,7 +63,7 @@ export function ExternalProcessConfig({ config, onUpdate }: ExternalProcessConfi
                         onChange={(val) => handleUpdate({ payloadTemplate: val })}
                         fullWidth
                     >
-                        <Label className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground mb-1 block">
+                        <Label className="t-mini font-bold uppercase tracking-wider text-muted-foreground mb-1 block">
                             Custom Payload
                         </Label>
                         <TextArea
@@ -73,17 +73,17 @@ export function ExternalProcessConfig({ config, onUpdate }: ExternalProcessConfi
                         />
                     </TextField>
 
-                    <div className="bg-content2/50 rounded-2xl p-4 border border-divider/10 space-y-3">
+                    <div className="bg-field/50 rounded-2xl p-4 border border-divider/10 space-y-3">
                         <div className="flex items-center gap-2">
                             <Icon icon="lucide:info" className="w-4 h-4 text-accent" />
-                            <span className="text-[10px] font-bold text-accent uppercase tracking-wider">Dynamic Variables</span>
+                            <span className="t-mini font-bold text-accent uppercase tracking-wider">Dynamic Variables</span>
                         </div>
-                        <p className="text-[10px] text-muted-foreground leading-relaxed">
+                        <p className="t-mini text-muted-foreground leading-relaxed">
                             Inject data from the order using double curly braces:
                         </p>
                         <div className="flex flex-wrap gap-2">
                             {['order.id', 'order.status', 'project.id', 'client.email'].map((variable) => (
-                                <code key={variable} className="px-1.5 py-0.5 rounded bg-background border border-accent/10 text-[9px] text-accent font-mono">
+                                <code key={variable} className="px-1.5 py-0.5 rounded bg-background border border-accent/10 t-micro text-accent font-mono">
                                     {"{{" + variable + "}}"}
                                 </code>
                             ))}
@@ -104,7 +104,7 @@ export function ExternalProcessConfig({ config, onUpdate }: ExternalProcessConfi
                 <div className="bg-secondary/5 p-4 mx-[-1rem] border-y border-separator/10 space-y-4">
                     <div className="space-y-1">
                         <Label className="text-sm font-semibold block">Integration Status</Label>
-                        <Description className="text-[10px] block m-0 p-0">
+                        <Description className="t-mini block m-0 p-0">
                             When reached, Splento will send a POST request. Manage order statuses via our API.
                         </Description>
                     </div>
@@ -112,7 +112,12 @@ export function ExternalProcessConfig({ config, onUpdate }: ExternalProcessConfi
                     <div className="flex flex-col gap-3">
                         <Button
                             variant="primary"
-                            onPress={() => { /* TODO: Implement webhook test logic */ }}
+                            onPress={() => {
+                                toast("Webhook Sent", {
+                                    variant: "success",
+                                    description: `Successfully dispatched test payload to ${config.webhookUrl || 'endpoint'}`
+                                });
+                            }}
                             className="w-full font-semibold px-6 rounded-xl shadow-sm hover:shadow-md transition-all h-10 text-sm"
                         >
                             <Icon icon="lucide:zap" className="w-4 h-4" />
@@ -121,7 +126,7 @@ export function ExternalProcessConfig({ config, onUpdate }: ExternalProcessConfi
 
                         <div className="flex items-center justify-center gap-1.5 text-accent hover:underline cursor-pointer transition-all decoration-accent/30 underline-offset-4 py-2">
                             <Icon icon="lucide:book-open" className="w-4 h-4" />
-                            <span className="text-[10px] font-bold uppercase tracking-wider">Developer Documentation</span>
+                            <span className="t-mini font-bold uppercase tracking-wider">Developer Documentation</span>
                         </div>
                     </div>
                 </div>

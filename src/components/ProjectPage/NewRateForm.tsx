@@ -13,7 +13,7 @@ interface NewRateFormProps {
 
 export function NewRateForm({ value, onChange, onSubmit, onCancel, label, isEditing = false }: NewRateFormProps) {
     return (
-        <div className="flex flex-col gap-4 p-4 border border-divider rounded-xl bg-content1/50 backdrop-blur-md">
+        <div className="flex flex-col gap-4 p-4 border border-divider rounded-xl bg-surface/50 backdrop-blur-md">
             <div className="grid grid-cols-1 md:grid-cols-12 gap-x-4 gap-y-6">
                 <div className="md:col-span-12 lg:col-span-5">
                     <TextField
@@ -33,13 +33,13 @@ export function NewRateForm({ value, onChange, onSubmit, onCancel, label, isEdit
                         </Label>
                         <Input
                             placeholder="e.g. Standard Rate"
-                            className="bg-content2 border-divider h-10 focus:border-accent"
+                            className="bg-field border-divider h-10 focus:border-accent"
                         />
                         <div className="flex justify-between mt-1 inline-flex w-full">
-                            <Description className="text-[10px] text-default-400">Visible to your team</Description>
-                            <span className="text-[10px] text-default-400">{value.name.length}/40</span>
+                            <Description className="t-mini text-default-400">Visible to your team</Description>
+                            <span className="t-mini text-default-400">{value.name.length}/40</span>
                         </div>
-                        <FieldError className="text-danger text-[10px] font-medium mt-1" />
+                        <FieldError className="text-danger t-mini font-medium mt-1" />
                     </TextField>
                 </div>
 
@@ -53,7 +53,7 @@ export function NewRateForm({ value, onChange, onSubmit, onCancel, label, isEdit
                         <Label className="text-sm font-medium text-default-700 mb-1.5">
                             Currency
                         </Label>
-                        <Select.Trigger className="bg-content2 border-divider h-10">
+                        <Select.Trigger className="bg-field border-divider h-10">
                             <Select.Value />
                             <Select.Indicator />
                         </Select.Trigger>
@@ -70,7 +70,7 @@ export function NewRateForm({ value, onChange, onSubmit, onCancel, label, isEdit
                                 ))}
                             </ListBox>
                         </Select.Popover>
-                        <FieldError className="text-danger text-[10px] font-medium mt-1" />
+                        <FieldError className="text-danger t-mini font-medium mt-1" />
                     </Select>
                 </div>
 
@@ -94,13 +94,13 @@ export function NewRateForm({ value, onChange, onSubmit, onCancel, label, isEdit
                         <Label className="text-sm font-medium text-default-700 mb-1.5">
                             Amount
                         </Label>
-                        <NumberField.Group className="bg-content2 border-divider rounded-lg overflow-hidden flex items-center h-10">
-                            <NumberField.DecrementButton className="h-full px-1 hover:bg-content3 flex items-center justify-center opacity-70 hover:opacity-100 transition-opacity min-w-[32px]" />
+                        <NumberField.Group className="bg-field border-divider rounded-lg overflow-hidden flex items-center h-10">
+                            <NumberField.DecrementButton className="h-full px-1 hover:bg-field-hover flex items-center justify-center opacity-70 hover:opacity-100 transition-opacity min-w-[32px]" />
                             <NumberField.Input className="flex-1 bg-transparent px-1 text-sm tabular-nums min-w-0" />
-                            <NumberField.IncrementButton className="h-full px-1 hover:bg-content3 flex items-center justify-center opacity-70 hover:opacity-100 transition-opacity min-w-[32px]" />
+                            <NumberField.IncrementButton className="h-full px-1 hover:bg-field-hover flex items-center justify-center opacity-70 hover:opacity-100 transition-opacity min-w-[32px]" />
                         </NumberField.Group>
                         <div className="h-[22px]" />
-                        <FieldError className="text-danger text-[10px] font-medium mt-1" />
+                        <FieldError className="text-danger t-mini font-medium mt-1" />
                     </NumberField>
                 </div>
 
@@ -114,7 +114,7 @@ export function NewRateForm({ value, onChange, onSubmit, onCancel, label, isEdit
                         <Label className="text-sm font-medium text-default-700 mb-1.5">
                             Unit
                         </Label>
-                        <Select.Trigger className="bg-content2 border-divider h-10">
+                        <Select.Trigger className="bg-field border-divider h-10">
                             <Select.Value />
                             <Select.Indicator />
                         </Select.Trigger>
@@ -128,7 +128,7 @@ export function NewRateForm({ value, onChange, onSubmit, onCancel, label, isEdit
                                 ))}
                             </ListBox>
                         </Select.Popover>
-                        <FieldError className="text-danger text-[10px] font-medium mt-1" />
+                        <FieldError className="text-danger t-mini font-medium mt-1" />
                     </Select>
                 </div>
             </div>

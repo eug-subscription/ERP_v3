@@ -1,9 +1,13 @@
+import { useMemo } from "react";
 import { Card, Tooltip, cn } from "@heroui/react";
 import { Icon } from "@iconify/react";
 import type { CanvasBlock as CanvasBlockType } from "../../../../types/workflow";
 import { UI_CATEGORIES, BLOCK_LIBRARY } from "../../../../data/block-ui-categories";
 import { getBlockLabel } from "../../../../utils/workflow";
 import { CANVAS_BLOCK_WIDTH, CANVAS_BLOCK_HEIGHT } from "../constants";
+import { TOOLTIP_DELAY } from "../../../../constants/ui-tokens";
+
+import { useRateItems } from "../../../../hooks/useRateItems";
 
 interface CanvasBlockCardProps {
     block: CanvasBlockType;
@@ -17,6 +21,19 @@ interface CanvasBlockCardProps {
  * Engineered for "Intentional Minimalism" - Compact, information-dense, yet breathable.
  */
 export function CanvasBlockCard({ block, isSelected, className, style }: CanvasBlockCardProps) {
+    const { data: rateItems } = useRateItems();
+
+    const pricingInfo = useMemo(() => {
+        if (!rateItems) return null;
+        const linkedItems = rateItems.filter(
+            item => item.status === 'active' && item.blockTypes?.includes(block.type)
+        );
+        if (linkedItems.length === 0) return null;
+        return {
+            names: linkedItems.map(item => item.displayName || item.name)
+        };
+    }, [block.type, rateItems]);
+
     // RESOLVE VISUAL CATEGORY:
     // We must look up the *visual* category from BLOCK_LIBRARY based on the block type.
     // The `block.category` property is the *logical* category (STARTING/PROCESSING) and does not map to colors.
@@ -25,7 +42,7 @@ export function CanvasBlockCard({ block, isSelected, className, style }: CanvasB
 
     // Find category metadata for styling
     const categoryMeta = UI_CATEGORIES.find(c => c.id === categoryId);
-    const accentColor = categoryMeta?.color || "#9CA3AF"; // Default to gray-400 if not found
+    const accentColor = categoryMeta?.color || "var(--color-cat-asset)"; // Fallback to asset gray
 
     // Validation logic
     const validationStatus = block.validationState || "valid";
@@ -89,14 +106,36 @@ export function CanvasBlockCard({ block, isSelected, className, style }: CanvasB
                         <span className="text-small font-bold text-foreground truncate leading-snug">
                             {getBlockLabel(block)}
                         </span>
-                        <span className="text-[10px] text-muted truncate">
+                        <span className="t-mini text-muted truncate">
                             {categoryMeta?.label || "Uncategorized"}
                         </span>
                     </div>
 
                     {/* Status/Validation Indicator */}
-                    <div className="shrink-0 flex items-center justify-center ml-auto">
-                        <Tooltip delay={0} closeDelay={0}>
+                    <div className="shrink-0 flex items-center gap-1.5 ml-auto">
+                        {pricingInfo && (
+                            <Tooltip delay={TOOLTIP_DELAY}>
+                                <Tooltip.Trigger>
+                                    <div className="flex items-center justify-center p-1 rounded-md bg-accent/10 border border-accent/20 cursor-help transition-colors hover:bg-accent/20">
+                                        <Icon icon="lucide:banknote" width={14} height={14} className="text-accent" />
+                                    </div>
+                                </Tooltip.Trigger>
+                                <Tooltip.Content>
+                                    <div className="flex flex-col gap-1 p-1">
+                                        <p className="text-xs font-bold text-foreground">
+                                            Billable Rates
+                                        </p>
+                                        {pricingInfo.names.map((name, idx) => (
+                                            <p key={idx} className="text-xs text-muted">
+                                                {name}
+                                            </p>
+                                        ))}
+                                    </div>
+                                </Tooltip.Content>
+                            </Tooltip>
+                        )}
+
+                        <Tooltip delay={TOOLTIP_DELAY} closeDelay={0}>
                             <Tooltip.Trigger>
                                 <div className="cursor-help p-1 rounded-full hover:bg-default transition-colors">
                                     {validationStatus === "valid" && (
@@ -126,11 +165,10 @@ export function CanvasBlockCard({ block, isSelected, className, style }: CanvasB
             {/* Selection Border Overlay */}
 
             {/* Selection Border Overlay - Adjusted for perfect concentric curvature */}
+            {/* Selection border uses rounded-[13.5px] for pixel-precise alignment with Card's rounded-xl (12px + 1.5px inset) */}
             {isSelected && (
                 <div className="absolute -inset-[1.5px] rounded-[13.5px] border-2 border-primary pointer-events-none z-50 shadow-[0_0_0_1px_rgba(59,130,246,0.1)]" />
             )}
         </div>
     );
 }
-
-

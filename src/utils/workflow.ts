@@ -1,4 +1,30 @@
-import { WorkflowBlock, CanvasBlock } from "../types/workflow";
+import { WorkflowBlock, CanvasBlock, WorkflowBlockType } from "../types/workflow";
+import { STANDARD_BRANCHES } from "../data/branch-structure";
+
+/**
+ * Checks whether a block type is allowed in a given workflow branch.
+ * Shared by useCanvasOperations (insertion validation) and useWorkflowBuilder (exposed API).
+ */
+export function isBlockAllowedInBranch(
+    blockType: WorkflowBlockType,
+    branchId: 'main' | 'photo' | 'video'
+): boolean {
+    if (branchId === 'photo') {
+        const branch = STANDARD_BRANCHES.find(b => b.id === 'photo');
+        return branch?.allowedBlockTypes.includes(blockType) || false;
+    }
+    if (branchId === 'video') {
+        const branch = STANDARD_BRANCHES.find(b => b.id === 'video');
+        return branch?.allowedBlockTypes.includes(blockType) || false;
+    }
+
+    // 'main' branch covers both 'initial' and 'completion'
+    const initialBranch = STANDARD_BRANCHES.find(b => b.id === 'initial');
+    const completionBranch = STANDARD_BRANCHES.find(b => b.id === 'completion');
+
+    return (initialBranch?.allowedBlockTypes.includes(blockType) ||
+        completionBranch?.allowedBlockTypes.includes(blockType)) || false;
+}
 
 /**
  * Gets a human-readable label for a workflow block.

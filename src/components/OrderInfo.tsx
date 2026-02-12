@@ -47,7 +47,7 @@ export function OrderInfo() {
 
   if (isLoading || !order || !orderDate) {
     return (
-      <Card className="bg-white border-none shadow-premium overflow-hidden">
+      <Card className="bg-background border-none shadow-premium overflow-hidden">
         <Card.Content className="p-6">
           <div className="animate-pulse space-y-8">
             <div className="h-7 w-48 bg-default-100 rounded-lg" />
@@ -87,7 +87,7 @@ export function OrderInfo() {
   };
 
   return (
-    <Card className="bg-white border-none shadow-premium overflow-hidden">
+    <Card className="bg-background border-none shadow-premium overflow-hidden">
       <Card.Content className="p-6">
         <h3 className="text-xl font-semibold mb-6">Order Details</h3>
 
@@ -167,8 +167,8 @@ export function OrderInfo() {
                       <div className="w-32 space-y-1">
                         <Label className="text-xs font-medium text-default-500">Country</Label>
                         <Select
-                          value={address?.country || "DE"}
-                          onChange={(val) => handleUpdateAddress("country", val as string)}
+                          selectedKey={address?.country || "DE"}
+                          onSelectionChange={(key) => handleUpdateAddress("country", key as string)}
                           aria-label="Country"
                         >
                           <Select.Trigger>
@@ -309,7 +309,7 @@ export function OrderInfo() {
           <div>
             <div className="flex items-center justify-between mb-4">
               <h4 className="text-sm font-bold text-default-900 uppercase tracking-widest">Tags</h4>
-              <Select aria-label="Add tag" className="w-10" onChange={handleAddTag}>
+              <Select aria-label="Add tag" className="w-10" onSelectionChange={handleAddTag}>
                 <Select.Trigger>
                   <Button isIconOnly size="sm" variant="ghost" className="rounded-full">
                     <Icon icon="lucide:plus" className="w-4 h-4" />
@@ -360,9 +360,8 @@ export function OrderInfo() {
                   variant="ghost"
                   size="sm"
                   onPress={() => setRating(star)}
-                  className={`border-none transition-all duration-200 hover:scale-125 focus:outline-none ${
-                    star <= rating ? "text-warning" : "text-default-200"
-                  }`}
+                  className={`border-none transition-all duration-200 hover:scale-125 focus:outline-none ${star <= rating ? "text-warning" : "text-default-200"
+                    }`}
                   aria-label={`Rate ${star} stars`}
                 >
                   <Icon

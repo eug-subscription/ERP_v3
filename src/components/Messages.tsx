@@ -39,7 +39,7 @@ export function Messages() {
                 >
                   <div className="flex justify-between items-center mb-1 gap-4">
                     <span className="font-semibold text-xs">{message.user.name}</span>
-                    <span className="text-[10px] opacity-60 uppercase tracking-wider">
+                    <span className="t-mini opacity-60 uppercase tracking-wider">
                       {message.time}
                     </span>
                   </div>
@@ -81,7 +81,7 @@ export function Messages() {
               <Label className="sr-only">Message content</Label>
               <Input
                 placeholder="Type a message..."
-                className="w-full h-10 px-4 rounded-xl border border-default-200 bg-white"
+                className="w-full h-10 px-4 rounded-xl border border-default-200 bg-background"
                 aria-label="Message content"
               />
             </div>

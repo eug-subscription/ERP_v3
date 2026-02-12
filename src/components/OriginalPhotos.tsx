@@ -24,33 +24,33 @@ export function OriginalPhotos() {
         Archives with all original photos for this order.
       </p>
 
-      <div className="border border-default-200 rounded-2xl overflow-hidden bg-white shadow-premium">
+      <div className="border border-default-200 rounded-2xl overflow-hidden bg-background shadow-premium">
         <div className="overflow-x-auto custom-scrollbar">
           <table className="w-full text-left border-collapse min-w-[800px]">
             <thead className="bg-default-50/80 backdrop-blur-sm border-b border-default-200">
               <tr>
-                <th className="font-bold text-[11px] uppercase tracking-widest text-default-500 py-4 px-4">
+                <th className="font-bold t-compact uppercase tracking-widest text-default-500 py-4 px-4">
                   File name
                 </th>
-                <th className="font-bold text-[11px] uppercase tracking-widest text-default-500 py-4 px-4">
+                <th className="font-bold t-compact uppercase tracking-widest text-default-500 py-4 px-4">
                   Source
                 </th>
-                <th className="font-bold text-[11px] uppercase tracking-widest text-default-500 py-4 px-4">
+                <th className="font-bold t-compact uppercase tracking-widest text-default-500 py-4 px-4">
                   Created by
                 </th>
-                <th className="font-bold text-[11px] uppercase tracking-widest text-default-500 py-4 px-4">
+                <th className="font-bold t-compact uppercase tracking-widest text-default-500 py-4 px-4">
                   Size
                 </th>
-                <th className="font-bold text-[11px] uppercase tracking-widest text-default-500 py-4 px-4">
+                <th className="font-bold t-compact uppercase tracking-widest text-default-500 py-4 px-4">
                   Downloaded by
                 </th>
-                <th className="font-bold text-[11px] uppercase tracking-widest text-default-500 py-4 px-4">
+                <th className="font-bold t-compact uppercase tracking-widest text-default-500 py-4 px-4">
                   Status
                 </th>
-                <th className="font-bold text-[11px] uppercase tracking-widest text-default-500 py-4 px-4 text-right">
+                <th className="font-bold t-compact uppercase tracking-widest text-default-500 py-4 px-4 text-right">
                   Date & time
                 </th>
-                <th className="font-bold text-[11px] uppercase tracking-widest text-default-500 py-4 px-4">
+                <th className="font-bold t-compact uppercase tracking-widest text-default-500 py-4 px-4">
                   Actions
                 </th>
               </tr>

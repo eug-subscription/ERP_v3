@@ -56,7 +56,7 @@ export function RateSelect({
                 className="w-full"
             >
                 {label && <Label className="text-sm font-medium">{label}</Label>}
-                <Select.Trigger className="bg-content2 border-divider hover:border-accent transition-colors min-h-12 h-auto py-2">
+                <Select.Trigger className="bg-field border-divider hover:border-accent transition-colors min-h-12 h-auto py-2">
                     <Select.Value>
                         {(() => {
                             const selectedRate = rates.find(r => r.id === selectedRateId);
@@ -90,7 +90,7 @@ export function RateSelect({
                     <Select.Indicator />
                 </Select.Trigger>
                 <Select.Popover className="p-0 overflow-hidden">
-                    <div className="p-3 pb-2 border-b border-divider bg-content1/50 sticky top-0 z-10 backdrop-blur-sm">
+                    <div className="p-3 pb-2 border-b border-divider bg-surface/50 sticky top-0 z-10 backdrop-blur-sm">
                         <SearchField
                             value={searchQuery}
                             onChange={setSearchQuery}
@@ -98,7 +98,7 @@ export function RateSelect({
                             className="w-full"
                             aria-label="Search rates"
                         >
-                            <SearchField.Group className="bg-content2">
+                            <SearchField.Group className="bg-field">
                                 <SearchField.SearchIcon />
                                 <SearchField.Input
                                     placeholder="Search rates..."
@@ -130,21 +130,21 @@ export function RateSelect({
                                         <div className="flex items-center gap-2 mb-0.5">
                                             <span className="font-medium truncate text-sm">{rate.name}</span>
                                             {rate.isDefault && (
-                                                <Chip color="accent" variant="primary" size="sm" className="h-5 text-[10px] px-1.5">
+                                                <Chip color="accent" variant="primary" size="sm" className="h-5 t-mini px-1.5">
                                                     Default
                                                 </Chip>
                                             )}
                                             {rate.lastUsed && (
-                                                <Chip color="default" variant="tertiary" size="sm" className="h-5 text-[10px] px-1.5">
+                                                <Chip color="default" variant="tertiary" size="sm" className="h-5 t-mini px-1.5">
                                                     Last used
                                                 </Chip>
                                             )}
                                         </div>
                                         <div className="flex flex-col gap-0.5">
-                                            <span className="text-[10px] text-default-500 uppercase font-bold tracking-tight">
+                                            <span className="t-mini text-default-500 uppercase font-bold tracking-tight">
                                                 {rate.unit}
                                             </span>
-                                            <span className="text-[10px] text-default-400">
+                                            <span className="t-mini text-default-400">
                                                 Created on {new Intl.DateTimeFormat("en-GB", {
                                                     day: "2-digit",
                                                     month: "2-digit",

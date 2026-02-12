@@ -1,0 +1,202 @@
+/**
+ * ERP Pricing & Workflow TypeScript Definitions
+ * Based on erp_pricing_spec_v1_7.md
+ */
+
+import type { WorkflowBlockType } from './workflow';
+
+// --- Base Enums and Union Types ---
+
+export type Status = 'active' | 'deprecated' | 'archived';
+
+export type UnitType = 'hour' | 'image' | 'video' | 'day' | 'package' | 'minute';
+
+export type Currency = 'EUR' | 'GBP' | 'USD';
+
+export type TaxTreatment = 'exclusive' | 'inclusive';
+
+export type ModifierSource = 'MANUAL';
+
+export type RateSource = 'rate_card' | 'project_override' | 'manual';
+
+export type BillingLineStatus = 'draft' | 'confirmed' | 'voided';
+
+// --- Global Rate Management ---
+
+/**
+ * Atomic pricing unit defining name and unit type.
+ * Optional blockTypes defines which workflow block types this Rate Item can be billed against.
+ */
+export interface RateItem {
+    id: string;
+    name: string;
+    displayName?: string;
+    description?: string;
+    unitType: UnitType;
+    blockTypes?: WorkflowBlockType[];
+    status: Status;
+}
+
+export type RuleType = 'none' | 'minimum' | 'package' | 'tier' | 'bulk_discount';
+
+/**
+ * Snapshot of rules applied to a billing line (e.g., minimums).
+ */
+export interface AppliedRuleSnapshot {
+    schemaVersion: number;
+    ruleType: RuleType;
+    minimum?: number;
+    unit?: string;
+}
+
+/**
+ * A single rate entry within a Rate Card.
+ */
+export interface RateCardEntry {
+    id: string;
+    rateCardId: string;
+    rateItemId: string;
+    costRate: number;
+    clientRate: number;
+    rulesJson: string; // JSON string of AppliedRuleSnapshot or similar
+}
+
+/**
+ * A complete pricing package for a segment in a single currency.
+ */
+export interface RateCard {
+    id: string;
+    name: string;
+    currency: Currency;
+    status: Status;
+    version: number;
+    entries: RateCardEntry[];
+}
+
+
+
+/**
+ * Reference table entry for modifier reasons.
+ */
+export interface ModifierReasonCode {
+    id: string;
+    code: string;
+    displayName: string;
+    active: boolean;
+    status: Status;
+    usageCount?: number;
+}
+
+// --- Project Pricing ---
+
+/**
+ * Project-level pricing profile.
+ */
+export interface ProjectPricingSettings {
+    projectId: string; // Associated project identifier
+    currency: Currency;
+    taxTreatment: TaxTreatment;
+    taxRate: number; // decimal, e.g. 0.20 for 20%
+    rateCardId: string;
+    taxRegistrationNumber?: string;
+}
+
+/**
+ * Controlled project-level rate overrides.
+ */
+export interface ProjectPricingOverride {
+    id: string;
+    projectId: string;
+    rateItemId: string;
+    costRate?: number;
+    clientRate?: number;
+    reason: string; // Required per spec
+    effectiveFrom?: string; // ISO date string
+    effectiveTo?: string; // ISO date string
+    createdBy: string;
+    createdAt: string; // ISO date string
+}
+
+// --- Orders and Billing Instances ---
+
+/**
+ * The core billing record (Billing Line Instance).
+ * Snapshot of the final priced outcome stored on an order.
+ */
+export interface BillingLineInstance {
+    // Identifiers
+    id: string;
+    orderId: string;
+    sourceBlockId?: string | null; // Added for UI grouping/context
+    rateItemId: string;
+    rateCardId: string;
+
+    // Currency and tax context
+    currency: Currency;
+    taxTreatment: TaxTreatment;
+    taxRate: number;
+
+    // Rate source tracking
+    rateSource: RateSource;
+
+    // Base rates (from Rate Card)
+    baseCostRate: number;
+    baseClientRate: number;
+
+    // Override rates (if applied from Project Pricing)
+    overrideCostRate: number | null;
+    overrideClientRate: number | null;
+
+    // Effective rates (after override selection, before rules/modifiers)
+    effectiveCostRate: number;
+    effectiveClientRate: number;
+
+    // Rules application
+    appliedRulesSnapshot: AppliedRuleSnapshot | null;
+
+    // Quantity tracking
+    quantityInput: number;
+    quantityEffective: number;
+
+    // Client modifier application
+    clientModifierValue: number;
+    clientModifierReasonCode: string | null;
+    clientModifierNote: string | null;
+    clientModifierSource: ModifierSource;
+
+    // Cost modifier application
+    costModifierValue: number;
+    costModifierReasonCode: string | null;
+    costModifierNote: string | null;
+    costModifierSource: ModifierSource;
+
+    // Final rates (after all adjustments)
+    finalCostRate: number;
+    finalClientRate: number;
+
+    // Line totals
+    lineCostTotal: number;
+    lineClientTotalPreTax: number;
+    taxAmount: number;
+    lineClientTotalIncTax: number;
+    lineMargin: number;
+
+    // Status and audit metadata
+    status: BillingLineStatus;
+    createdAt: string;
+    createdBy: string;
+    confirmedAt: string | null;
+    confirmedBy: string | null;
+    voidedAt: string | null;
+    voidedBy: string | null;
+    voidReason: string | null;
+}
+
+/**
+ * Payload for creating a new billing line.
+ * Omit 'id' as it is generated by backend/mutation.
+ * 'sourceBlockId' is optional during creation.
+ */
+export type NewBillingLinePayload = Omit<BillingLineInstance, 'id' | 'sourceBlockId'> & {
+    sourceBlockId?: string | null;
+};

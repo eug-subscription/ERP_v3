@@ -1,7 +1,7 @@
-import { Spinner, Breadcrumbs } from "@heroui/react";
+import { Spinner, Breadcrumbs, Surface } from "@heroui/react";
 import { useRouterState, Outlet } from "@tanstack/react-router";
 import { useProjectPage } from "../../hooks/useProjectPage";
-import { StatisticCard } from "./StatisticCard";
+import { StatisticCard } from "../shared/StatisticCard";
 
 import { ProjectTabs } from "./ProjectTabs";
 
@@ -13,7 +13,9 @@ export function ProjectPage() {
     const routerState = useRouterState();
     const { stats, info, isLoading } = state;
 
-    const isWorkflowTab = routerState.location.pathname.includes("/project/workflow");
+    const isWorkflowTab = routerState.location.pathname.endsWith("/workflow");
+    const isPricingBetaTab = routerState.location.pathname.endsWith("/pricing-beta");
+    const showSidebar = !isWorkflowTab && !isPricingBetaTab;
 
     if (isLoading || !stats || !info) {
         return (
@@ -27,10 +29,10 @@ export function ProjectPage() {
         <div className="p-6 md:p-8 max-w-7xl mx-auto">
             <header className="mb-8">
                 <Breadcrumbs className="mb-3">
-                    <Breadcrumbs.Item href="#">Projects</Breadcrumbs.Item>
-                    <Breadcrumbs.Item>Wolf Germany</Breadcrumbs.Item>
+                    <Breadcrumbs.Item href="/projects">Projects</Breadcrumbs.Item>
+                    <Breadcrumbs.Item>{info.name}</Breadcrumbs.Item>
                 </Breadcrumbs>
-                <h1 className="text-3xl font-bold mb-1">Project: Wolf Germany</h1>
+                <h1 className="text-3xl font-bold mb-1">Project: {info.name}</h1>
                 <p className="text-default-500">
                     A centralized view of your projects, offering quick access to essential information.
                 </p>
@@ -55,11 +57,13 @@ export function ProjectPage() {
 
             <ProjectTabs />
 
-            <div className={`grid grid-cols-1 ${isWorkflowTab ? "lg:grid-cols-1" : "lg:grid-cols-[3fr_1fr]"} gap-8 mt-8`}>
+            <div className={`grid grid-cols-1 ${showSidebar ? "lg:grid-cols-[3fr_1fr]" : "lg:grid-cols-1"} gap-8 mt-1`}>
                 <main>
-                    <Outlet />
+                    <Surface variant="secondary" className="rounded-3xl shadow-sm overflow-hidden p-6 md:p-10">
+                        <Outlet />
+                    </Surface>
                 </main>
-                {!isWorkflowTab && (
+                {showSidebar && (
                     <aside className="space-y-6">
                         <ProjectInfoCard info={info} />
                         <TagsCard tags={info.tags} />

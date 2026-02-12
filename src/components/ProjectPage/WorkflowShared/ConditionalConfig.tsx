@@ -51,7 +51,7 @@ export function ConditionalConfig({ config, availableSteps, onUpdate }: Conditio
                                 <Radio.Control><Radio.Indicator /></Radio.Control>
                                 <Radio.Content>
                                     <Label className="font-semibold text-sm block">{cond.label}</Label>
-                                    <Description className="text-[10px] block line-clamp-2">{cond.description}</Description>
+                                    <Description className="t-mini block line-clamp-2">{cond.description}</Description>
                                 </Radio.Content>
                             </Radio>
                         ))}
@@ -114,7 +114,7 @@ function CardPath({ type, label, icon, currentValue, availableSteps, onSelect, i
         <div className={`p-4 mx-[-1rem] border-y ${bgClass} ${borderClass} space-y-3 transition-opacity hover:opacity-90`}>
             <div className={`flex items-center gap-2 ${accentClass}`}>
                 <Icon icon={icon} className="w-3.5 h-3.5" />
-                <span className="text-[10px] font-bold uppercase tracking-widest">{label}</span>
+                <span className="t-mini font-bold uppercase tracking-widest">{label}</span>
             </div>
 
             <Select
@@ -123,7 +123,7 @@ function CardPath({ type, label, icon, currentValue, availableSteps, onSelect, i
                 onChange={(id) => onSelect(id as string)}
                 fullWidth
             >
-                <Label className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground/60 mb-1 block">
+                <Label className="t-mini font-bold uppercase tracking-wider text-muted-foreground/60 mb-1 block">
                     Target Block
                 </Label>
                 <Select.Trigger className="h-10 rounded-xl bg-background/50 border-separator/10">
@@ -140,7 +140,7 @@ function CardPath({ type, label, icon, currentValue, availableSteps, onSelect, i
                         {availableSteps.map(step => (
                             <ListBox.Item key={step.id} id={step.id} textValue={step.label}>
                                 <Label className="text-sm font-medium">{step.label}</Label>
-                                <Description className="text-[10px]">{step.category}</Description>
+                                <Description className="t-mini">{step.category}</Description>
                             </ListBox.Item>
                         ))}
                     </ListBox>

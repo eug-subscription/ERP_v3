@@ -1,12 +1,20 @@
 import React from "react";
-import { Outlet, createRootRoute, createRoute, createRouter } from "@tanstack/react-router";
+import { createRootRoute, createRoute, createRouter } from "@tanstack/react-router";
+// Eagerly imported — these 6 components are <1KB combined, not worth lazy-loading.
+// Trade-off: lose code-splitting but gain stable component identity to prevent remounting.
+import {
+  AccountComingSoon,
+  NotificationsComingSoon,
+  SecurityComingSoon,
+  ManagersComingSoon,
+  GuidelinesComingSoon,
+  SettingsComingSoon,
+} from "./components/ComingSoonPages";
 
 // 1. Root Route - Global shell (providers, etc.)
 const rootRoute = createRootRoute({
-  component: () => (
-    <div className="min-h-screen bg-background font-sans antialiased">
-      <Outlet />
-    </div>
+  component: React.lazy(() =>
+    import("./components/layouts/AppLayout").then(m => ({ default: m.AppLayout }))
   ),
 });
 
@@ -29,21 +37,7 @@ const indexRoute = createRoute({
 const uploadingRoute = createRoute({
   getParentRoute: () => orderLayoutRoute,
   path: "/uploading",
-  component: () => {
-    const FileUploadSection = React.lazy(() => import("./components/FileUploadSection").then(m => ({ default: m.FileUploadSection })));
-    return (
-      <React.Suspense fallback={<div className="p-8 text-center animate-pulse">Loading Uploads...</div>}>
-        <FileUploadSection
-          title="Uploading unedited photos"
-          description="Upload unedited photos for further processing."
-        />
-        <FileUploadSection
-          title="Uploading edited photos"
-          description="Upload a folder with all edited photos to the same structure as the original photos."
-        />
-      </React.Suspense>
-    );
-  },
+  component: React.lazy(() => import("./components/FileUploadTabs").then(m => ({ default: m.FileUploadTabs }))),
 });
 
 const originalRoute = createRoute({
@@ -64,16 +58,17 @@ const teamRoute = createRoute({
   component: React.lazy(() => import("./components/TeamMembers").then(m => ({ default: m.TeamMembers }))),
 });
 
-const financesRoute = createRoute({
-  getParentRoute: () => orderLayoutRoute,
-  path: "/finances",
-  component: React.lazy(() => import("./components/FinancialBreakdown").then(m => ({ default: m.FinancialBreakdown }))),
-});
 
 const timelineRoute = createRoute({
   getParentRoute: () => orderLayoutRoute,
   path: "/timeline",
   component: React.lazy(() => import("./components/Timeline").then(m => ({ default: m.Timeline }))),
+});
+
+const billingRoute = createRoute({
+  getParentRoute: () => orderLayoutRoute,
+  path: "/billing",
+  component: React.lazy(() => import("./components/OrderBillingRoute").then(m => ({ default: m.OrderBillingRoute }))),
 });
 
 const messagesRoute = createRoute({
@@ -85,41 +80,42 @@ const messagesRoute = createRoute({
 // 4. Project Page Route (Parent)
 const projectRoute = createRoute({
   getParentRoute: () => rootRoute,
-  path: "/project",
+  path: "/project/$projectId",
   component: React.lazy(() => import("./components/ProjectPage/ProjectPage").then(m => ({ default: m.ProjectPage }))),
 });
 
 const projectIndexRoute = createRoute({
   getParentRoute: () => projectRoute,
   path: "/",
-  beforeLoad: ({ navigate }) => {
-    throw navigate({ to: "/project/prices", replace: true });
+  beforeLoad: ({ navigate, params: { projectId } }) => {
+    throw navigate({ to: `/project/${projectId}/prices`, replace: true });
   },
 });
 
 const projectAccountRoute = createRoute({
   getParentRoute: () => projectRoute,
   path: "/account",
-  component: () => <div className="p-8 text-center text-default-500">Account Details (Coming Soon)</div>,
+  component: AccountComingSoon,
 });
 
 const projectNotificationsRoute = createRoute({
   getParentRoute: () => projectRoute,
   path: "/notifications",
-  component: () => <div className="p-8 text-center text-default-500">Notifications (Coming Soon)</div>,
+  component: NotificationsComingSoon,
 });
 
 const projectSecurityRoute = createRoute({
   getParentRoute: () => projectRoute,
   path: "/security",
-  component: () => <div className="p-8 text-center text-default-500">Security (Coming Soon)</div>,
+  component: SecurityComingSoon,
 });
 
 const projectManagersRoute = createRoute({
   getParentRoute: () => projectRoute,
   path: "/managers",
-  component: () => <div className="p-8 text-center text-default-500">Managers (Coming Soon)</div>,
+  component: ManagersComingSoon,
 });
+
 
 const projectPricesRoute = createRoute({
   getParentRoute: () => projectRoute,
@@ -133,16 +129,60 @@ const projectWorkflowRoute = createRoute({
   component: React.lazy(() => import("./components/ProjectPage/WorkflowBuilder/WorkflowBuilder").then(m => ({ default: m.WorkflowBuilder }))),
 });
 
+const projectPricingBetaRoute = createRoute({
+  getParentRoute: () => projectRoute,
+  path: "/pricing-beta",
+  component: React.lazy(() => import("./components/ProjectPage/Pricing/ProjectPricingTab").then(m => ({ default: m.ProjectPricingTab }))),
+});
+
 const projectGuidelinesRoute = createRoute({
   getParentRoute: () => projectRoute,
   path: "/guidelines",
-  component: () => <div className="p-8 text-center text-default-500">Guidelines (Coming Soon)</div>,
+  component: GuidelinesComingSoon,
 });
 
 const projectSettingsRoute = createRoute({
   getParentRoute: () => projectRoute,
   path: "/settings",
-  component: () => <div className="p-8 text-center text-default-500">Settings (Coming Soon)</div>,
+  component: SettingsComingSoon,
+});
+
+export type PricingTab = "rate-items" | "rate-cards" | "modifier-codes";
+
+export type PricingSearch = {
+  tab?: PricingTab;
+};
+
+// Rates Layout Route (Parent)
+const ratesLayoutRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  id: "_rates",
+  component: React.lazy(() =>
+    import("./components/RateManagement/RatesLayout").then(m => ({ default: m.RatesLayout }))
+  ),
+});
+
+// Rates Index Route (Main page with tabs)
+const ratesIndexRoute = createRoute({
+  getParentRoute: () => ratesLayoutRoute,
+  path: "/rates",
+  validateSearch: (search: Record<string, unknown>): PricingSearch => {
+    return {
+      tab: (search.tab as PricingTab) || "rate-items",
+    };
+  },
+  component: React.lazy(() =>
+    import("./components/RateManagement/RateManagementPage").then(m => ({ default: m.RateManagementPage }))
+  ),
+});
+
+// Rate Card Detail Route
+const rateCardDetailRoute = createRoute({
+  getParentRoute: () => ratesLayoutRoute,
+  path: "/rates/rate-cards/$cardId",
+  component: React.lazy(() =>
+    import("./components/RateManagement/RateCards/RateCardDetailPage").then(m => ({ default: m.RateCardDetailPage }))
+  ),
 });
 
 // 5. Create Router
@@ -153,7 +193,7 @@ const routeTree = rootRoute.addChildren([
     originalRoute,
     itemsRoute,
     teamRoute,
-    financesRoute,
+    billingRoute,
     timelineRoute,
     messagesRoute,
   ]),
@@ -165,8 +205,13 @@ const routeTree = rootRoute.addChildren([
     projectManagersRoute,
     projectPricesRoute,
     projectWorkflowRoute,
+    projectPricingBetaRoute,
     projectGuidelinesRoute,
     projectSettingsRoute,
+  ]),
+  ratesLayoutRoute.addChildren([
+    ratesIndexRoute,
+    rateCardDetailRoute,
   ]),
 ]);
 

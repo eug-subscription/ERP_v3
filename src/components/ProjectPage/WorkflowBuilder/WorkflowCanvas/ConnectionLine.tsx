@@ -18,7 +18,7 @@ export function ConnectionLine({
     animated = true,
     variant = 'vertical',
     height = CONNECTION_LINE_HEIGHT,
-    color = '#A1A1AA', // Default explicit gray for visibility
+    color = 'var(--color-cat-asset)', // Default gray for neutral connections
     curveDirection = 'right',
     className = ""
 }: ConnectionLineProps) {

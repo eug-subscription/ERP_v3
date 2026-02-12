@@ -5,10 +5,10 @@ import { DropZone } from "./DropZone";
 import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
 import { CONNECTION_LINE_WIDTH } from "../constants";
 
-/** Lane-specific colors for consistent theming */
+/** Lane-specific colors for consistent theming — uses CSS vars from index.css */
 const LANE_COLORS = {
-    photo: "#3B82F6", // Blue
-    video: "#8B5CF6", // Purple
+    photo: "var(--color-cat-setup)", // Blue — matches category token
+    video: "var(--color-cat-prod)",  // Purple — matches category token
 } as const;
 
 /** Fixed SVG coordinate positions for perfect alignment */
@@ -133,7 +133,7 @@ export function LaneContainer({
                 >
                     <div className="relative flex flex-col items-center w-full mb-1">
                         <span
-                            className="text-[10px] font-semibold text-default-500 uppercase tracking-[0.1em] bg-white dark:bg-content1 shadow-sm px-3 py-1 rounded border-l-2"
+                            className="t-mini font-semibold text-default-500 uppercase tracking-[0.1em] bg-surface shadow-sm px-3 py-1 rounded border-l-2"
                             style={{ borderLeftColor: LANE_COLORS.photo }}
                         >
                             Path A (Photo)
@@ -192,7 +192,7 @@ export function LaneContainer({
                 >
                     <div className="relative flex flex-col items-center w-full mb-1">
                         <span
-                            className="text-[10px] font-semibold text-default-500 uppercase tracking-[0.1em] bg-white dark:bg-content1 shadow-sm px-3 py-1 rounded border-l-2"
+                            className="t-mini font-semibold text-default-500 uppercase tracking-[0.1em] bg-surface shadow-sm px-3 py-1 rounded border-l-2"
                             style={{ borderLeftColor: LANE_COLORS.video }}
                         >
                             Path B (Video)

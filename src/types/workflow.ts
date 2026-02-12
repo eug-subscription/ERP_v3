@@ -308,6 +308,8 @@ export interface BranchDefinition {
 export interface WorkflowTemplate extends WorkflowPreset {
     /** Existing branches kept for backward compatibility if needed */
     branches?: WorkflowBranch[];
+    /** Optional timeline configuration with visibility and label overrides */
+    timelineConfig?: TimelineConfig;
 }
 
 /**
@@ -357,6 +359,7 @@ export interface ProjectWorkflowConfig {
     projectId: string;
     templateId: string;
     branches: WorkflowBranch[];
+    timelineConfig?: TimelineConfig;
 }
 
 /**
@@ -386,6 +389,33 @@ export interface WorkflowCanvasState {
     isDragging: boolean;
     hasUnsavedChanges: boolean;
     lastAddedBlockId: string | null;
+}
+
+// Timeline Configuration Types
+
+/** Audience groups that view the timeline */
+export type TimelineAudience = 'client' | 'pro' | 'ops';
+
+/** Audience-specific presentation override for a single timeline step */
+export interface TimelineStepOverride {
+    /** Hide this step from the audience. Default: true (visible) */
+    visible?: boolean;
+    /** Custom label for this audience. Default: block's canvas label */
+    label?: string;
+    /** Custom description for this audience. Default: empty or audience-specific default */
+    description?: string;
+}
+
+/** Per-audience overrides for a single block instance */
+export interface TimelineBlockOverrides {
+    client?: TimelineStepOverride;
+    pro?: TimelineStepOverride;
+    ops?: TimelineStepOverride;
+}
+
+/** Complete timeline configuration. Keys are block instance IDs */
+export interface TimelineConfig {
+    steps: Record<string, TimelineBlockOverrides>;
 }
 
 // Order Instance Tracking Types

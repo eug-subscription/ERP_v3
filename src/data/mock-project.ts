@@ -48,15 +48,17 @@ export interface ProjectStats {
 }
 
 export interface ProjectInfo {
+    name: string;
     createdOn: string;
     createdBy: string;
     tags: string[];
 }
 
 export const mockProjectInfo: ProjectInfo = {
+    name: "Wolt Germany",
     createdOn: "Jan 10, 2023",
     createdBy: "Eugene S.",
-    tags: ["Food photography", "Wolf Germany", "Wolf Food App", "Editing"],
+    tags: ["Food photography", "Wolt Germany", "Wolt Food App", "Editing"],
 };
 
 export const mockRates: Rate[] = [

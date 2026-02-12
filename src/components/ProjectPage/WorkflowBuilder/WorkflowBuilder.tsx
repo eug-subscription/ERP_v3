@@ -19,6 +19,7 @@ import { useWorkflowBuilder } from "../../../hooks/useWorkflowBuilder";
 import { useProjectWorkflow } from "../../../hooks/useProjectWorkflow";
 import { CanvasBlockCard } from "./WorkflowCanvas/CanvasBlockCard";
 import type { CanvasBlock as CanvasBlockType, UserWorkflowTemplate, TemplateCategory } from "../../../types/workflow";
+
 import { CANVAS_BLOCK_WIDTH, PLACEHOLDER_PREFIX } from "./constants";
 import { BlockSettingsPanel, BlockSettingsRef } from "./BlockSettings/BlockSettingsPanel";
 import { Button, Chip, Modal, Alert, Tooltip, ButtonGroup, Dropdown, Label as HeroLabel } from "@heroui/react";
@@ -28,6 +29,9 @@ import { TemplateSelectorModal } from "./TemplateSelectorModal";
 import { SaveAsTemplateModal } from "./SaveAsTemplateModal";
 import { useWorkflowTemplates } from "../../../hooks/useWorkflowTemplates";
 import { TemplateApplyConfirmModal } from "./TemplateApplyConfirmModal";
+import { TOOLTIP_DELAY } from "../../../constants/ui-tokens";
+import { TimelineConfigModal } from "./TimelineConfigModal";
+import { TIMELINE_ICON_SIZES } from "../../../constants/timeline";
 
 type ActiveDragState =
     | { kind: 'LIBRARY', item: BlockLibraryItem }
@@ -56,6 +60,7 @@ export function WorkflowBuilder({ projectId = 'current-project' }: { projectId?:
     const [showNamingModal, setShowNamingModal] = useState(false);
     const [showTemplateSelector, setShowTemplateSelector] = useState(false);
     const [showSaveAsTemplate, setShowSaveAsTemplate] = useState(false);
+    const [showTimelineModal, setShowTimelineModal] = useState(false);
     const [isPreviewingFixes, setIsPreviewingFixes] = useState(false);
     const [pendingTemplate, setPendingTemplate] = useState<UserWorkflowTemplate | null>(null);
 
@@ -342,7 +347,7 @@ export function WorkflowBuilder({ projectId = 'current-project' }: { projectId?:
 
                 <div className="flex items-center gap-3">
                     {errorCount > 0 && (
-                        <Tooltip delay={0} closeDelay={100}>
+                        <Tooltip delay={TOOLTIP_DELAY} closeDelay={100}>
                             <Tooltip.Trigger>
                                 <Chip
                                     color="danger"
@@ -375,7 +380,7 @@ export function WorkflowBuilder({ projectId = 'current-project' }: { projectId?:
                         </Tooltip>
                     )}
                     {warningCount > 0 && (
-                        <Tooltip delay={0} closeDelay={100}>
+                        <Tooltip delay={TOOLTIP_DELAY} closeDelay={100}>
                             <Tooltip.Trigger>
                                 <Chip
                                     color="warning"
@@ -411,6 +416,16 @@ export function WorkflowBuilder({ projectId = 'current-project' }: { projectId?:
                     <Button
                         variant="ghost"
                         className="rounded-2xl h-9 px-4 font-bold text-primary hover:bg-primary-50 dark:hover:bg-primary-900/10 text-sm"
+                        onPress={() => setShowTimelineModal(true)}
+                        isDisabled={isWorkflowLoading || state.blocks.length === 0}
+                    >
+                        <Icon icon="lucide:milestone" width={TIMELINE_ICON_SIZES.SM} className="mr-2" />
+                        Timeline
+                    </Button>
+
+                    <Button
+                        variant="ghost"
+                        className="rounded-2xl h-9 px-4 font-bold text-primary hover:bg-primary-50 dark:hover:bg-primary-900/10 text-sm"
                         onPress={() => setShowTemplateSelector(true)}
                         isDisabled={isWorkflowLoading}
                     >
@@ -420,7 +435,7 @@ export function WorkflowBuilder({ projectId = 'current-project' }: { projectId?:
 
                     <ButtonGroup variant="primary" className="shadow-lg shadow-primary/20 rounded-full overflow-hidden">
                         <Button
-                            className="h-9 px-4 font-bold text-sm"
+                            size="md"
                             onPress={handleSave}
                             isPending={isSaving}
                             isDisabled={isSaving || isWorkflowLoading}
@@ -431,8 +446,8 @@ export function WorkflowBuilder({ projectId = 'current-project' }: { projectId?:
                         <Dropdown>
                             <Button
                                 isIconOnly
+                                size="md"
                                 variant="primary"
-                                className="h-9 w-9 min-w-9"
                                 aria-label="More save options"
                             >
                                 <Icon icon="lucide:chevron-down" width={14} />
@@ -463,7 +478,7 @@ export function WorkflowBuilder({ projectId = 'current-project' }: { projectId?:
                 onDragOver={handleDragOver}
                 onDragEnd={handleDragEnd}
             >
-                <div className="flex flex-1 overflow-hidden rounded-2xl border border-default-200 bg-background shadow-premium-sm relative">
+                <div className="flex flex-1 overflow-hidden rounded-2xl border border-default-200 bg-surface shadow-premium-sm relative">
 
                     {/* Block Library - Sidebar (Desktop) or Drawer (Tablet) */}
                     <div className={`${isDesktop ? 'relative' : 'fixed inset-0 z-50 pointer-events-none transition-all duration-300'}`}>
@@ -476,7 +491,7 @@ export function WorkflowBuilder({ projectId = 'current-project' }: { projectId?:
                             />
                         )}
                         <div
-                            className={`transform transition-all duration-300 ease-in-out h-full pointer-events-auto bg-background ${isDesktop ? 'relative' : 'absolute inset-y-0 left-0 shadow-2xl'} ${isLibraryOpen ? 'translate-x-0 w-[280px]' : '-translate-x-full w-0 opacity-0 overflow-hidden'}`}
+                            className={`transform transition-all duration-300 ease-in-out h-full pointer-events-auto bg-surface ${isDesktop ? 'relative' : 'absolute inset-y-0 left-0 shadow-2xl'} ${isLibraryOpen ? 'translate-x-0 w-[280px]' : '-translate-x-full w-0 opacity-0 overflow-hidden'}`}
                         >
                             <BlockLibrary />
                         </div>
@@ -739,6 +754,17 @@ export function WorkflowBuilder({ projectId = 'current-project' }: { projectId?:
                 onClose={() => setPendingTemplate(null)}
                 onConfirm={handleConfirmTemplateApply}
                 templateName={pendingTemplate?.name || ""}
+            />
+
+            <TimelineConfigModal
+                isOpen={showTimelineModal}
+                onOpenChange={setShowTimelineModal}
+                blocks={state.blocks}
+                timelineConfig={state.timelineConfig}
+                onSave={(config) => {
+                    actions.setTimelineConfig(config);
+                    setShowTimelineModal(false);
+                }}
             />
         </div>
     );

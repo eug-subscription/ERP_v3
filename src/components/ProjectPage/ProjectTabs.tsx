@@ -1,38 +1,35 @@
-import React from "react";
-import { Tabs } from "@heroui/react";
+import { Tabs, Chip } from "@heroui/react";
 import { Icon } from "@iconify/react";
 import { useNavigate, useRouterState } from "@tanstack/react-router";
 
 /**
- * ProjectTabs component provides navigation for project-specific sections.
- * Aligned with HeroUI v3 compound component patterns and legacy design requirements.
+ * ProjectTabs - Navigation tabs for project sections.
  */
 export function ProjectTabs() {
     const navigate = useNavigate();
     const routerState = useRouterState();
+    const projectId = routerState.location.pathname.split('/')[2] || '';
 
     const sections = [
-        { id: "account", name: "Account details", icon: "lucide:layout-grid", path: "/project/account" },
-        { id: "notifications", name: "Notifications", icon: "lucide:bell", path: "/project/notifications" },
-        { id: "security", name: "Security", icon: "lucide:shield", path: "/project/security" },
-        { id: "managers", name: "Managers", icon: "lucide:users", path: "/project/managers" },
-        { id: "prices", name: "Prices", icon: "lucide:tag", path: "/project/prices" },
-        { id: "workflow", name: "Workflow", icon: "lucide:git-branch", path: "/project/workflow" },
-        { id: "guidelines", name: "Guidelines", icon: "lucide:file-text", path: "/project/guidelines" },
-        { id: "settings", name: "Settings", icon: "lucide:settings", path: "/project/settings" },
+        { id: "account", name: "Account details", icon: "lucide:layout-grid", path: `/project/${projectId}/account` },
+        { id: "notifications", name: "Notifications", icon: "lucide:bell", path: `/project/${projectId}/notifications` },
+        { id: "security", name: "Security", icon: "lucide:shield", path: `/project/${projectId}/security` },
+        { id: "managers", name: "Managers", icon: "lucide:users", path: `/project/${projectId}/managers` },
+        { id: "prices", name: "Prices", icon: "lucide:tag", path: `/project/${projectId}/prices` },
+        { id: "pricingBeta", name: "Pricing Beta", icon: "lucide:coins", path: `/project/${projectId}/pricing-beta`, isBeta: true },
+        { id: "workflow", name: "Workflow", icon: "lucide:git-branch", path: `/project/${projectId}/workflow` },
+        { id: "guidelines", name: "Guidelines", icon: "lucide:file-text", path: `/project/${projectId}/guidelines` },
+        { id: "settings", name: "Settings", icon: "lucide:settings", path: `/project/${projectId}/settings` },
     ];
 
-    // Determine active tab based on current pathname
-    const activeTab = sections
-        .filter((s) => routerState.location.pathname.includes(s.path))
-        .sort((a, b) => b.path.length - a.path.length)[0]?.id || "account";
+    const activeTab = sections.find((s) => routerState.location.pathname === s.path)?.id || "account";
 
     return (
         <div className="mb-6">
             <Tabs
                 selectedKey={activeTab}
                 onSelectionChange={(key) => {
-                    const section = sections.find((s) => s.id === key);
+                    const section = sections.find((s) => s.id === key.toString());
                     if (section) {
                         navigate({ to: section.path });
                     }
@@ -41,13 +38,20 @@ export function ProjectTabs() {
                 <Tabs.ListContainer>
                     <Tabs.List aria-label="Project sections">
                         {sections.map((section) => (
-                            <Tabs.Tab
-                                key={section.id}
-                                id={section.id}
-                            >
+                            <Tabs.Tab key={section.id} id={section.id}>
                                 <div className="flex items-center gap-2">
                                     <Icon icon={section.icon} className="text-lg" />
                                     <span className="font-medium text-sm whitespace-nowrap">{section.name}</span>
+                                    {section.isBeta && (
+                                        <Chip
+                                            size="sm"
+                                            variant="soft"
+                                            color="accent"
+                                            className="h-4 px-1 t-mini font-bold"
+                                        >
+                                            BETA
+                                        </Chip>
+                                    )}
                                 </div>
                                 <Tabs.Indicator />
                             </Tabs.Tab>

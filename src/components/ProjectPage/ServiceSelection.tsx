@@ -25,7 +25,7 @@ export function ServiceSelection({
     const otherServices = allServices.filter(s => s.category === "other");
 
     return (
-        <Card className="p-0 border border-default-100 shadow-none rounded-[32px]">
+        <Card className="p-0 border border-default-100 shadow-none rounded-premium-lg">
             <Card.Content className="p-8">
                 <div className="mb-8">
                     <div className="flex items-center mb-2">

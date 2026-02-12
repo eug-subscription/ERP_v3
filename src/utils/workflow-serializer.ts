@@ -1,4 +1,4 @@
-import { CanvasBlock, WorkflowBranch, WorkflowBlock, ProjectWorkflowConfig } from "../types/workflow";
+import { CanvasBlock, WorkflowBranch, WorkflowBlock, ProjectWorkflowConfig, TimelineConfig } from "../types/workflow";
 
 /**
  * Serializes the flat CanvasBlock array from the builder into the branched WorkflowBranch structure
@@ -57,11 +57,13 @@ export function serializeCanvasToBranches(blocks: CanvasBlock[]): WorkflowBranch
 export function serializeCanvasToConfig(
     projectId: string,
     templateId: string,
-    blocks: CanvasBlock[]
+    blocks: CanvasBlock[],
+    timelineConfig?: TimelineConfig
 ): ProjectWorkflowConfig {
     return {
         projectId,
         templateId,
-        branches: serializeCanvasToBranches(blocks)
+        branches: serializeCanvasToBranches(blocks),
+        timelineConfig
     };
 }

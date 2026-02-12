@@ -39,7 +39,7 @@ export function RetoucherAssigningConfig({ config, onUpdate }: RetoucherAssignin
                                 <Radio.Control><Radio.Indicator /></Radio.Control>
                                 <Radio.Content>
                                     <Label className="font-semibold text-sm block">{strategy.label}</Label>
-                                    <Description className="text-[10px] block">{strategy.description}</Description>
+                                    <Description className="t-mini block">{strategy.description}</Description>
                                 </Radio.Content>
                             </Radio>
                         ))}
@@ -62,7 +62,7 @@ export function RetoucherAssigningConfig({ config, onUpdate }: RetoucherAssignin
                         onChange={(val) => handleUpdate({ welcomeText: val })}
                         fullWidth
                     >
-                        <Label className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground mb-1 block">
+                        <Label className="t-mini font-bold uppercase tracking-wider text-muted-foreground mb-1 block">
                             Welcome Message
                         </Label>
                         <Input
@@ -76,12 +76,12 @@ export function RetoucherAssigningConfig({ config, onUpdate }: RetoucherAssignin
                         onChange={(val) => handleUpdate({ guidelines: val })}
                         fullWidth
                     >
-                        <Label className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground mb-1 block">
+                        <Label className="t-mini font-bold uppercase tracking-wider text-muted-foreground mb-1 block">
                             Production Guidelines
                         </Label>
                         <InputGroup
                             fullWidth
-                            className="flex flex-col bg-content1 border border-divider rounded-3xl overflow-hidden shadow-sm transition-all focus-within:shadow-md focus-within:border-accent/40"
+                            className="flex flex-col bg-surface border border-divider rounded-3xl overflow-hidden shadow-sm transition-all focus-within:shadow-md focus-within:border-accent/40"
                         >
                             <InputGroup.TextArea
                                 placeholder="Assign tasks or ask anything..."
@@ -110,7 +110,7 @@ export function RetoucherAssigningConfig({ config, onUpdate }: RetoucherAssignin
                                 </Button>
                             </div>
                         </InputGroup>
-                        <Description className="text-[10px] block mt-1">Specific technical instructions for this step.</Description>
+                        <Description className="t-mini block mt-1">Specific technical instructions for this step.</Description>
                     </TextField>
 
                     <Switch
@@ -123,7 +123,7 @@ export function RetoucherAssigningConfig({ config, onUpdate }: RetoucherAssignin
                         </Switch.Control>
                         <div className="flex flex-col gap-0.5">
                             <Label className="text-sm font-semibold block">Enforce Guidelines</Label>
-                            <Description className="text-[10px] block m-0 p-0">Pro must acknowledge reading guidelines before starting.</Description>
+                            <Description className="t-mini block m-0 p-0">Pro must acknowledge reading guidelines before starting.</Description>
                         </div>
                     </Switch>
                 </div>
@@ -149,7 +149,7 @@ export function RetoucherAssigningConfig({ config, onUpdate }: RetoucherAssignin
                         </Switch.Control>
                         <div className="flex flex-col gap-0.5">
                             <Label className="text-sm font-semibold block">Show Retoucher to Client</Label>
-                            <Description className="text-[10px] block m-0 p-0">Allow clients to see who is working on their files.</Description>
+                            <Description className="t-mini block m-0 p-0">Allow clients to see who is working on their files.</Description>
                         </div>
                     </Switch>
 
@@ -163,15 +163,15 @@ export function RetoucherAssigningConfig({ config, onUpdate }: RetoucherAssignin
                         className="w-full"
                     >
                         <div className="mb-2.5">
-                            <Label className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground block mb-0.5">
+                            <Label className="t-mini font-bold uppercase tracking-wider text-muted-foreground block mb-0.5">
                                 Minimum Skill Level
                             </Label>
-                            <Description className="text-[10px] block m-0 p-0">Required rating for retouchers (1-5 star scale).</Description>
+                            <Description className="t-mini block m-0 p-0">Required rating for retouchers (1-5 star scale).</Description>
                         </div>
-                        <NumberField.Group className="bg-content2 border border-divider rounded-lg overflow-hidden flex items-center h-10">
-                            <NumberField.DecrementButton className="h-full px-1 hover:bg-content3 flex items-center justify-center opacity-70 hover:opacity-100 transition-opacity min-w-[32px]" />
+                        <NumberField.Group className="bg-field border border-divider rounded-lg overflow-hidden flex items-center h-10">
+                            <NumberField.DecrementButton className="h-full px-1 hover:bg-field-hover flex items-center justify-center opacity-70 hover:opacity-100 transition-opacity min-w-[32px]" />
                             <NumberField.Input className="flex-1 bg-transparent px-1 text-sm tabular-nums text-center min-w-0" />
-                            <NumberField.IncrementButton className="h-full px-1 hover:bg-content3 flex items-center justify-center opacity-70 hover:opacity-100 transition-opacity min-w-[32px]" />
+                            <NumberField.IncrementButton className="h-full px-1 hover:bg-field-hover flex items-center justify-center opacity-70 hover:opacity-100 transition-opacity min-w-[32px]" />
                         </NumberField.Group>
                     </NumberField>
                 </div>

@@ -60,14 +60,14 @@ export function ModerationConfig({ config, availableSteps, onUpdate }: Moderatio
                             <Radio.Control><Radio.Indicator /></Radio.Control>
                             <Radio.Content>
                                 <Label className="font-semibold text-sm block">Internal Team</Label>
-                                <Description className="text-[10px] block">Managed by project managers</Description>
+                                <Description className="t-mini block">Managed by project managers</Description>
                             </Radio.Content>
                         </Radio>
                         <Radio value="CLIENT" className="data-[selected=true]:border-accent transition-all">
                             <Radio.Control><Radio.Indicator /></Radio.Control>
                             <Radio.Content>
                                 <Label className="font-semibold text-sm block">Client Approval</Label>
-                                <Description className="text-[10px] block">Requires customer confirmation</Description>
+                                <Description className="t-mini block">Requires customer confirmation</Description>
                             </Radio.Content>
                         </Radio>
                     </RadioGroup>
@@ -132,7 +132,7 @@ export function ModerationConfig({ config, availableSteps, onUpdate }: Moderatio
                             <Checkbox.Control><Checkbox.Indicator /></Checkbox.Control>
                             <Checkbox.Content>
                                 <Label className="font-semibold text-sm">Approve</Label>
-                                <Description className="text-[10px]">Proceed to the next workflow block</Description>
+                                <Description className="t-mini">Proceed to the next workflow block</Description>
                             </Checkbox.Content>
                         </Checkbox>
 
@@ -142,7 +142,7 @@ export function ModerationConfig({ config, availableSteps, onUpdate }: Moderatio
                                 <Checkbox.Control><Checkbox.Indicator /></Checkbox.Control>
                                 <Checkbox.Content>
                                     <Label className="font-semibold text-sm">Request Revision</Label>
-                                    <Description className="text-[10px]">Loop back to a previous production step</Description>
+                                    <Description className="t-mini">Loop back to a previous production step</Description>
                                 </Checkbox.Content>
                             </Checkbox>
 
@@ -154,7 +154,7 @@ export function ModerationConfig({ config, availableSteps, onUpdate }: Moderatio
                                         onChange={(id) => handleUpdate({ onRevisionStepId: id as string })}
                                         fullWidth
                                     >
-                                        <Label className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground mb-1 block">Return back to:</Label>
+                                        <Label className="t-mini font-bold uppercase tracking-wider text-muted-foreground mb-1 block">Return back to:</Label>
                                         <Select.Trigger className="h-10 rounded-xl bg-secondary/20 border-separator/20">
                                             <Select.Value />
                                             <Select.Indicator><Icon icon="lucide:undo-2" className="w-4 h-4 opacity-50" /></Select.Indicator>
@@ -164,7 +164,7 @@ export function ModerationConfig({ config, availableSteps, onUpdate }: Moderatio
                                                 {availableSteps.map(step => (
                                                     <ListBox.Item key={step.id} id={step.id} textValue={step.label}>
                                                         <Label className="text-sm font-medium">{step.label}</Label>
-                                                        <Description className="text-[10px]">{step.category}</Description>
+                                                        <Description className="t-mini">{step.category}</Description>
                                                     </ListBox.Item>
                                                 ))}
                                             </ListBox>
@@ -178,13 +178,13 @@ export function ModerationConfig({ config, availableSteps, onUpdate }: Moderatio
                                         className="w-full"
                                     >
                                         <div className="mb-2 px-0.5">
-                                            <Label className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground block mb-0.5">Max Revisions</Label>
-                                            <Description className="text-[10px] block m-0 p-0">Enter 0 for unlimited revisions.</Description>
+                                            <Label className="t-mini font-bold uppercase tracking-wider text-muted-foreground block mb-0.5">Max Revisions</Label>
+                                            <Description className="t-mini block m-0 p-0">Enter 0 for unlimited revisions.</Description>
                                         </div>
-                                        <NumberField.Group className="bg-content2 border border-divider rounded-lg overflow-hidden flex items-center h-10">
-                                            <NumberField.DecrementButton className="h-full px-1 hover:bg-content3 flex items-center justify-center opacity-70 hover:opacity-100 transition-opacity min-w-[32px]" />
+                                        <NumberField.Group className="bg-field border border-divider rounded-lg overflow-hidden flex items-center h-10">
+                                            <NumberField.DecrementButton className="h-full px-1 hover:bg-field-hover flex items-center justify-center opacity-70 hover:opacity-100 transition-opacity min-w-[32px]" />
                                             <NumberField.Input className="flex-1 bg-transparent px-1 text-sm tabular-nums text-center min-w-0" />
-                                            <NumberField.IncrementButton className="h-full px-1 hover:bg-content3 flex items-center justify-center opacity-70 hover:opacity-100 transition-opacity min-w-[32px]" />
+                                            <NumberField.IncrementButton className="h-full px-1 hover:bg-field-hover flex items-center justify-center opacity-70 hover:opacity-100 transition-opacity min-w-[32px]" />
                                         </NumberField.Group>
                                     </NumberField>
                                 </div>
@@ -197,7 +197,7 @@ export function ModerationConfig({ config, availableSteps, onUpdate }: Moderatio
                                 <Checkbox.Control><Checkbox.Indicator /></Checkbox.Control>
                                 <Checkbox.Content>
                                     <Label className="font-semibold text-sm">Reject</Label>
-                                    <Description className="text-[10px]">Terminate the branch or start a rejection flow</Description>
+                                    <Description className="t-mini">Terminate the branch or start a rejection flow</Description>
                                 </Checkbox.Content>
                             </Checkbox>
 
@@ -209,7 +209,7 @@ export function ModerationConfig({ config, availableSteps, onUpdate }: Moderatio
                                         onChange={(id) => handleUpdate({ onRejectBlockId: id as string })}
                                         fullWidth
                                     >
-                                        <Label className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground mb-1 block">On rejection:</Label>
+                                        <Label className="t-mini font-bold uppercase tracking-wider text-muted-foreground mb-1 block">On rejection:</Label>
                                         <Select.Trigger className="h-10 rounded-xl bg-secondary/20 border-separator/20">
                                             <Select.Value />
                                             <Select.Indicator><Icon icon="lucide:x-circle" className="w-4 h-4 text-danger opacity-70" /></Select.Indicator>
@@ -218,7 +218,7 @@ export function ModerationConfig({ config, availableSteps, onUpdate }: Moderatio
                                             <ListBox>
                                                 <ListBox.Item id="cancel" textValue="Cancel Order">
                                                     <Label className="text-sm font-medium text-danger">Cancel Order</Label>
-                                                    <Description className="text-[10px]">Complete termination of order</Description>
+                                                    <Description className="t-mini">Complete termination of order</Description>
                                                 </ListBox.Item>
                                                 {availableSteps.map(step => (
                                                     <ListBox.Item key={step.id} id={step.id} textValue={step.label}>

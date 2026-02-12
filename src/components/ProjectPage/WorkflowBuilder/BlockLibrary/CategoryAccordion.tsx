@@ -14,7 +14,7 @@ export function CategoryAccordion({ category, blocks }: CategoryAccordionProps) 
             key={category.id}
             id={category.id}
             aria-label={category.label}
-            className="border-l-4 bg-background px-0"
+            className="border-l-4 bg-surface px-0"
             style={{ borderLeftColor: category.color }}
         >
             <Accordion.Heading>

@@ -21,7 +21,7 @@ export function TabNavigation() {
     { id: "items", name: "Matching", icon: "lucide:puzzle", path: "/items" },
     { id: "messages", name: "Messages", icon: "lucide:message-circle", path: "/messages" },
     { id: "team", name: "Team", icon: "lucide:users", path: "/team" },
-    { id: "finances", name: "Finance", icon: "lucide:dollar-sign", path: "/finances" },
+    { id: "billing", name: "Billing (Beta)", icon: "lucide:receipt", path: "/billing" },
     { id: "timeline", name: "Timeline", icon: "lucide:clock", path: "/timeline" },
   ];
 
@@ -30,32 +30,30 @@ export function TabNavigation() {
     sections.find((s) => routerState.location.pathname === s.path)?.id || "uploading";
 
   return (
-    <div className="sticky top-0 z-40 bg-background/80 backdrop-blur-xl border-b border-default-100 mb-8">
-      <div className="container mx-auto px-4 max-w-7xl py-4">
-        <Tabs
-          selectedKey={activeTab}
-          onSelectionChange={(key) => {
-            const section = sections.find((s) => s.id === key);
-            if (section) {
-              navigate({ to: section.path });
-            }
-          }}
-        >
-          <Tabs.ListContainer>
-            <Tabs.List aria-label="Order Management sections" className="p-1">
-              {sections.map((section) => (
-                <Tabs.Tab key={section.id} id={section.id}>
-                  <div className="flex items-center gap-2 px-2">
-                    <Icon icon={section.icon} className="w-4 h-4" />
-                    <span className="font-medium">{section.name}</span>
-                  </div>
-                  <Tabs.Indicator />
-                </Tabs.Tab>
-              ))}
-            </Tabs.List>
-          </Tabs.ListContainer>
-        </Tabs>
-      </div>
+    <div className="mb-6">
+      <Tabs
+        selectedKey={activeTab}
+        onSelectionChange={(key) => {
+          const section = sections.find((s) => s.id === key);
+          if (section) {
+            navigate({ to: section.path });
+          }
+        }}
+      >
+        <Tabs.ListContainer>
+          <Tabs.List aria-label="Order Management sections" className="p-1">
+            {sections.map((section) => (
+              <Tabs.Tab key={section.id} id={section.id}>
+                <div className="flex items-center gap-2 px-2">
+                  <Icon icon={section.icon} className="w-4 h-4" />
+                  <span className="font-medium">{section.name}</span>
+                </div>
+                <Tabs.Indicator />
+              </Tabs.Tab>
+            ))}
+          </Tabs.List>
+        </Tabs.ListContainer>
+      </Tabs>
     </div>
   );
 }

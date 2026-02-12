@@ -36,7 +36,7 @@ export function FileUploadSection({
 
       <Card className="bg-default-50 border-none mb-8 shadow-sm">
         <Card.Content className="p-8">
-          <div className="border-2 border-dashed border-default-300 rounded-2xl p-10 flex flex-col items-center justify-center bg-white/50 hover:bg-white hover:border-accent transition-all cursor-pointer group">
+          <div className="border-2 border-dashed border-default-300 rounded-2xl p-10 flex flex-col items-center justify-center bg-background/50 hover:bg-surface hover:border-accent transition-all cursor-pointer group">
             <div className="w-12 h-12 bg-accent/10 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
               <Icon icon="lucide:upload-cloud" className="w-6 h-6 text-accent" />
             </div>
@@ -81,7 +81,7 @@ export function FileUploadSection({
             </ButtonGroup>
           </div>
 
-          <div className="rounded-xl border border-default-200 overflow-hidden bg-white shadow-premium">
+          <div className="rounded-xl border border-default-200 overflow-hidden bg-background shadow-premium">
             <div className="overflow-x-auto">
               <table className="w-full text-left text-sm">
                 <thead className="bg-default-50 text-default-500 font-medium border-b border-default-200">
@@ -125,7 +125,7 @@ export function FileUploadSection({
                               style={{ width: `${file.progress}%` }}
                             />
                           </div>
-                          <span className="text-[10px] text-default-500 font-medium">
+                          <span className="t-mini text-default-500 font-medium">
                             {file.progress}%
                           </span>
                         </div>

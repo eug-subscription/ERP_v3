@@ -188,7 +188,7 @@ export function UnmatchedItems() {
                       ref={searchInputRef}
                       placeholder="Search items..."
                       onKeyDown={handleSearchKeyDown}
-                      className="w-full h-10 px-4 rounded-xl border border-default-200 shadow-sm bg-white"
+                      className="w-full h-10 px-4 rounded-xl border border-default-200 shadow-sm bg-background"
                     />
                   </TextField>
                 </div>
@@ -199,7 +199,7 @@ export function UnmatchedItems() {
                   filteredUnmatchedItems.map((item, index) => (
                     <div
                       key={item.id}
-                      className={`flex items-center gap-4 bg-white p-4 rounded-2xl border-2 transition-all duration-300 shadow-sm ${dragOverItem === item.id ? "border-accent ring-4 ring-accent/10 scale-[1.02]" : "border-transparent"} ${exitingItems.includes(item.id) ? "translate-x-[100%] opacity-0" : "translate-x-0 opacity-100"}`}
+                      className={`flex items-center gap-4 bg-surface p-4 rounded-2xl border-2 transition-all duration-300 shadow-sm ${dragOverItem === item.id ? "border-accent ring-4 ring-accent/10 scale-[1.02]" : "border-transparent"} ${exitingItems.includes(item.id) ? "translate-x-[100%] opacity-0" : "translate-x-0 opacity-100"}`}
                       onDragOver={(e) => handleDragOver(e, item.id)}
                       onDragLeave={handleDragLeave}
                       onDrop={(e) => handleDrop(e, item.id)}
@@ -261,7 +261,7 @@ export function UnmatchedItems() {
 
           {matchedItems.length > 0 && (
             <div className="animate-in slide-in-from-bottom-4 fade-in duration-500">
-              <Card className="bg-white border border-default-200 shadow-premium overflow-hidden">
+              <Card className="bg-background border border-default-200 shadow-premium overflow-hidden">
                 <div className="bg-default-50 px-6 py-4 border-b border-default-200 flex justify-between items-center">
                   <h3 className="font-bold text-default-900">Matched ({matchedItems.length})</h3>
                   <Icon icon="lucide:check-circle-2" className="w-5 h-5 text-success" />
@@ -285,7 +285,7 @@ export function UnmatchedItems() {
                             {item.name}
                           </h4>
                           <div className="flex items-center gap-2 mt-1">
-                            <span className="text-[10px] uppercase font-black text-success tracking-widest bg-success/10 px-1.5 py-0.5 rounded">
+                            <span className="t-mini uppercase font-black text-success tracking-widest bg-success/10 px-1.5 py-0.5 rounded">
                               Verified
                             </span>
                           </div>
@@ -314,7 +314,7 @@ export function UnmatchedItems() {
             <Icon icon="lucide:undo-2" className="w-4 h-4 text-warning" />
           </div>
           <span className="font-medium">Item unmatched successfully</span>
-          <Separator orientation="vertical" className="h-6 bg-white/20" />
+          <Separator orientation="vertical" className="h-6 bg-default-200/20" />
           <Button
             variant="ghost"
             onPress={handleUndoUnmatch}

@@ -88,11 +88,11 @@ export function TeamMemberModal({
                                 <span className="text-sm font-semibold text-default-900">
                                   {item.name}
                                 </span>
-                                <span className="text-[10px] text-default-500 font-bold px-2 py-0.5 bg-default-100 rounded uppercase tracking-widest">
+                                <span className="t-mini text-default-500 font-bold px-2 py-0.5 bg-default-100 rounded uppercase tracking-widest">
                                   {item.role}
                                 </span>
                               </div>
-                              <span className="text-[10px] text-default-400 font-normal">
+                              <span className="t-mini text-default-400 font-normal">
                                 {item.email}
                               </span>
                             </div>

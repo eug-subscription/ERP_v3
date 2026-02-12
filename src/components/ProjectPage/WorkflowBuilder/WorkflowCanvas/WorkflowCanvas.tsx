@@ -21,6 +21,7 @@ import {
     CANVAS_DOT_GRID_SIZE
 } from "../constants";
 import { LaneContainer } from "./LaneContainer";
+import { SCROLL_DELAY_MS } from "../../../../constants/ui-tokens";
 
 interface WorkflowCanvasProps {
     className?: string;
@@ -58,7 +59,7 @@ export function WorkflowCanvas({
                 if (element) {
                     element.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
                 }
-            }, 100);
+            }, SCROLL_DELAY_MS);
             return () => clearTimeout(timer);
         }
     }, [lastAddedBlockId]);
@@ -89,7 +90,7 @@ export function WorkflowCanvas({
 
     return (
         <div
-            className={`flex-1 relative bg-background overflow-hidden flex flex-col items-center ${className}`}
+            className={`flex-1 relative bg-surface overflow-hidden flex flex-col items-center ${className}`}
             style={{
                 backgroundImage: "radial-gradient(circle, var(--heroui-default-200) 1px, transparent 1px)",
                 backgroundSize: `${CANVAS_DOT_GRID_SIZE}px ${CANVAS_DOT_GRID_SIZE}px`,

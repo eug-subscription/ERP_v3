@@ -22,7 +22,7 @@ export function TeamMembers() {
           <div className="h-10 w-48 bg-default-200 animate-pulse rounded-lg" />
           <div className="h-12 w-32 bg-default-200 animate-pulse rounded-xl" />
         </div>
-        <div className="h-64 bg-default-50 animate-pulse rounded-[2.5rem] border border-default-200" />
+        <div className="h-64 bg-default-50 animate-pulse rounded-premium-lg border border-default-200" />
       </section>
     );
   }
@@ -46,14 +46,14 @@ export function TeamMembers() {
         </Button>
       </div>
 
-      <div className="rounded-[2.5rem] border border-default-200 overflow-hidden bg-white shadow-premium">
+      <div className="rounded-premium-lg border border-default-200 overflow-hidden bg-background shadow-premium">
         <div className="flex flex-col md:flex-row justify-between items-center p-6 bg-default-50/50 border-b border-default-200 gap-4">
           <div className="w-full max-w-sm">
             <div className="space-y-1">
               <Label className="sr-only">Search team members</Label>
               <Input
                 placeholder="Search by name, email or role..."
-                className="w-full h-12 px-5 rounded-2xl border border-default-200 bg-white shadow-sm focus:ring-2 focus:ring-accent/20"
+                className="w-full h-12 px-5 rounded-2xl border border-default-200 bg-background shadow-sm focus:ring-2 focus:ring-accent/20"
                 aria-label="Search team members"
               />
             </div>
@@ -61,13 +61,13 @@ export function TeamMembers() {
           <div className="flex items-center gap-3">
             <Button
               variant="ghost"
-              className="bg-white border-default-200 rounded-xl px-5 h-12 font-bold flex items-center gap-2"
+              className="bg-surface border-default-200 rounded-xl px-5 h-12 font-bold flex items-center gap-2"
             >
               <Icon icon="lucide:filter" className="w-4 h-4" /> Filter
             </Button>
             <Button
               variant="ghost"
-              className="bg-white border-default-200 rounded-xl px-5 h-12 font-bold flex items-center gap-2"
+              className="bg-surface border-default-200 rounded-xl px-5 h-12 font-bold flex items-center gap-2"
             >
               <Icon icon="lucide:arrow-up-down" className="w-4 h-4" /> Sort
             </Button>
@@ -80,7 +80,7 @@ export function TeamMembers() {
 
         <div className="overflow-x-auto custom-scrollbar">
           <table className="w-full text-left text-sm border-collapse">
-            <thead className="bg-default-50 text-default-500 font-black text-[10px] uppercase tracking-[0.2em] border-b border-default-200">
+            <thead className="bg-default-50 text-default-500 font-black t-mini uppercase tracking-[0.2em] border-b border-default-200">
               <tr>
                 <th className="px-6 py-5 w-10">
                   <Checkbox />
@@ -162,14 +162,14 @@ export function TeamMembers() {
         </div>
 
         <div className="flex justify-between items-center px-8 py-6 bg-default-50/50 border-t border-default-200">
-          <div className="text-[10px] font-black text-default-400 uppercase tracking-[0.2em]">
+          <div className="t-mini font-black text-default-400 uppercase tracking-[0.2em]">
             {selectedKeys.size} of {teamMembers.length} selected
           </div>
           <div className="flex items-center gap-4">
             <Button
               variant="ghost"
               size="sm"
-              className="bg-white border-default-200 rounded-xl font-bold px-4"
+              className="bg-surface border-default-200 rounded-xl font-bold px-4"
             >
               Previous
             </Button>
@@ -189,7 +189,7 @@ export function TeamMembers() {
             <Button
               variant="ghost"
               size="sm"
-              className="bg-white border-default-200 rounded-xl font-bold px-4"
+              className="bg-surface border-default-200 rounded-xl font-bold px-4"
             >
               Next
             </Button>

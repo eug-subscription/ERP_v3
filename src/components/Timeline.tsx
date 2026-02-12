@@ -50,7 +50,7 @@ export function Timeline() {
               placeholder="Write your update here..."
               value={comment}
               onChange={(e) => handleCommentChange(e.target.value)}
-              className="w-full h-32 px-4 py-3 rounded-xl border border-default-200 bg-white shadow-inner focus:ring-2 focus:ring-accent/20"
+              className="w-full h-32 px-4 py-3 rounded-xl border border-default-200 bg-background shadow-inner focus:ring-2 focus:ring-accent/20"
             />
             <Button
               isIconOnly
@@ -68,7 +68,7 @@ export function Timeline() {
               <Button
                 size="sm"
                 variant="ghost"
-                className="bg-white hover:bg-default-100 border-default-200"
+                className="bg-surface hover:bg-default-100 border-default-200"
               >
                 <Icon icon="lucide:paperclip" className="w-4 h-4 mr-2" />
                 Attach
@@ -76,7 +76,7 @@ export function Timeline() {
               <Button
                 size="sm"
                 variant="ghost"
-                className="bg-white hover:bg-default-100 border-default-200"
+                className="bg-surface hover:bg-default-100 border-default-200"
               >
                 <Icon icon="lucide:mic" className="w-4 h-4 mr-2" />
                 Voice
@@ -84,18 +84,18 @@ export function Timeline() {
               <Button
                 size="sm"
                 variant="ghost"
-                className="bg-white hover:bg-default-100 border-default-200"
+                className="bg-surface hover:bg-default-100 border-default-200"
               >
                 <Icon icon="lucide:file-text" className="w-4 h-4 mr-2" />
                 Templates
               </Button>
             </div>
-            <div className="text-[10px] font-black uppercase tracking-widest text-default-400 self-center">
+            <div className="t-mini font-black uppercase tracking-widest text-default-400 self-center">
               {comment.length} / {maxLength}
             </div>
           </div>
 
-          <p className="text-[10px] text-default-400 mt-4 flex items-center gap-1.5 font-medium">
+          <p className="t-mini text-default-400 mt-4 flex items-center gap-1.5 font-medium">
             <Icon icon="lucide:lock" className="w-3 h-3" />
             Internal: Only staff members can view these comments
           </p>
@@ -111,7 +111,7 @@ export function Timeline() {
               <Label className="sr-only">Search a milestone</Label>
               <Input
                 placeholder="Search history..."
-                className="w-full h-9 px-3 rounded-lg border border-default-200 bg-white"
+                className="w-full h-9 px-3 rounded-lg border border-default-200 bg-background"
                 aria-label="Search milestones"
               />
             </div>
@@ -132,12 +132,12 @@ export function Timeline() {
               {events.map((event) => (
                 <div key={event.id} className="relative">
                   <div
-                    className={`absolute -left-[45px] w-8 h-8 rounded-full bg-white shadow-md border-2 ${event.type === "success" ? "border-success" : "border-accent"} flex items-center justify-center`}
+                    className={`absolute -left-[45px] w-8 h-8 rounded-full bg-surface shadow-md border-2 ${event.type === "success" ? "border-success" : "border-accent"} flex items-center justify-center`}
                   >
                     <Icon icon={event.icon} className={`w-4 h-4 ${getIconColor(event.type)}`} />
                   </div>
                   <div className="bg-default-50/30 p-4 rounded-xl border border-default-50 hover:bg-default-50 transition-colors">
-                    <p className="text-[10px] uppercase font-black tracking-widest text-default-500 mb-2">
+                    <p className="t-mini uppercase font-black tracking-widest text-default-500 mb-2">
                       {event.date}
                     </p>
                     <h3 className="text-sm font-bold text-default-900 mb-1 leading-tight">
