@@ -18,15 +18,11 @@ export function useOrderBillingLines(orderId: string) {
     });
 
     return {
-        state: {
-            lines: query.data ?? [],
-            isLoading: query.isLoading,
-            isError: query.isError,
-            error: query.error,
-        },
-        actions: {
-            refetch: query.refetch,
-        },
+        lines: query.data ?? [],
+        isLoading: query.isLoading,
+        isError: query.isError,
+        error: query.error,
+        refetch: query.refetch,
     };
 }
 
@@ -40,6 +36,8 @@ export interface OrderBillingSummary {
     totalClientIncTax: number;
     absoluteMargin: number;
     marginPercentage: number;
+    taxRate: number;
+    hasMixedTaxRates: boolean;
     breakdown: {
         draft: { preTax: number; incTax: number; cost: number };
         confirmed: { preTax: number; incTax: number; cost: number };
@@ -57,7 +55,7 @@ export interface OrderBillingSummary {
  * Hook to calculate and provide order billing summary
  */
 export function useOrderBillingSummary(orderId: string) {
-    const { state: linesState } = useOrderBillingLines(orderId);
+    const { lines, isLoading, isError, error } = useOrderBillingLines(orderId);
 
     const calculateSummary = (lines: BillingLineInstance[]): OrderBillingSummary | null => {
         if (lines.length === 0) return null;
@@ -87,6 +85,8 @@ export function useOrderBillingSummary(orderId: string) {
             orderId,
             currency: contextLine.currency,
             taxTreatment: contextLine.taxTreatment,
+            taxRate: contextLine.taxRate,
+            hasMixedTaxRates: new Set(activeLines.map(l => l.taxRate)).size > 1,
             totalCost,
             totalClientPreTax,
             totalTax,
@@ -119,14 +119,12 @@ export function useOrderBillingSummary(orderId: string) {
         };
     };
 
-    const summary = calculateSummary(linesState.lines);
+    const summary = calculateSummary(lines);
 
     return {
-        state: {
-            summary,
-            isLoading: linesState.isLoading,
-            isError: linesState.isError,
-            error: linesState.error,
-        },
+        summary,
+        isLoading,
+        isError,
+        error,
     };
 }

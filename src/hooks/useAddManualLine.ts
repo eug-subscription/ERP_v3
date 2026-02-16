@@ -4,8 +4,8 @@ import { useModifierReasonCodes } from "./useModifierReasonCodes";
 import { useProjectPricing } from "./useProjectPricing";
 import { useRateCards } from "./useRateCards";
 import { useProjectOverrides } from "./useProjectOverrides";
-import { calculateLineFinancials } from "../utils/billingCalculations";
-import { NewBillingLinePayload, RateSource } from "../types/pricing";
+import { calculateLineFinancials, calculateFinalRate } from "../utils/billingCalculations";
+import { NewBillingLinePayload, RateSource, ModifierType } from "../types/pricing";
 import { mockUsers } from "../data/mock-users";
 
 interface UseAddManualLineProps {
@@ -25,8 +25,12 @@ export function useAddManualLine({ orderId, projectId }: UseAddManualLineProps) 
     const [selectedTypeId, setSelectedTypeId] = useState<string>("");
     const [quantity, setQuantity] = useState<number>(1);
     const [clientModifier, setClientModifier] = useState<number>(1.0);
+    const [clientModifierType, setClientModifierType] = useState<ModifierType>('percentage');
+    const [clientModifierFixedAmount, setClientModifierFixedAmount] = useState<number | null>(null);
     const [clientReasonCode, setClientReasonCode] = useState<string | null>(null);
     const [costModifier, setCostModifier] = useState<number>(1.0);
+    const [costModifierType, setCostModifierType] = useState<ModifierType>('percentage');
+    const [costModifierFixedAmount, setCostModifierFixedAmount] = useState<number | null>(null);
     const [costReasonCode, setCostReasonCode] = useState<string | null>(null);
     const [note, setNote] = useState<string>("");
 
@@ -34,8 +38,12 @@ export function useAddManualLine({ orderId, projectId }: UseAddManualLineProps) 
         setSelectedTypeId("");
         setQuantity(1);
         setClientModifier(1.0);
+        setClientModifierType('percentage');
+        setClientModifierFixedAmount(null);
         setClientReasonCode(null);
         setCostModifier(1.0);
+        setCostModifierType('percentage');
+        setCostModifierFixedAmount(null);
         setCostReasonCode(null);
         setNote("");
     };
@@ -89,8 +97,8 @@ export function useAddManualLine({ orderId, projectId }: UseAddManualLineProps) 
 
         const effectiveQuantity = rules?.minimum ? Math.max(quantity, rules.minimum) : quantity;
 
-        const finalCost = effectiveCost * costModifier;
-        const finalClient = effectiveClient * clientModifier;
+        const finalCost = calculateFinalRate(effectiveCost, costModifierType, costModifier, costModifierFixedAmount);
+        const finalClient = calculateFinalRate(effectiveClient, clientModifierType, clientModifier, clientModifierFixedAmount);
 
         const financials = calculateLineFinancials(
             effectiveQuantity,
@@ -129,9 +137,26 @@ export function useAddManualLine({ orderId, projectId }: UseAddManualLineProps) 
             lineClientTotalPreTax,
             taxAmount,
             lineClientTotalIncTax,
-            margin: lineMargin
+            margin: lineMargin,
+            clientModifierType,
+            clientModifierFixedAmount,
+            costModifierType,
+            costModifierFixedAmount
         };
-    }, [selectedTypeId, quantity, clientModifier, costModifier, pricingSettings, rateCards, rateItems, overrides]);
+    }, [
+        selectedTypeId,
+        quantity,
+        clientModifier,
+        clientModifierType,
+        clientModifierFixedAmount,
+        costModifier,
+        costModifierType,
+        costModifierFixedAmount,
+        pricingSettings,
+        rateCards,
+        rateItems,
+        overrides
+    ]);
 
     const handleAdd = (onAdd: (line: NewBillingLinePayload) => void) => {
         if (!activePricing) return;
@@ -153,11 +178,15 @@ export function useAddManualLine({ orderId, projectId }: UseAddManualLineProps) 
             appliedRulesSnapshot: activePricing.rules,
             quantityInput: quantity,
             quantityEffective: activePricing.effectiveQuantity,
+            clientModifierType: activePricing.clientModifierType,
             clientModifierValue: clientModifier,
+            clientModifierFixedAmount: activePricing.clientModifierFixedAmount,
             clientModifierReasonCode: clientReasonCode,
             clientModifierNote: note || null,
             clientModifierSource: "MANUAL",
+            costModifierType: activePricing.costModifierType,
             costModifierValue: costModifier,
+            costModifierFixedAmount: activePricing.costModifierFixedAmount,
             costModifierReasonCode: costReasonCode,
             costModifierNote: null,
             costModifierSource: "MANUAL",
@@ -171,6 +200,8 @@ export function useAddManualLine({ orderId, projectId }: UseAddManualLineProps) 
             status: "draft" as const,
             createdAt: new Date().toISOString(),
             createdBy: mockUsers[0].id,
+            modifiedAt: null,
+            modifiedBy: null,
             confirmedAt: null,
             confirmedBy: null,
             voidedAt: null,
@@ -183,43 +214,56 @@ export function useAddManualLine({ orderId, projectId }: UseAddManualLineProps) 
 
     const isLoading = isLoadingItems || isLoadingReasons || isLoadingPricing || isLoadingRateCards || isLoadingOverrides;
 
+    const isClientModifierActive =
+        (clientModifierType === 'percentage' && clientModifier !== 1.0) ||
+        (clientModifierType === 'fixed' && clientModifierFixedAmount !== null && clientModifierFixedAmount !== 0);
+
+    const isCostModifierActive =
+        (costModifierType === 'percentage' && costModifier !== 1.0) ||
+        (costModifierType === 'fixed' && costModifierFixedAmount !== null && costModifierFixedAmount !== 0);
+
     const isFormValid = selectedTypeId && availableRateItems.length > 0 && activePricing &&
-        (clientModifier === 1.0 || clientReasonCode) &&
-        (costModifier === 1.0 || costReasonCode);
+        (!isClientModifierActive || clientReasonCode) &&
+        (!isCostModifierActive || costReasonCode);
 
     return {
-        formState: {
-            selectedTypeId,
-            quantity,
-            clientModifier,
-            clientReasonCode,
-            costModifier,
-            costReasonCode,
-            note,
-        },
-        setters: {
-            setSelectedTypeId,
-            setQuantity,
-            setClientModifier,
-            setClientReasonCode,
-            setCostModifier,
-            setCostReasonCode,
-            setNote,
-        },
-        derivedData: {
-            availableRateItems,
-            activePricing,
-            isLoading,
-            pricingSettings,
-            rateCards,
-            reasonCodes,
-        },
-        handlers: {
-            handleAdd,
-            resetForm,
-        },
-        validation: {
-            isFormValid,
-        },
+        // Form state
+        selectedTypeId,
+        quantity,
+        clientModifier,
+        clientModifierType,
+        clientModifierFixedAmount,
+        clientReasonCode,
+        costModifier,
+        costModifierType,
+        costModifierFixedAmount,
+        costReasonCode,
+        note,
+        // Setters
+        setSelectedTypeId,
+        setQuantity,
+        setClientModifier,
+        setClientModifierType,
+        setClientModifierFixedAmount,
+        setClientReasonCode,
+        setCostModifier,
+        setCostModifierType,
+        setCostModifierFixedAmount,
+        setCostReasonCode,
+        setNote,
+        // Derived data
+        availableRateItems,
+        activePricing,
+        isLoading,
+        pricingSettings,
+        rateCards,
+        reasonCodes,
+        // Handlers
+        handleAdd,
+        resetForm,
+        // Validation
+        isFormValid,
+        isClientModifierActive,
+        isCostModifierActive,
     };
 }

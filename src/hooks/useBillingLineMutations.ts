@@ -4,7 +4,7 @@ import { mockBillingLines } from '../data/mock-billing-lines';
 import { mockUsers } from '../data/mock-users';
 
 import { MOCK_API_DELAY, BULK_MOCK_API_DELAY } from '../constants/query-config';
-import { calculateLineFinancials } from '../utils/billingCalculations';
+import { calculateLineFinancials, calculateFinalRate } from '../utils/billingCalculations';
 
 const DEFAULT_USER_ID = mockUsers[0].id;
 
@@ -18,9 +18,13 @@ function calculateLineTotals(line: BillingLineInstance): BillingLineInstance {
     const minimum = updatedLine.appliedRulesSnapshot?.minimum || 0;
     updatedLine.quantityEffective = Math.max(updatedLine.quantityInput, minimum);
 
-    // 2. Calculate final rates after modifiers
-    updatedLine.finalCostRate = updatedLine.effectiveCostRate * updatedLine.costModifierValue;
-    updatedLine.finalClientRate = updatedLine.effectiveClientRate * updatedLine.clientModifierValue;
+    // 2. Calculate final rates after modifiers using shared utility
+    updatedLine.finalCostRate = calculateFinalRate(
+        updatedLine.effectiveCostRate, updatedLine.costModifierType, updatedLine.costModifierValue, updatedLine.costModifierFixedAmount
+    );
+    updatedLine.finalClientRate = calculateFinalRate(
+        updatedLine.effectiveClientRate, updatedLine.clientModifierType, updatedLine.clientModifierValue, updatedLine.clientModifierFixedAmount
+    );
 
     // 3. Calculate totals using shared utility
     const financials = calculateLineFinancials(
@@ -63,11 +67,18 @@ async function simulateUpdateLine(id: string, updates: Partial<BillingLineInstan
 
     // Recalculate totals if quantity or modifiers changed
     if ('quantityInput' in updates ||
+        'clientModifierType' in updates ||
         'clientModifierValue' in updates ||
+        'clientModifierFixedAmount' in updates ||
+        'costModifierType' in updates ||
         'costModifierValue' in updates ||
+        'costModifierFixedAmount' in updates ||
         'clientModifierReasonCode' in updates ||
         'costModifierReasonCode' in updates) {
         updatedLine = calculateLineTotals(updatedLine);
+        // Stamp audit trail for modifications
+        updatedLine.modifiedAt = new Date().toISOString();
+        updatedLine.modifiedBy = DEFAULT_USER_ID;
     }
 
     // "Persist" to mock data
@@ -104,8 +115,8 @@ export function useUpdateBillingLineModifiers() {
         }: {
             id: string;
             updates: Partial<Pick<BillingLineInstance,
-                'clientModifierValue' | 'clientModifierReasonCode' | 'clientModifierNote' | 'clientModifierSource' |
-                'costModifierValue' | 'costModifierReasonCode' | 'costModifierNote' | 'costModifierSource'>>
+                'clientModifierType' | 'clientModifierValue' | 'clientModifierFixedAmount' | 'clientModifierReasonCode' | 'clientModifierNote' | 'clientModifierSource' |
+                'costModifierType' | 'costModifierValue' | 'costModifierFixedAmount' | 'costModifierReasonCode' | 'costModifierNote' | 'costModifierSource'>>
         }) => simulateUpdateLine(id, updates),
         onSuccess: (data) => {
             queryClient.invalidateQueries({ queryKey: ['orderBillingLines', data.orderId] });
