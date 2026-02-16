@@ -2,24 +2,23 @@ import React, { useState, useMemo } from "react";
 import {
     Modal,
     Button,
-    Tabs,
-    Switch,
     TextArea,
-    Chip,
-    Description,
-    Label
+    Label,
+    ScrollShadow,
+    TextField
 } from "@heroui/react";
 import { Icon } from "@iconify/react";
-import { BillingLineInstance, ModifierSource } from "../../types/pricing";
-import { ModifierInput } from "../pricing/ModifierInput";
-import { ReasonCodeSelector } from "../pricing/ReasonCodeSelector";
-import { CurrencyDisplay } from "../pricing/CurrencyDisplay";
+import { BillingLineInstance, ModifierType } from "../../types/pricing";
+import { ModifierAdjustments } from "./AddManualLine/ModifierAdjustments";
+import { LivePreview } from "./AddManualLine/LivePreview";
 import { mockModifierReasonCodes } from "../../data/mock-modifier-reason-codes";
 import { calculateLineFinancials } from "../../utils/billingCalculations";
-import { formatPercentage } from "../../utils/formatters";
+import { MODAL_BACKDROP } from "../../constants/ui-tokens";
+import { PRICING_LABEL_CLASSES } from "../../constants/pricing";
 
 interface LineModifierEditorProps {
     line: BillingLineInstance;
+    rateItemName?: string;
     isOpen: boolean;
     onOpenChange: (isOpen: boolean) => void;
     onSave: (updatedLine: Partial<BillingLineInstance>) => void;
@@ -28,29 +27,43 @@ interface LineModifierEditorProps {
 
 export function LineModifierEditor({
     line,
+    rateItemName,
     isOpen,
     onOpenChange,
     onSave,
     isPending = false
 }: LineModifierEditorProps) {
     // Client Modifier State
+    const [clientType, setClientType] = useState<ModifierType>(line.clientModifierType);
     const [clientValue, setClientValue] = useState(line.clientModifierValue);
+    const [clientFixedAmount, setClientFixedAmount] = useState(line.clientModifierFixedAmount ?? line.effectiveClientRate);
     const [clientReason, setClientReason] = useState(line.clientModifierReasonCode);
-    const [clientNote, setClientNote] = useState(line.clientModifierNote || "");
-    const [clientSource, setClientSource] = useState<ModifierSource>(line.clientModifierSource);
 
     // Cost Modifier State
+    const [costType, setCostType] = useState<ModifierType>(line.costModifierType);
     const [costValue, setCostValue] = useState(line.costModifierValue);
+    const [costFixedAmount, setCostFixedAmount] = useState(line.costModifierFixedAmount ?? line.effectiveCostRate);
     const [costReason, setCostReason] = useState(line.costModifierReasonCode);
-    const [costNote, setCostNote] = useState(line.costModifierNote || "");
-    const [costSource, setCostSource] = useState<ModifierSource>(line.costModifierSource);
+    const [note, setNote] = useState(line.clientModifierNote || line.costModifierNote || "");
 
-    const [activeTab, setActiveTab] = useState<string>("client");
+    // Derived modifier active flags — check by type to avoid false positives
+    const isClientModifierActive = clientType === 'fixed'
+        ? clientFixedAmount !== line.effectiveClientRate
+        : clientValue !== 1.0;
+    const isCostModifierActive = costType === 'fixed'
+        ? costFixedAmount !== line.effectiveCostRate
+        : costValue !== 1.0;
 
     // Derived Calculations for Preview
     const preview = useMemo(() => {
-        const finalCostRate = line.effectiveCostRate * costValue;
-        const finalClientRate = line.effectiveClientRate * clientValue;
+        // Calculate final rates based on modifier type
+        const finalCostRate = costType === 'percentage'
+            ? line.effectiveCostRate * costValue
+            : (costFixedAmount ?? line.effectiveCostRate);
+
+        const finalClientRate = clientType === 'percentage'
+            ? line.effectiveClientRate * clientValue
+            : (clientFixedAmount ?? line.effectiveClientRate);
 
         const financials = calculateLineFinancials(
             line.quantityEffective,
@@ -66,23 +79,43 @@ export function LineModifierEditor({
             ...financials,
             margin: financials.lineMargin // Mapping for compatibility
         };
-    }, [line, clientValue, costValue]);
+    }, [line, clientValue, costValue, clientType, costType, clientFixedAmount, costFixedAmount]);
+
+    // Map preview data to ActivePricing shape for LivePreview component
+    const activePricing = useMemo(() => ({
+        rateSource: line.rateSource,
+        taxTreatment: line.taxTreatment,
+        effectiveQuantity: line.quantityEffective,
+        finalCost: preview.finalCostRate,
+        finalClient: preview.finalClientRate,
+        currency: line.currency,
+        lineCostTotal: preview.lineCostTotal,
+        lineClientTotalPreTax: preview.lineClientTotalPreTax,
+        taxRate: line.taxRate,
+        taxAmount: preview.taxAmount,
+        margin: preview.margin,
+        lineClientTotalIncTax: preview.lineClientTotalIncTax
+    }), [line, preview]);
 
     // Validation
-    const isClientValid = clientValue === 1.0 || (clientValue !== 1.0 && clientReason !== null);
-    const isCostValid = costValue === 1.0 || (costValue !== 1.0 && costReason !== null);
+    const isClientValid = !isClientModifierActive || clientReason !== null;
+    const isCostValid = !isCostModifierActive || costReason !== null;
     const isValid = isClientValid && isCostValid;
 
     const handleSave = () => {
         onSave({
+            clientModifierType: clientType,
             clientModifierValue: clientValue,
+            clientModifierFixedAmount: clientType === 'fixed' ? clientFixedAmount : null,
             clientModifierReasonCode: clientReason,
-            clientModifierNote: clientNote || null,
-            clientModifierSource: clientSource,
+            clientModifierNote: note || null,
+            clientModifierSource: 'MANUAL',
+            costModifierType: costType,
             costModifierValue: costValue,
+            costModifierFixedAmount: costType === 'fixed' ? costFixedAmount : null,
             costModifierReasonCode: costReason,
-            costModifierNote: costNote || null,
-            costModifierSource: costSource,
+            costModifierNote: note || null,
+            costModifierSource: 'MANUAL',
             finalCostRate: preview.finalCostRate,
             finalClientRate: preview.finalClientRate,
             lineCostTotal: preview.lineCostTotal,
@@ -94,219 +127,79 @@ export function LineModifierEditor({
         onOpenChange(false);
     };
 
-    const toggleOverride = (type: 'client' | 'cost', isOverridden: boolean) => {
-        if (type === 'client') {
-            setClientSource('MANUAL');
-            if (!isOverridden) {
-                // Reset to default value
-                setClientValue(1.0);
-                setClientReason(null);
-            }
-        } else {
-            setCostSource('MANUAL');
-            if (!isOverridden) {
-                setCostValue(1.0);
-                setCostReason(null);
-            }
-        }
-    };
-
     return (
         <Modal
             isOpen={isOpen}
             onOpenChange={onOpenChange}
         >
-            <Modal.Backdrop>
+            <Modal.Backdrop className={MODAL_BACKDROP}>
                 <Modal.Container>
-                    <Modal.Dialog className="rounded-premium-lg max-w-2xl overflow-visible">
-                        <Modal.Header className="flex flex-col gap-1 p-8 bg-default-50/50 border-b border-default-100">
-                            <Modal.Heading className="text-2xl font-bold text-default-900">
+                    <Modal.Dialog className="max-w-2xl flex flex-col max-h-[90vh]">
+                        <Modal.CloseTrigger />
+                        <Modal.Header className="flex items-center gap-4">
+                            <div className="bg-accent/10 text-accent shrink-0 p-2 rounded-full">
+                                <Icon icon="lucide:pencil-line" className="size-5" />
+                            </div>
+                            <Modal.Heading className="text-2xl font-bold leading-tight">
                                 Edit Pricing Modifiers
                             </Modal.Heading>
-                            <Description className="text-sm text-default-500 font-medium leading-relaxed">
-                                Adjust revenue and expense modifiers for this specific billing line.
-                            </Description>
                         </Modal.Header>
 
-                        <Modal.Body className="p-0">
+                        <Modal.Body className="flex-1 overflow-hidden p-0">
+                            <ScrollShadow className="h-full">
+                                <div className="px-6 py-5 space-y-5">
+                                    <ModifierAdjustments
+                                        clientModifier={clientValue}
+                                        setClientModifier={setClientValue}
+                                        clientModifierType={clientType}
+                                        setClientModifierType={setClientType}
+                                        clientModifierFixedAmount={clientFixedAmount}
+                                        setClientModifierFixedAmount={(val) => setClientFixedAmount(val ?? line.effectiveClientRate)}
+                                        clientReasonCode={clientReason}
+                                        setClientReasonCode={setClientReason}
+                                        costModifier={costValue}
+                                        setCostModifier={setCostValue}
+                                        costModifierType={costType}
+                                        setCostModifierType={setCostType}
+                                        costModifierFixedAmount={costFixedAmount}
+                                        setCostModifierFixedAmount={(val) => setCostFixedAmount(val ?? line.effectiveCostRate)}
+                                        costReasonCode={costReason}
+                                        setCostReasonCode={setCostReason}
+                                        reasonCodes={mockModifierReasonCodes}
+                                        currency={line.currency}
+                                        isClientModifierActive={isClientModifierActive}
+                                        isCostModifierActive={isCostModifierActive}
+                                    />
 
-                            <Tabs
-                                aria-label="Modifier types"
-                                selectedKey={activeTab}
-                                onSelectionChange={(key) => setActiveTab(key as string)}
-                                className="w-full"
-                                variant="primary"
-                            >
-                                <Tabs.List className="px-8 border-b border-default-100 bg-background">
-                                    <Tabs.Tab key="client" id="client" className="py-4">
-                                        <div className="flex items-center gap-2">
-                                            <Icon icon="lucide:user" className="w-4 h-4" />
-                                            <span className="font-bold">Revenue Modifier</span>
-                                        </div>
-                                        <Tabs.Indicator />
-                                    </Tabs.Tab>
-                                    <Tabs.Tab key="cost" id="cost" className="py-4">
-                                        <div className="flex items-center gap-2">
-                                            <Icon icon="lucide:wallet" className="w-4 h-4" />
-                                            <span className="font-bold">Expense Modifier</span>
-                                        </div>
-                                        <Tabs.Indicator />
-                                    </Tabs.Tab>
-                                </Tabs.List>
-                            </Tabs>
-
-                            <div className="p-8 space-y-8 min-h-[400px]">
-                                {activeTab === "client" ? (
-                                    <div className="space-y-6 animate-fadeIn">
-                                        <div className="flex items-center justify-between p-4 bg-default-50 rounded-2xl border border-default-200">
-                                            <div className="flex flex-col gap-1">
-                                                <span className="text-tiny font-black uppercase tracking-widest text-default-400">Current Source</span>
-                                                <div className="flex items-center gap-2">
-                                                    <Chip
-                                                        size="sm"
-                                                        variant="soft"
-                                                        color="accent"
-                                                        className="font-bold uppercase text-tiny"
-                                                    >
-                                                        {clientSource.replace(/_/g, ' ')}
-                                                    </Chip>
-                                                </div>
-                                            </div>
-                                            <div className="flex items-center gap-3">
-                                                <span className="text-sm font-bold text-default-700">Manual Override</span>
-                                                <Switch
-                                                    isSelected={true}
-                                                    onChange={(selected: boolean) => toggleOverride('client', selected)}
-                                                >
-                                                    <Switch.Control>
-                                                        <Switch.Thumb />
-                                                    </Switch.Control>
-                                                </Switch>
-                                            </div>
-                                        </div>
-
-                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                            <ModifierInput
-                                                label="Revenue Modifier"
-                                                value={clientValue}
-                                                onChange={setClientValue}
-                                                className=""
-                                            />
-                                            <ReasonCodeSelector
-                                                value={clientReason}
-                                                onChange={setClientReason}
-                                                reasonCodes={mockModifierReasonCodes}
-                                                required={clientValue !== 1.0}
-                                                isInvalid={clientValue !== 1.0 && !clientReason}
-                                                errorMessage="Reason code required for specialized rates"
-                                                className=""
-                                            />
-                                        </div>
-
-                                        <div className="">
-                                            <Label className="text-xs font-bold text-default-700 mb-1.5 block leading-normal">Revenue Note</Label>
-                                            <TextArea
-                                                placeholder="Reason for this specific adjustment..."
-                                                value={clientNote}
-                                                onChange={(e) => setClientNote(e.target.value)}
-                                                className="bg-background border-default-200 focus:border-accent min-h-[100px] w-full"
-                                            />
-                                        </div>
-                                    </div>
-                                ) : (
-                                    <div className="space-y-6 animate-fadeIn">
-                                        <div className="flex items-center justify-between p-4 bg-default-50 rounded-2xl border border-default-200">
-                                            <div className="flex flex-col gap-1">
-                                                <span className="text-tiny font-black uppercase tracking-widest text-default-400">Current Source</span>
-                                                <Chip
-                                                    size="sm"
-                                                    variant="soft"
-                                                    color="accent"
-                                                    className="font-bold uppercase text-tiny"
-                                                >
-                                                    {costSource.replace(/_/g, ' ')}
-                                                </Chip>
-                                            </div>
-                                            <div className="flex items-center gap-3">
-                                                <span className="text-sm font-bold text-default-700">Manual Override</span>
-                                                <Switch
-                                                    isSelected={true}
-                                                    onChange={(selected: boolean) => toggleOverride('cost', selected)}
-                                                >
-                                                    <Switch.Control>
-                                                        <Switch.Thumb />
-                                                    </Switch.Control>
-                                                </Switch>
-                                            </div>
-                                        </div>
-
-                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                            <ModifierInput
-                                                label="Expense Modifier"
-                                                value={costValue}
-                                                onChange={setCostValue}
-                                                className=""
-                                            />
-                                            <ReasonCodeSelector
-                                                label="Expense Reason Code"
-                                                value={costReason}
-                                                onChange={setCostReason}
-                                                reasonCodes={mockModifierReasonCodes}
-                                                required={costValue !== 1.0}
-                                                isInvalid={costValue !== 1.0 && !costReason}
-                                                errorMessage="Reason code required for specialized rates"
-                                                className=""
-                                            />
-                                        </div>
-
-                                        <div className="">
-                                            <Label className="text-xs font-bold text-default-700 mb-1.5 block leading-normal">Expense Note</Label>
-                                            <TextArea
-                                                placeholder="Internal note for expense adjustment..."
-                                                value={costNote}
-                                                onChange={(e) => setCostNote(e.target.value)}
-                                                className="bg-background border-default-200 focus:border-accent min-h-[100px] w-full"
-                                            />
-                                        </div>
-                                    </div>
-                                )}
-                            </div>
-
-                            {/* Live Preview Bar */}
-                            <div className="bg-accent/5 border-t border-accent/10 p-8 grid grid-cols-2 md:grid-cols-4 gap-4">
-                                <div className="flex flex-col gap-1">
-                                    <span className="text-tiny font-black uppercase tracking-wider text-accent/60">New Revenue Rate</span>
-                                    <CurrencyDisplay amount={preview.finalClientRate} currency={line.currency} size="md" color="accent" />
+                                    <TextField value={note} onChange={setNote} className="w-full">
+                                        <Label className={PRICING_LABEL_CLASSES}>
+                                            Note (Optional)
+                                        </Label>
+                                        <TextArea
+                                            placeholder="Add a reason or context for this adjustment..."
+                                            className="min-h-[80px]"
+                                        />
+                                    </TextField>
                                 </div>
-                                <div className="flex flex-col gap-1 border-l border-accent/10 pl-4">
-                                    <span className="text-tiny font-black uppercase tracking-wider text-accent/60">Revenue Total (Pre-tax)</span>
-                                    <CurrencyDisplay amount={preview.lineClientTotalPreTax} currency={line.currency} size="md" color="accent" className="font-black" />
-                                </div>
-                                <div className="flex flex-col gap-1 border-l border-accent/10 pl-4">
-                                    <span className="text-tiny font-black uppercase tracking-wider text-default-400">Expense Total</span>
-                                    <CurrencyDisplay amount={preview.lineCostTotal} currency={line.currency} size="md" variant="soft" className="bg-transparent border-none p-0 min-w-0" />
-                                </div>
-                                <div className="flex flex-col gap-1 border-l border-accent/10 pl-4 text-right">
-                                    <span className="text-tiny font-black uppercase tracking-wider text-default-400">Net Margin</span>
-                                    <div className={`text-sm font-black ${preview.margin >= 0 ? "text-success" : "text-danger"}`}>
-                                        <CurrencyDisplay amount={preview.margin} currency={line.currency} size="sm" className="bg-transparent border-none p-0 inline-flex min-w-0" />
-                                        <span className="text-tiny ml-1">({formatPercentage((preview.margin / (preview.lineClientTotalPreTax || 1)) * 100)})</span>
-                                    </div>
-                                </div>
-                            </div>
+                            </ScrollShadow>
                         </Modal.Body>
 
-                        <Modal.Footer className="p-8 border-t border-default-100 flex items-center justify-end gap-3">
+                        {/* Sticky preview — always visible above action buttons */}
+                        <div className="shrink-0 border-t border-accent/10 px-6">
+                            <LivePreview activePricing={activePricing} rateItemName={rateItemName} />
+                        </div>
+
+                        <Modal.Footer className="shrink-0 px-6 py-4 gap-4">
                             <Button
                                 variant="ghost"
-                                className="font-bold text-default-500 rounded-xl"
+                                className="font-black"
                                 onPress={() => onOpenChange(false)}
                             >
                                 Discard Changes
                             </Button>
                             <Button
                                 variant="primary"
-                                className="font-bold shadow-accent-md rounded-xl px-8"
+                                className="font-black shadow-accent-md px-8"
                                 onPress={handleSave}
                                 isDisabled={!isValid || isPending}
                                 isPending={isPending}

@@ -33,8 +33,7 @@ export function QuantityEditor({ line, onSave, isPending = false }: QuantityEdit
         onSave(value);
     };
 
-    // Close popover when not pending anymore if it was pending
-    // Better to handle this via parent or a useEffect that watches line.quantityInput change
+    // Auto-close popover once the mutation settles and line data updates
     React.useEffect(() => {
         if (!isPending) {
             setIsOpen(false);
@@ -98,15 +97,17 @@ export function QuantityEditor({ line, onSave, isPending = false }: QuantityEdit
                             )}
                         </NumberField>
 
-                        <div className="flex items-center justify-between p-3 bg-accent/5 rounded-xl border border-accent/10">
-                            <div>
-                                <span className="text-tiny font-black uppercase tracking-wider text-accent/60 block">Effective Quantity</span>
-                                <span className="font-mono font-black text-lg text-accent">{effectiveQuantity} {unit}</span>
+                        {isBelowMinimum && (
+                            <div className="flex items-center justify-between p-3 bg-accent/5 rounded-xl border border-accent/10">
+                                <div>
+                                    <span className="text-tiny font-black uppercase tracking-wider text-accent/60 block">Effective Quantity</span>
+                                    <span className="font-mono font-black text-lg text-accent">{effectiveQuantity} {unit}</span>
+                                </div>
+                                <div className="text-right">
+                                    <Icon icon="lucide:calculator" className="w-5 h-5 text-accent/40" />
+                                </div>
                             </div>
-                            <div className="text-right">
-                                <Icon icon="lucide:calculator" className="w-5 h-5 text-accent/40" />
-                            </div>
-                        </div>
+                        )}
 
                         <Separator className="bg-default-100" />
 

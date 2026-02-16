@@ -1,4 +1,4 @@
-import { Label, ListBox, Select, Description, FieldError } from "@heroui/react";
+import { Label, ListBox, ComboBox, Input, Description, FieldError } from "@heroui/react";
 import { ModifierReasonCode } from "../../types/pricing";
 import { PRICING_LABEL_CLASSES } from "../../constants/pricing";
 import { Key } from "react";
@@ -18,9 +18,10 @@ interface ReasonCodeSelectorProps {
 }
 
 /**
- * ReasonCodeSelector - Dropdown for selecting modifier reason codes.
+ * ReasonCodeSelector - Searchable dropdown for selecting modifier reason codes.
  * Pure component receiving data via props.
  * Follows erp_pricing_spec_v1_7.md Section 9.5.
+ * Uses ComboBox for search/filter functionality.
  */
 export function ReasonCodeSelector({
     value,
@@ -33,7 +34,7 @@ export function ReasonCodeSelector({
     description,
     className = "",
     label = "Reason Code",
-    placeholder = "Select reason...",
+    placeholder = "Search or select reason...",
 }: ReasonCodeSelectorProps) {
     const reasons = reasonCodes.filter((r) =>
         filterActive ? r.active : true
@@ -44,9 +45,8 @@ export function ReasonCodeSelector({
     };
 
     return (
-        <Select
+        <ComboBox
             className={`w-full ${className}`}
-            placeholder={placeholder}
             selectedKey={value ?? undefined}
             onSelectionChange={handleSelectionChange}
             isRequired={required}
@@ -55,32 +55,31 @@ export function ReasonCodeSelector({
             <Label className={PRICING_LABEL_CLASSES}>
                 {label}
             </Label>
-            <Select.Trigger>
-                <Select.Value />
-                <Select.Indicator />
-            </Select.Trigger>
+            <ComboBox.InputGroup>
+                <Input placeholder={placeholder} />
+                <ComboBox.Trigger />
+            </ComboBox.InputGroup>
 
             {description && <Description>{description}</Description>}
             <FieldError>{errorMessage}</FieldError>
 
-            <Select.Popover>
+            <ComboBox.Popover>
                 <ListBox items={reasons}>
                     {(reason) => (
                         <ListBox.Item
                             id={reason.code}
                             key={reason.code}
-                            textValue={reason.displayName}
-                            className="flex flex-col gap-0.5 py-2"
+                            textValue={`${reason.code} - ${reason.displayName}`}
                         >
-                            <span className="text-sm font-semibold">{reason.displayName}</span>
-                            <span className="t-mini font-mono leading-none opacity-60 uppercase tracking-tighter">
-                                Code: {reason.code}
-                            </span>
+                            <div className="flex items-center gap-2">
+                                <span className="text-sm font-mono uppercase font-bold">{reason.code}</span>
+                                <span className="text-sm text-default-500 truncate">{reason.displayName}</span>
+                            </div>
                             <ListBox.ItemIndicator />
                         </ListBox.Item>
                     )}
                 </ListBox>
-            </Select.Popover>
-        </Select>
+            </ComboBox.Popover>
+        </ComboBox>
     );
 }

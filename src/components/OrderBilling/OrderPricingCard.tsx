@@ -6,6 +6,7 @@ import { useProjectOverrides } from "../../hooks/useProjectOverrides";
 import { useRateCards } from "../../hooks/useRateCards";
 import { useRateItemLookup } from "../../hooks/useRateItemLookup";
 import { Currency } from "../../types/pricing";
+import { formatCurrencyAmount } from "../../utils/formatters";
 
 interface OrderPricingCardProps {
     projectId: string;
@@ -20,8 +21,6 @@ const getCurrencyFlag = (currency: Currency) => {
     }
 };
 
-const formatCurrency = (val: number, cur: Currency) =>
-    new Intl.NumberFormat('en-GB', { style: 'currency', currency: cur, minimumFractionDigits: 2 }).format(val);
 
 /**
  * OrderPricingCard - Read-only summary of project pricing shown in the order billing sidebar.
@@ -174,21 +173,21 @@ export function OrderPricingCard({ projectId }: OrderPricingCardProps) {
                                     <div className="flex gap-4 shrink-0">
                                         <div className="w-16 text-right">
                                             <span className={`text-xs font-bold font-mono ${hasOverride ? 'text-warning' : 'text-default-900'}`}>
-                                                {formatCurrency(effectiveClient, currency)}
+                                                {formatCurrencyAmount(effectiveClient, currency)}
                                             </span>
                                             {hasOverride && override?.clientRate != null && (
                                                 <span className="block t-micro font-mono text-default-400 line-through">
-                                                    {formatCurrency(item.clientRate, currency)}
+                                                    {formatCurrencyAmount(item.clientRate, currency)}
                                                 </span>
                                             )}
                                         </div>
                                         <div className="w-16 text-right">
                                             <span className={`text-xs font-bold font-mono ${hasOverride ? 'text-warning' : 'text-default-500'}`}>
-                                                {formatCurrency(effectiveCost, currency)}
+                                                {formatCurrencyAmount(effectiveCost, currency)}
                                             </span>
                                             {hasOverride && override?.costRate != null && (
                                                 <span className="block t-micro font-mono text-default-400 line-through">
-                                                    {formatCurrency(item.costRate, currency)}
+                                                    {formatCurrencyAmount(item.costRate, currency)}
                                                 </span>
                                             )}
                                         </div>

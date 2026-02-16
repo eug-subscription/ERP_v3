@@ -8,6 +8,9 @@ import { Table } from "../pricing/Table";
 import { useRateItems } from "../../hooks/useRateItems";
 import { TOOLTIP_DELAY } from "../../constants/ui-tokens";
 import { PRICING_ITEM_TRACKING } from "../../constants/pricing";
+import { getCurrencySymbol } from "../../utils/currency";
+import { formatAmount, formatPercentage } from "../../utils/formatters";
+import { CURRENCY_DECIMALS, PERCENTAGE_DECIMALS } from "../../constants/ui-tokens";
 import { BillingLineDetail } from "./BillingLineDetail";
 import { QuantityEditor } from "./QuantityEditor";
 import { LineModifierEditor } from "./LineModifierEditor";
@@ -65,6 +68,7 @@ export function BillingLineRow({
 
     return (
         <>
+            {/* onClick is intentional — native <tr> does not support onPress */}
             <Table.Row
                 className={isVoided ? "opacity-60 bg-default-50/30" : "cursor-pointer"}
                 tabIndex={0}
@@ -141,34 +145,93 @@ export function BillingLineRow({
                 </Table.Cell>
                 {/* Rate column */}
                 <Table.Cell>
-                    <div className="flex items-center gap-1">
-                        <CurrencyDisplay
-                            amount={line.finalClientRate}
-                            currency={line.currency}
-                            size="sm"
-                            className={isVoided ? "line-through" : ""}
-                        />
-                        <span className="t-mini text-default-400">/{line.appliedRulesSnapshot?.unit || "unit"}</span>
-                    </div>
+                    {(() => {
+                        const hasRateModifier = line.finalClientRate !== line.effectiveClientRate;
+                        return (
+                            <div className="flex flex-col gap-0.5">
+                                <div className="flex items-center gap-1">
+                                    <CurrencyDisplay
+                                        amount={line.finalClientRate}
+                                        currency={line.currency}
+                                        size="sm"
+                                        color={hasRateModifier ? "success" : "default"}
+                                        variant={hasRateModifier ? "soft" : "secondary"}
+                                        className={`${hasRateModifier ? "font-black" : ""} ${isVoided ? "line-through" : ""}`}
+                                    />
+                                    <span className="t-mini text-default-400">/{line.appliedRulesSnapshot?.unit || "unit"}</span>
+                                </div>
+                                {hasRateModifier && !isVoided && (
+                                    <span className="t-micro text-default-400 whitespace-nowrap">
+                                        was {getCurrencySymbol(line.currency)}{formatAmount(line.effectiveClientRate, CURRENCY_DECIMALS)}
+                                    </span>
+                                )}
+                            </div>
+                        );
+                    })()}
                 </Table.Cell>
                 {/* Revenue column */}
                 <Table.Cell align="right">
-                    <CurrencyDisplay
-                        amount={line.lineClientTotalPreTax}
-                        currency={line.currency}
-                        size="sm"
-                        className={isVoided ? "line-through" : ""}
-                    />
+                    {(() => {
+                        const hasClientModifier = line.finalClientRate !== line.effectiveClientRate;
+                        const clientPercentChange = line.effectiveClientRate !== 0
+                            ? ((line.finalClientRate - line.effectiveClientRate) / line.effectiveClientRate) * 100
+                            : 0;
+                        const preTax = line.lineClientTotalPreTax;
+                        const basePreTax = line.effectiveClientRate * line.quantityEffective;
+
+                        return (
+                            <div className="flex flex-col items-end gap-0.5">
+                                <CurrencyDisplay
+                                    amount={preTax}
+                                    currency={line.currency}
+                                    size="sm"
+                                    color={hasClientModifier ? "success" : "default"}
+                                    variant={hasClientModifier ? "soft" : "secondary"}
+                                    className={`${hasClientModifier ? "font-black" : ""} ${isVoided ? "line-through" : ""}`}
+                                />
+                                {hasClientModifier && !isVoided && (
+                                    <span className="t-micro text-default-400 whitespace-nowrap">
+                                        was {getCurrencySymbol(line.currency)}{formatAmount(basePreTax, CURRENCY_DECIMALS)}{" "}
+                                        <span className={clientPercentChange > 0 ? "text-success" : "text-danger"}>
+                                            ({clientPercentChange > 0 ? "+" : ""}{formatPercentage(clientPercentChange, PERCENTAGE_DECIMALS)})
+                                        </span>
+                                    </span>
+                                )}
+                            </div>
+                        );
+                    })()}
                 </Table.Cell>
                 {/* Expense column */}
                 <Table.Cell align="right">
-                    <CurrencyDisplay
-                        amount={line.lineCostTotal}
-                        currency={line.currency}
-                        size="sm"
-                        variant="soft"
-                        className={isVoided ? "line-through" : ""}
-                    />
+                    {(() => {
+                        const hasCostModifier = line.finalCostRate !== line.effectiveCostRate;
+                        const costPercentChange = line.effectiveCostRate !== 0
+                            ? ((line.finalCostRate - line.effectiveCostRate) / line.effectiveCostRate) * 100
+                            : 0;
+                        const total = line.lineCostTotal;
+                        const baseTotal = line.effectiveCostRate * line.quantityEffective;
+
+                        return (
+                            <div className="flex flex-col items-end gap-0.5">
+                                <CurrencyDisplay
+                                    amount={total}
+                                    currency={line.currency}
+                                    size="sm"
+                                    color={hasCostModifier ? "warning" : "default"}
+                                    variant={hasCostModifier ? "soft" : "secondary"}
+                                    className={`${hasCostModifier ? "font-black" : ""} ${isVoided ? "line-through" : ""}`}
+                                />
+                                {hasCostModifier && !isVoided && (
+                                    <span className="t-micro text-default-400 whitespace-nowrap">
+                                        was {getCurrencySymbol(line.currency)}{formatAmount(baseTotal, CURRENCY_DECIMALS)}{" "}
+                                        <span className={costPercentChange > 0 ? "text-danger" : "text-success"}>
+                                            ({costPercentChange > 0 ? "+" : ""}{formatPercentage(costPercentChange, PERCENTAGE_DECIMALS)})
+                                        </span>
+                                    </span>
+                                )}
+                            </div>
+                        );
+                    })()}
                 </Table.Cell>
                 {/* Actions column */}
                 <Table.Cell align="right">
@@ -226,7 +289,9 @@ export function BillingLineRow({
             )}
 
             <LineModifierEditor
+                key={line.id}
                 line={line}
+                rateItemName={getLineItemName(line.rateItemId)}
                 isOpen={isModifierModalOpen}
                 onOpenChange={setIsModifierModalOpen}
                 onSave={(updates) => onEditModifiers?.({ ...line, ...updates })}

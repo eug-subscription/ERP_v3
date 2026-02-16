@@ -106,6 +106,21 @@ body {
   animation: fadeIn 0.3s ease-out forwards;
 }
 
+@keyframes value-update {
+  0% {
+    opacity: 0.6;
+    transform: scale(0.95);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.animate-value-update {
+  animation: value-update 0.25s ease-out;
+}
+
 @keyframes pulse-subtle {
 
   0%,

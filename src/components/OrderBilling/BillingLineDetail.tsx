@@ -5,6 +5,9 @@ import { CurrencyDisplay } from "../pricing/CurrencyDisplay";
 import { ModifierBadge } from "../pricing/ModifierBadge";
 import { PRICING_LABEL_CLASSES } from "../../constants/pricing";
 import { formatPercentage } from "../../utils/formatters";
+import { mockUsers } from "../../data/mock-users";
+
+const getUserName = (userId: string) => mockUsers.find(u => u.id === userId)?.name ?? userId;
 
 interface BillingLineDetailProps {
     line: BillingLineInstance;
@@ -147,19 +150,32 @@ export function BillingLineDetail({ line }: BillingLineDetailProps) {
                         <Card className="p-3">
                             <div className="text-xs text-default-500 space-y-1">
                                 <div className="flex items-center gap-2">
-                                    <Icon icon="lucide:plus-circle" className="w-3 h-3" />
-                                    Created: {formatAuditDate(line.createdAt)} by <span className="font-bold text-default-700">{line.createdBy}</span>
+                                    <Icon icon="lucide:plus-circle" className="size-3" />
+                                    Created: {formatAuditDate(line.createdAt)} by <span className="font-bold text-default-700">{getUserName(line.createdBy)}</span>
                                 </div>
+                                {line.modifiedAt && (
+                                    <div className="text-warning font-medium flex items-center gap-2">
+                                        <Icon icon="lucide:pencil" className="size-3" />
+                                        Modified: {formatAuditDate(line.modifiedAt)} by <span className="font-bold">{getUserName(line.modifiedBy ?? '')}</span>
+                                    </div>
+                                )}
                                 {line.confirmedAt && (
                                     <div className="text-success font-medium flex items-center gap-2">
-                                        <Icon icon="lucide:check-circle" className="w-3 h-3" />
-                                        Confirmed: {formatAuditDate(line.confirmedAt)} by {line.confirmedBy}
+                                        <Icon icon="lucide:check-circle" className="size-3" />
+                                        Confirmed: {formatAuditDate(line.confirmedAt)} by {getUserName(line.confirmedBy ?? '')}
                                     </div>
                                 )}
                                 {line.voidedAt && (
-                                    <div className="text-danger font-medium flex items-center gap-2">
-                                        <Icon icon="lucide:x-circle" className="w-3 h-3" />
-                                        Voided: {formatAuditDate(line.voidedAt)} ({line.voidReason})
+                                    <div>
+                                        <div className="text-danger font-medium flex items-center gap-2">
+                                            <Icon icon="lucide:x-circle" className="w-3 h-3 shrink-0" />
+                                            Voided: {formatAuditDate(line.voidedAt)} by <span className="font-bold">{getUserName(line.voidedBy ?? '')}</span>
+                                        </div>
+                                        {line.voidReason && (
+                                            <p className="text-xs text-default-400 italic ml-5 mt-0.5">
+                                                "{line.voidReason}"
+                                            </p>
+                                        )}
                                     </div>
                                 )}
                             </div>

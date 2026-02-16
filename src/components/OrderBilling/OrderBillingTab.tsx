@@ -4,13 +4,14 @@ import { BillingLinesSection } from "./BillingLinesSection";
 import { OrderBillingSummaryCard } from "./OrderBillingSummary";
 import { OrderPricingCard } from "./OrderPricingCard";
 import { useOrder } from "../../hooks/useOrder";
+import { FALLBACK_PROJECT_ID } from "../../constants/pricing";
 
 interface OrderBillingTabProps {
     orderId: string;
 }
 
 export function OrderBillingTab({ orderId }: OrderBillingTabProps) {
-    const { actions } = useOrderBillingLines(orderId);
+    const { refetch } = useOrderBillingLines(orderId);
 
     const { data: order } = useOrder();
 
@@ -32,17 +33,17 @@ export function OrderBillingTab({ orderId }: OrderBillingTabProps) {
                 <div className="min-w-0">
                     <BillingLinesSection
                         orderId={orderId}
-                        projectId={order?.projectId ?? "P-DEFAULT"}
+                        projectId={order?.projectId ?? FALLBACK_PROJECT_ID}
                     />
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <OrderBillingSummaryCard
                         orderId={orderId}
-                        onRetry={() => actions.refetch()}
+                        onRetry={() => refetch()}
                     />
                     <OrderPricingCard
-                        projectId={order?.projectId ?? "P-DEFAULT"}
+                        projectId={order?.projectId ?? FALLBACK_PROJECT_ID}
                     />
                 </div>
             </div>

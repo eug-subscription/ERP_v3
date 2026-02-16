@@ -26,15 +26,29 @@ export function CurrencyDisplay({
     size = "md",
     className = "",
 }: CurrencyDisplayProps) {
-    // Format the currency using Intl.NumberFormat
-    const formatter = new Intl.NumberFormat("en-US", {
-        style: showSymbol ? "currency" : "decimal",
-        currency: currency,
-        minimumFractionDigits: decimals,
-        maximumFractionDigits: decimals,
-    });
+    // Valid currency codes per pricing spec
+    const validCurrencies = ['EUR', 'GBP', 'USD'];
 
-    const formattedValue = formatter.format(amount);
+    // Defensive: Only use currency style if we have a valid currency code
+    const isValidCurrency = currency && validCurrencies.includes(currency);
+    const useCurrencyStyle = showSymbol && isValidCurrency;
+
+    let formattedValue: string;
+
+    try {
+        // Format the currency using Intl.NumberFormat
+        const formatter = new Intl.NumberFormat("en-US", {
+            style: useCurrencyStyle ? "currency" : "decimal",
+            currency: useCurrencyStyle ? currency : undefined,
+            minimumFractionDigits: decimals,
+            maximumFractionDigits: decimals,
+        });
+        formattedValue = formatter.format(amount);
+    } catch (error) {
+        // Fallback: if formatting fails for any reason, show plain decimal
+        console.error('CurrencyDisplay formatting error:', error, { currency, amount });
+        formattedValue = amount.toFixed(decimals);
+    }
 
     return (
         <Chip

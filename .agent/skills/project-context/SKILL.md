@@ -14,7 +14,7 @@ Provides quick access to project structure and conventions without reading full 
 | Framework | React | 19.x |
 | Build | Vite | 7.x |
 | Styling | Tailwind CSS | 4.x |
-| UI Library | HeroUI v3 Beta 5 | @heroui/react |
+| UI Library | HeroUI v3 Beta 6 | @heroui/react |
 | Routing | TanStack Router | 1.x |
 | Data | TanStack Query | 5.x |
 | Icons | Iconify (lucide) | latest |

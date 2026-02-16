@@ -23,7 +23,7 @@ export function BillingLinesSection({
     orderId,
     projectId
 }: BillingLinesSectionProps) {
-    const { state, actions } = useOrderBillingLines(orderId);
+    const { lines, isLoading, isError, refetch } = useOrderBillingLines(orderId);
     const [isAddModalOpen, setIsAddModalOpen] = useState(false);
     const [isVoidDialogOpen, setIsVoidDialogOpen] = useState(false);
     const [lineToVoid, setLineToVoid] = useState<BillingLineInstance | null>(null);
@@ -32,9 +32,7 @@ export function BillingLinesSection({
     const updateModifiers = useUpdateBillingLineModifiers();
     const addManualLine = useAddManualBillingLine();
 
-
-
-    if (state.isError) {
+    if (isError) {
         return (
             <Alert status="danger" className="rounded-2xl">
                 <Alert.Indicator />
@@ -44,7 +42,7 @@ export function BillingLinesSection({
                     <Button
                         size="sm"
                         variant="danger-soft"
-                        onPress={() => actions.refetch()}
+                        onPress={() => refetch()}
                         className="font-bold mt-2"
                     >
                         Retry
@@ -64,17 +62,17 @@ export function BillingLinesSection({
                         </div>
                         <div>
                             <h2 className={`${TEXT_SECTION_TITLE} flex items-center gap-3`}>
-                                Billing Lines
-                                {state.isLoading ? (
+                                Line Items
+                                {isLoading ? (
                                     <Skeleton className="w-10 h-6 rounded-full" />
                                 ) : (
                                     <Chip size="sm" variant="soft" color="accent" className="font-black px-2">
-                                        {state.lines.length}
+                                        {lines.length}
                                     </Chip>
                                 )}
                             </h2>
                             <p className="text-xs text-default-400 font-medium">
-                                Manage revenue and expense lines for this order
+                                All charges and costs for this order
                             </p>
                         </div>
                     </div>
@@ -87,22 +85,22 @@ export function BillingLinesSection({
                             isPending={addManualLine.isPending}
                         >
                             <Icon icon="lucide:plus" className="w-5 h-5 mr-2" />
-                            Add Manual Line
+                            Add Line Item
                         </Button>
                     </div>
                 </div>
             </Card.Header>
 
             <Card.Content className="p-0">
-                {state.isLoading ? (
+                {isLoading ? (
                     <div className="p-6 space-y-4">
                         {[1, 2, 3].map((i) => (
                             <Skeleton key={i} className="w-full h-16 rounded-lg" />
                         ))}
                     </div>
-                ) : state.lines.length > 0 ? (
+                ) : lines.length > 0 ? (
                     <BillingLinesTable
-                        lines={state.lines}
+                        lines={lines}
                         updatingQuantityId={updateQuantity.isPending ? updateQuantity.variables?.id : null}
                         updatingModifiersId={updateModifiers.isPending ? updateModifiers.variables?.id : null}
                         onEditQuantity={(line) => {
@@ -113,7 +111,7 @@ export function BillingLinesSection({
                                 onSuccess: () => {
                                     toast("Quantity Updated", {
                                         variant: "success",
-                                        description: `Successfully updated quantity for billing line ${line.id}.`
+                                        description: "Quantity has been updated and totals recalculated."
                                     });
                                 },
                                 onError: (error: Error) => {
@@ -125,23 +123,27 @@ export function BillingLinesSection({
                             });
                         }}
                         onEditModifiers={(line) => {
-                            // Extract only the modifier fields from the line
+                            // Extract modifier fields including type and fixed amounts
                             const {
-                                clientModifierValue, clientModifierReasonCode, clientModifierNote, clientModifierSource,
-                                costModifierValue, costModifierReasonCode, costModifierNote, costModifierSource
+                                clientModifierType, clientModifierValue, clientModifierFixedAmount,
+                                clientModifierReasonCode, clientModifierNote, clientModifierSource,
+                                costModifierType, costModifierValue, costModifierFixedAmount,
+                                costModifierReasonCode, costModifierNote, costModifierSource
                             } = line;
 
                             updateModifiers.mutate({
                                 id: line.id,
                                 updates: {
-                                    clientModifierValue, clientModifierReasonCode, clientModifierNote, clientModifierSource,
-                                    costModifierValue, costModifierReasonCode, costModifierNote, costModifierSource
+                                    clientModifierType, clientModifierValue, clientModifierFixedAmount,
+                                    clientModifierReasonCode, clientModifierNote, clientModifierSource,
+                                    costModifierType, costModifierValue, costModifierFixedAmount,
+                                    costModifierReasonCode, costModifierNote, costModifierSource
                                 }
                             }, {
                                 onSuccess: () => {
                                     toast("Modifiers Saved", {
                                         variant: "success",
-                                        description: `Successfully updated pricing modifiers for billing line ${line.id}.`
+                                        description: "Pricing modifiers have been saved and totals recalculated."
                                     });
                                 },
                                 onError: (error: Error) => {
@@ -163,7 +165,7 @@ export function BillingLinesSection({
                             icon="lucide:search-x"
                             title="No Billing Lines Found"
                             description="No billing lines yet. Add items from your rate card or create manual entries."
-                            actionLabel="Add Manual Line"
+                            actionLabel="Add Line Item"
                             actionIcon="lucide:plus"
                             onAction={() => setIsAddModalOpen(true)}
                         />
@@ -193,8 +195,6 @@ export function BillingLinesSection({
                     }
                 })}
             />
-
-
 
             <VoidLineDialog
                 line={lineToVoid}
