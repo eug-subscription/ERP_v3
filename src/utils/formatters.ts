@@ -34,3 +34,21 @@ export function formatSignedCurrency(value: number, currency: string, precision:
     const sign = value >= 0 ? '+' : '';
     return `${sign}${value.toFixed(precision)} ${currency}`;
 }
+
+/**
+ * Formats a number as a full currency string (symbol + amount).
+ * Uses the browser's default locale for number formatting.
+ * @param amount The amount to format
+ * @param currency ISO 4217 currency code (e.g., "EUR", "USD")
+ * @param precision Number of decimal places (default: 2)
+ * @returns Formatted currency string (e.g., "€168.00")
+ */
+export function formatCurrencyAmount(amount: number, currency: string, precision: number = 2): string {
+    return new Intl.NumberFormat(undefined, {
+        style: 'currency',
+        currency,
+        minimumFractionDigits: precision,
+        maximumFractionDigits: precision,
+    }).format(amount);
+}
+

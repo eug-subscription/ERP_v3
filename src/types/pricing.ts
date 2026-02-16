@@ -17,6 +17,8 @@ export type TaxTreatment = 'exclusive' | 'inclusive';
 
 export type ModifierSource = 'MANUAL';
 
+export type ModifierType = 'percentage' | 'fixed';
+
 export type RateSource = 'rate_card' | 'project_override' | 'manual';
 
 export type BillingLineStatus = 'draft' | 'confirmed' | 'voided';
@@ -159,13 +161,17 @@ export interface BillingLineInstance {
     quantityEffective: number;
 
     // Client modifier application
+    clientModifierType: ModifierType;
     clientModifierValue: number;
+    clientModifierFixedAmount: number | null;
     clientModifierReasonCode: string | null;
     clientModifierNote: string | null;
     clientModifierSource: ModifierSource;
 
     // Cost modifier application
+    costModifierType: ModifierType;
     costModifierValue: number;
+    costModifierFixedAmount: number | null;
     costModifierReasonCode: string | null;
     costModifierNote: string | null;
     costModifierSource: ModifierSource;
@@ -185,6 +191,8 @@ export interface BillingLineInstance {
     status: BillingLineStatus;
     createdAt: string;
     createdBy: string;
+    modifiedAt: string | null;
+    modifiedBy: string | null;
     confirmedAt: string | null;
     confirmedBy: string | null;
     voidedAt: string | null;

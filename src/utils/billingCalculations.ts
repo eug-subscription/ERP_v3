@@ -1,5 +1,25 @@
 
-import { TaxTreatment } from '../types/pricing';
+import { TaxTreatment, ModifierType } from '../types/pricing';
+
+/**
+ * Calculates the final rate by applying the modifier based on its type.
+ * 
+ * Branching Logic:
+ * - PERCENTAGE: rate * value (e.g. 100 * 1.5 = 150)
+ * - FIXED: rate + fixedAmount (e.g. 100 + 25 = 125)
+ */
+export function calculateFinalRate(
+    effectiveRate: number,
+    type: ModifierType,
+    value: number,
+    fixedAmount: number | null
+): number {
+    if (type === 'fixed') {
+        return effectiveRate + (fixedAmount ?? 0);
+    }
+    // Default to percentage
+    return effectiveRate * value;
+}
 
 export interface FinancialBreakdown {
     lineCostTotal: number;

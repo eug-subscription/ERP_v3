@@ -42,13 +42,16 @@ export const METADATA_BADGE_CLASSES = `inline-flex items-center px-2 h-5 rounded
 export const MARGIN_DISPLAY_CLASSES = `${TYPO_TINY} font-bold tracking-tight`;
 
 /** Modifer bounds as defined in erp_pricing_spec_v1_7.md */
-export const CLIENT_MODIFIER_MIN = 0.5;
-export const CLIENT_MODIFIER_MAX = 2.0;
-export const COST_MODIFIER_MIN = 0.8;
-export const COST_MODIFIER_MAX = 1.5;
+export const CLIENT_MODIFIER_MIN = 0;
+export const CLIENT_MODIFIER_MAX = 10.0;
+export const COST_MODIFIER_MIN = 0;
+export const COST_MODIFIER_MAX = 10.0;
 
 /** Step value for currency input fields (rate overrides, pricing adjustments) */
 export const CURRENCY_INPUT_STEP = "0.10";
 
 /** Maximum length for override reason field */
 export const OVERRIDE_REASON_MAX_LENGTH = 500;
+
+/** Fallback project ID used when order data has not loaded yet */
+export const FALLBACK_PROJECT_ID = "P-DEFAULT";

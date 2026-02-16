@@ -460,22 +460,27 @@ When creating an order from a workflow, the system resolves billable blocks by l
 ## 9.4 Separate modifiers for cost and client rates
 
 **Decision:** Cost and client rates have independent modifiers.
+**Decision (v1.8):** Modifiers can be either **Percentage** (multiplicative) or **Fixed Amount** (additive).
 
 Each Billing Line Instance stores two separate modifier sets:
 
 **Client modifier:**
 
-- `client_modifier_value` (decimal, e.g. 1.5 for 1.5x)
-- `client_modifier_reason_code` (required if value != 1.0)
+- `client_modifier_type` (enum: PERCENTAGE | FIXED, default PERCENTAGE)
+- `client_modifier_value` (decimal, e.g. 1.5 for 1.5x) - *Used if type=PERCENTAGE*
+- `client_modifier_fixed_amount` (decimal, e.g. 25.00) - *Used if type=FIXED*
+- `client_modifier_reason_code` (required if modifier is active)
 - `client_modifier_note` (optional)
-- `client_modifier_source` (MANUAL - applied by operator at order creation)
+- `client_modifier_source` (MANUAL)
 
 **Cost modifier:**
 
-- `cost_modifier_value` (decimal, e.g. 1.2 for 1.2x)
-- `cost_modifier_reason_code` (required if value != 1.0)
+- `cost_modifier_type` (enum: PERCENTAGE | FIXED, default PERCENTAGE)
+- `cost_modifier_value` (decimal, e.g. 1.2 for 1.2x) - *Used if type=PERCENTAGE*
+- `cost_modifier_fixed_amount` (decimal, e.g. 10.00) - *Used if type=FIXED*
+- `cost_modifier_reason_code` (required if modifier is active)
 - `cost_modifier_note` (optional)
-- `cost_modifier_source` (MANUAL - applied by operator at order creation)
+- `cost_modifier_source` (MANUAL)
 
 **Rationale:**
 Client modifiers reflect commercial decisions (rush premium charged to client). Cost modifiers reflect operational reality (contractor weekend uplift, specialist retoucher rate).
@@ -604,9 +609,10 @@ We apply **pricing rules to quantity first**, then apply modifiers.
 
 4. **Apply modifiers (independently for cost and client)**
    - Source: applied by operator at order creation
-   - Client: effective_client_rate x client_modifier_value = final_client_rate
-   - Cost: effective_cost_rate x cost_modifier_value = final_cost_rate
-   - Requires reason code if modifier != 1.0
+   - **Branching Logic:**
+     - If `PERCENTAGE`: `rate = effective_rate * modifier_value`
+     - If `FIXED`: `rate = effective_rate + fixed_amount`
+   - Requires reason code if modifier is active (!= 1.0 or fixed amount != 0)
 
 5. **Calculate line totals (pre-tax)**
    - line_cost_total = final_cost_rate x quantity_effective
