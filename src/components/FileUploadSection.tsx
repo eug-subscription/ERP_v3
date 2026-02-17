@@ -15,7 +15,7 @@ export function FileUploadSection({
   title,
   description,
 }: FileUploadSectionProps) {
-  const { filteredFiles, fileCounts, activeTab, isLoading, error, setActiveTab, refetch } = useUpload();
+  const { filteredFiles, fileCounts, activeTab, isLoading, error, setActiveTab, refetch, togglePause, retryFile, cancelFile } = useUpload();
 
   if (isLoading) {
     return (
@@ -135,6 +135,9 @@ export function FileUploadSection({
                 files={filteredFiles}
                 activeTab={activeTab}
                 onClearFilter={() => setActiveTab("all")}
+                onTogglePauseFile={togglePause}
+                onRetryFile={retryFile}
+                onCancelFile={cancelFile}
               />
             </>
           )}

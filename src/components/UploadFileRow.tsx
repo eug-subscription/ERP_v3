@@ -7,11 +7,39 @@ import { UploadFile } from "../data/mock-upload";
 
 interface UploadFileRowProps {
     file: UploadFile;
-    onPause?: (id: string) => void;
+    onTogglePause?: (id: string) => void;
+    onRetry?: (id: string) => void;
     onCancel?: (id: string) => void;
 }
 
-export function UploadFileRow({ file, onPause, onCancel }: UploadFileRowProps) {
+function StatusActionButton({ file, onTogglePause, onRetry }: Pick<UploadFileRowProps, "file" | "onTogglePause" | "onRetry">) {
+    if (file.status === "completed") return null;
+
+    const config = file.status === "failed"
+        ? { icon: "lucide:rotate-ccw", tooltip: "Retry Upload", className: "hover:border-warning/20 hover:bg-warning/10 text-warning", handler: () => onRetry?.(file.id) }
+        : file.status === "paused"
+            ? { icon: "lucide:play", tooltip: "Resume Upload", className: "hover:border-success/20 hover:bg-success/10 text-success", handler: () => onTogglePause?.(file.id) }
+            : { icon: "lucide:pause", tooltip: "Pause Upload", className: "hover:border-accent/20 hover:bg-accent/10 text-default-500", handler: () => onTogglePause?.(file.id) };
+
+    return (
+        <Tooltip delay={TOOLTIP_DELAY}>
+            <Tooltip.Trigger>
+                <Button
+                    isIconOnly
+                    variant="ghost"
+                    size="sm"
+                    className={`rounded-full bg-default-100/50 border border-transparent ${config.className}`}
+                    onPress={config.handler}
+                >
+                    <Icon icon={config.icon} className="w-4 h-4" />
+                </Button>
+            </Tooltip.Trigger>
+            <Tooltip.Content>{config.tooltip}</Tooltip.Content>
+        </Tooltip>
+    );
+}
+
+export function UploadFileRow({ file, onTogglePause, onRetry, onCancel }: UploadFileRowProps) {
     return (
         <Table.Row>
             <Table.Cell>
@@ -57,20 +85,7 @@ export function UploadFileRow({ file, onPause, onCancel }: UploadFileRowProps) {
             </Table.Cell>
             <Table.Cell align="right">
                 <div className="flex items-center justify-end gap-1">
-                    <Tooltip delay={TOOLTIP_DELAY}>
-                        <Tooltip.Trigger>
-                            <Button
-                                isIconOnly
-                                variant="ghost"
-                                size="sm"
-                                className="rounded-full bg-default-100/50 border border-transparent hover:border-accent/20 hover:bg-accent/10 text-default-500"
-                                onPress={() => onPause?.(file.id)}
-                            >
-                                <Icon icon="lucide:pause" className="w-4 h-4" />
-                            </Button>
-                        </Tooltip.Trigger>
-                        <Tooltip.Content>Pause Upload</Tooltip.Content>
-                    </Tooltip>
+                    <StatusActionButton file={file} onTogglePause={onTogglePause} onRetry={onRetry} />
                     <AlertDialog>
                         <Tooltip delay={TOOLTIP_DELAY}>
                             <Tooltip.Trigger>

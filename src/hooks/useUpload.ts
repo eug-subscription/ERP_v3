@@ -1,16 +1,24 @@
-import { useMemo, useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useCallback, useMemo, useState } from "react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { mockUploadFiles, UploadFile } from "../data/mock-upload";
 import { MOCK_API_DELAY } from "../constants/query-config";
+
+const UPLOAD_QUERY_KEY = ["uploadFiles"];
 
 async function fetchUploadFiles(): Promise<UploadFile[]> {
     await new Promise((resolve) => setTimeout(resolve, MOCK_API_DELAY));
     return mockUploadFiles;
 }
 
+function updateFileStatus(files: UploadFile[], id: string, updater: (file: UploadFile) => UploadFile): UploadFile[] {
+    return files.map((f) => (f.id === id ? updater(f) : f));
+}
+
 export function useUpload() {
+    const queryClient = useQueryClient();
+
     const query = useQuery({
-        queryKey: ["uploadFiles"],
+        queryKey: UPLOAD_QUERY_KEY,
         queryFn: fetchUploadFiles,
     });
 
@@ -34,6 +42,31 @@ export function useUpload() {
         [files, activeTab]
     );
 
+    const togglePause = useCallback((id: string) => {
+        queryClient.setQueryData<UploadFile[]>(UPLOAD_QUERY_KEY, (old) =>
+            old ? updateFileStatus(old, id, (f) => ({
+                ...f,
+                status: f.status === "paused" ? "uploading" : "paused",
+            })) : old
+        );
+    }, [queryClient]);
+
+    const retryFile = useCallback((id: string) => {
+        queryClient.setQueryData<UploadFile[]>(UPLOAD_QUERY_KEY, (old) =>
+            old ? updateFileStatus(old, id, (f) => ({
+                ...f,
+                status: "uploading",
+                errorMessage: undefined,
+            })) : old
+        );
+    }, [queryClient]);
+
+    const cancelFile = useCallback((id: string) => {
+        queryClient.setQueryData<UploadFile[]>(UPLOAD_QUERY_KEY, (old) =>
+            old ? old.filter((f) => f.id !== id) : old
+        );
+    }, [queryClient]);
+
     return {
         files,
         filteredFiles,
@@ -43,5 +76,8 @@ export function useUpload() {
         error: query.error,
         setActiveTab,
         refetch: query.refetch,
+        togglePause,
+        retryFile,
+        cancelFile,
     };
 }

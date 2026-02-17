@@ -7,7 +7,8 @@ interface UploadFileTableProps {
     files: UploadFile[];
     activeTab: string;
     onClearFilter: () => void;
-    onPauseFile?: (id: string) => void;
+    onTogglePauseFile?: (id: string) => void;
+    onRetryFile?: (id: string) => void;
     onCancelFile?: (id: string) => void;
 }
 
@@ -15,7 +16,8 @@ export function UploadFileTable({
     files,
     activeTab,
     onClearFilter,
-    onPauseFile,
+    onTogglePauseFile,
+    onRetryFile,
     onCancelFile,
 }: UploadFileTableProps) {
     if (files.length === 0) {
@@ -47,7 +49,8 @@ export function UploadFileTable({
                     <UploadFileRow
                         key={file.id}
                         file={file}
-                        onPause={onPauseFile}
+                        onTogglePause={onTogglePauseFile}
+                        onRetry={onRetryFile}
                         onCancel={onCancelFile}
                     />
                 ))}
@@ -55,3 +58,4 @@ export function UploadFileTable({
         </Table>
     );
 }
+
