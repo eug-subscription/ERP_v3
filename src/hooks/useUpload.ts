@@ -1,10 +1,10 @@
-import React from "react";
+import { useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { mockUploadFiles, UploadFile } from "../data/mock-upload";
+import { MOCK_API_DELAY } from "../constants/query-config";
 
 async function fetchUploadFiles(): Promise<UploadFile[]> {
-    // Simulate API delay
-    await new Promise((resolve) => setTimeout(resolve, 600));
+    await new Promise((resolve) => setTimeout(resolve, MOCK_API_DELAY));
     return mockUploadFiles;
 }
 
@@ -14,11 +14,11 @@ export function useUpload() {
         queryFn: fetchUploadFiles,
     });
 
-    const [activeTab, setActiveTab] = React.useState("all");
+    const [activeTab, setActiveTab] = useState("all");
 
-    const files = React.useMemo(() => query.data || [], [query.data]);
+    const files = useMemo(() => query.data || [], [query.data]);
 
-    const fileCounts = React.useMemo(
+    const fileCounts = useMemo(
         () => ({
             all: files.length,
             uploading: files.filter((f) => f.status === "uploading").length,
@@ -29,22 +29,19 @@ export function useUpload() {
         [files]
     );
 
-    const filteredFiles = React.useMemo(
+    const filteredFiles = useMemo(
         () => (activeTab === "all" ? files : files.filter((f) => f.status === activeTab)),
         [files, activeTab]
     );
 
     return {
-        state: {
-            files,
-            filteredFiles,
-            fileCounts,
-            activeTab,
-            isLoading: query.isLoading,
-            error: query.error,
-        },
-        actions: {
-            setActiveTab,
-        },
+        files,
+        filteredFiles,
+        fileCounts,
+        activeTab,
+        isLoading: query.isLoading,
+        error: query.error,
+        setActiveTab,
+        refetch: query.refetch,
     };
 }

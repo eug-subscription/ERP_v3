@@ -44,9 +44,8 @@ export function CurrencyDisplay({
             maximumFractionDigits: decimals,
         });
         formattedValue = formatter.format(amount);
-    } catch (error) {
+    } catch {
         // Fallback: if formatting fails for any reason, show plain decimal
-        console.error('CurrencyDisplay formatting error:', error, { currency, amount });
         formattedValue = amount.toFixed(decimals);
     }
 

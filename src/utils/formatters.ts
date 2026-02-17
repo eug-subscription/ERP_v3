@@ -52,3 +52,18 @@ export function formatCurrencyAmount(amount: number, currency: string, precision
     }).format(amount);
 }
 
+const BYTES_PER_KB = 1024;
+const BYTES_PER_MB = BYTES_PER_KB * 1024;
+
+/**
+ * Formats a byte count into a human-readable file size string.
+ * @param bytes The size in bytes
+ * @param precision Number of decimal places (default: 1)
+ * @returns Formatted size string (e.g., "2.4 KB", "10.3 MB")
+ */
+export function formatFileSize(bytes: number, precision: number = 1): string {
+    return bytes < BYTES_PER_MB
+        ? `${(bytes / BYTES_PER_KB).toFixed(precision)} KB`
+        : `${(bytes / BYTES_PER_MB).toFixed(precision)} MB`;
+}
+

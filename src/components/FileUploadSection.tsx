@@ -1,7 +1,10 @@
-import React from "react";
 import { Icon } from "@iconify/react";
-import { Button, ButtonGroup, Card, Chip, Tabs } from "@heroui/react";
+import { Button, ButtonGroup, Card, Chip, Tabs, Alert, Skeleton } from "@heroui/react";
 import { useUpload } from "../hooks/useUpload";
+import { EmptyState } from "./pricing/EmptyState";
+import { UploadDropZone } from "./UploadDropZone";
+import { UploadFileTable } from "./UploadFileTable";
+import { ICON_CONTAINER_LG, ICON_SIZE_CONTAINER, TEXT_SECTION_TITLE } from "../constants/ui-tokens";
 
 interface FileUploadSectionProps {
   title: string;
@@ -12,149 +15,131 @@ export function FileUploadSection({
   title,
   description,
 }: FileUploadSectionProps) {
-  const { state, actions } = useUpload();
-  const { filteredFiles, fileCounts, activeTab, isLoading } = state;
-  const { setActiveTab } = actions;
-
-  const formatSize = (bytes: number) =>
-    bytes < 1048576 ? (bytes / 1024).toFixed(1) + " KB" : (bytes / 1048576).toFixed(1) + " MB";
+  const { filteredFiles, fileCounts, activeTab, isLoading, error, setActiveTab, refetch } = useUpload();
 
   if (isLoading) {
     return (
       <section className="mb-10 scroll-mt-32">
-        <div className="h-8 w-64 bg-default-200 animate-pulse rounded-lg mb-2" />
-        <div className="h-4 w-96 bg-default-100 animate-pulse rounded-lg mb-6" />
-        <div className="h-48 bg-default-50 animate-pulse rounded-2xl border border-default-200 shadow-sm" />
+        <Skeleton className="h-8 w-64 rounded-lg mb-2" />
+        <Skeleton className="h-4 w-96 rounded-lg mb-6" />
+        <Card className="bg-default-50 border-none shadow-sm">
+          <Card.Content className="p-8">
+            <Skeleton className="h-48 rounded-2xl mb-6" />
+            <div className="space-y-3">
+              <Skeleton className="h-16 rounded-lg" />
+              <Skeleton className="h-16 rounded-lg" />
+              <Skeleton className="h-16 rounded-lg" />
+            </div>
+          </Card.Content>
+        </Card>
+      </section>
+    );
+  }
+
+  if (error) {
+    return (
+      <section className="mb-10 scroll-mt-32">
+        <Card>
+          <Card.Content className="p-6">
+            <Alert status="danger" className="rounded-2xl">
+              <Alert.Indicator />
+              <Alert.Content>
+                <Alert.Title className="font-bold">Error Loading Upload Files</Alert.Title>
+                <Alert.Description>Failed to fetch upload data. Please try again.</Alert.Description>
+                <Button
+                  size="sm"
+                  variant="danger-soft"
+                  onPress={() => refetch()}
+                  className="font-bold mt-2"
+                >
+                  Retry
+                </Button>
+              </Alert.Content>
+            </Alert>
+          </Card.Content>
+        </Card>
       </section>
     );
   }
 
   return (
     <section className="mb-10 scroll-mt-32">
-      <h2 className="text-xl font-bold mb-1 text-default-900">{title}</h2>
-      <p className="text-default-500 text-sm mb-6">{description}</p>
-
-      <Card className="bg-default-50 border-none mb-8 shadow-sm">
-        <Card.Content className="p-8">
-          <div className="border-2 border-dashed border-default-300 rounded-2xl p-10 flex flex-col items-center justify-center bg-background/50 hover:bg-surface hover:border-accent transition-all cursor-pointer group">
-            <div className="w-12 h-12 bg-accent/10 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-              <Icon icon="lucide:upload-cloud" className="w-6 h-6 text-accent" />
+      <Card>
+        <Card.Header className="flex flex-col sm:flex-row items-start sm:items-center justify-between p-8 gap-4 border-b border-default-200 bg-default-50/50">
+          <div className="flex items-center justify-between gap-4 w-full">
+            <div className="flex items-center gap-4">
+              <div className={ICON_CONTAINER_LG}>
+                <Icon icon="lucide:upload-cloud" className={ICON_SIZE_CONTAINER} />
+              </div>
+              <div>
+                <h2 className={`${TEXT_SECTION_TITLE} flex items-center gap-3`}>
+                  {title}
+                  <Chip size="sm" variant="soft" color="accent" className="font-black px-2">
+                    {fileCounts.all}
+                  </Chip>
+                </h2>
+                <p className="text-xs text-default-400 font-medium">{description}</p>
+              </div>
             </div>
-            <p className="text-sm font-semibold text-default-900 mb-1">
-              Click to upload or drag and drop
-            </p>
-            <p className="text-xs text-default-500">SVG, PNG, JPG or GIF (MAX. 800×400px)</p>
+
+            {fileCounts.all > 0 && (
+              <ButtonGroup variant="ghost">
+                <Button>Pause All</Button>
+                <Button className="text-danger border-danger/20 hover:bg-danger/10">
+                  Cancel All
+                </Button>
+              </ButtonGroup>
+            )}
           </div>
+        </Card.Header>
+
+        <Card.Content className="p-0">
+          <UploadDropZone />
+
+          {fileCounts.all === 0 && (
+            <EmptyState
+              icon="lucide:upload-cloud"
+              title="No files uploaded"
+              description="Drag and drop files into the zone above or click to browse your device."
+            />
+          )}
+
+          {fileCounts.all > 0 && (
+            <>
+              <div className="px-8 pb-4">
+                <Tabs selectedKey={activeTab} onSelectionChange={(k) => setActiveTab(k as string)}>
+                  <Tabs.ListContainer>
+                    <Tabs.List aria-label="Upload file filters">
+                      <Tabs.Tab id="all">
+                        All ({fileCounts.all})
+                        <Tabs.Indicator />
+                      </Tabs.Tab>
+                      <Tabs.Tab id="uploading">
+                        Uploading ({fileCounts.uploading})
+                        <Tabs.Indicator />
+                      </Tabs.Tab>
+                      <Tabs.Tab id="completed">
+                        Completed ({fileCounts.completed})
+                        <Tabs.Indicator />
+                      </Tabs.Tab>
+                      <Tabs.Tab id="failed">
+                        Failed ({fileCounts.failed})
+                        <Tabs.Indicator />
+                      </Tabs.Tab>
+                    </Tabs.List>
+                  </Tabs.ListContainer>
+                </Tabs>
+              </div>
+
+              <UploadFileTable
+                files={filteredFiles}
+                activeTab={activeTab}
+                onClearFilter={() => setActiveTab("all")}
+              />
+            </>
+          )}
         </Card.Content>
       </Card>
-
-      {fileCounts.all > 0 && (
-        <div className="space-y-4">
-          <div className="flex justify-between items-center">
-            <Tabs selectedKey={activeTab} onSelectionChange={(k) => setActiveTab(k as string)}>
-              <Tabs.ListContainer>
-                <Tabs.List>
-                  <Tabs.Tab id="all">
-                    All ({fileCounts.all})
-                    <Tabs.Indicator />
-                  </Tabs.Tab>
-                  <Tabs.Tab id="uploading">
-                    Uploading ({fileCounts.uploading})
-                    <Tabs.Indicator />
-                  </Tabs.Tab>
-                  <Tabs.Tab id="completed">
-                    Completed ({fileCounts.completed})
-                    <Tabs.Indicator />
-                  </Tabs.Tab>
-                  <Tabs.Tab id="failed">
-                    Failed ({fileCounts.failed})
-                    <Tabs.Indicator />
-                  </Tabs.Tab>
-                </Tabs.List>
-              </Tabs.ListContainer>
-            </Tabs>
-            <ButtonGroup variant="ghost">
-              <Button>Pause All</Button>
-              <Button className="text-danger border-danger/20 hover:bg-danger/10">
-                Cancel All
-              </Button>
-            </ButtonGroup>
-          </div>
-
-          <div className="rounded-xl border border-default-200 overflow-hidden bg-background shadow-premium">
-            <div className="overflow-x-auto">
-              <table className="w-full text-left text-sm">
-                <thead className="bg-default-50 text-default-500 font-medium border-b border-default-200">
-                  <tr>
-                    <th className="px-4 py-3">File Name</th>
-                    <th className="px-4 py-3">Status</th>
-                    <th className="px-4 py-3">Progress</th>
-                    <th className="px-4 py-3">Size</th>
-                    <th className="px-4 py-3 text-right">Actions</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-default-100">
-                  {filteredFiles.map((file) => (
-                    <tr key={file.id} className="hover:bg-default-50/50 transition-colors">
-                      <td className="px-4 py-4">
-                        <div className="flex items-center gap-3">
-                          <Icon icon="lucide:file" className="w-5 h-5 text-default-400" />
-                          <span className="font-medium text-default-900">{file.name}</span>
-                        </div>
-                      </td>
-                      <td className="px-4 py-4">
-                        <Chip
-                          size="sm"
-                          variant="soft"
-                          color={
-                            file.status === "completed"
-                              ? "success"
-                              : file.status === "failed"
-                                ? "danger"
-                                : "accent"
-                          }
-                        >
-                          {file.status}
-                        </Chip>
-                      </td>
-                      <td className="px-4 py-4">
-                        <div className="w-32 space-y-1">
-                          <div className="w-full bg-default-100 rounded-full h-1.5">
-                            <div
-                              className="bg-accent h-full rounded-full transition-all duration-500"
-                              style={{ width: `${file.progress}%` }}
-                            />
-                          </div>
-                          <span className="t-mini text-default-500 font-medium">
-                            {file.progress}%
-                          </span>
-                        </div>
-                      </td>
-                      <td className="px-4 py-4 text-default-600 font-mono text-xs">
-                        {formatSize(file.size)}
-                      </td>
-                      <td className="px-4 py-4 text-right">
-                        <div className="flex items-center justify-end gap-1">
-                          <Button isIconOnly variant="ghost">
-                            <Icon icon="lucide:pause" className="w-4 h-4" />
-                          </Button>
-                          <Button
-                            isIconOnly
-                            variant="ghost"
-                            className="text-danger border-danger/20 hover:bg-danger/10"
-                          >
-                            <Icon icon="lucide:trash-2" className="w-4 h-4" />
-                          </Button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-      )}
     </section>
   );
 }
