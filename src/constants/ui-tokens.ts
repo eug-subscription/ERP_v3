@@ -67,3 +67,6 @@ export const RATE_SEPARATOR_WIDTH = "w-10";
 export const PERCENTAGE_DECIMALS = 0; // For change percentages (e.g., "+50%")
 export const MARGIN_PERCENTAGE_DECIMALS = 1; // For margin percentages (e.g., "45.8%")
 export const CURRENCY_DECIMALS = 2; // For currency amounts (e.g., "€45.80")
+
+// Table cell constraints
+export const FILE_NAME_MAX_WIDTH = "max-w-[180px]";
