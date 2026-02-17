@@ -1,8 +1,8 @@
-import type {NodePath} from "@babel/traverse";
+import type { NodePath } from "@babel/traverse";
 import type * as BabelTypes from "@babel/types";
-import type {RawSourceMap} from "source-map-js"; // Added RawSourceMap type
+import type { RawSourceMap } from "source-map-js"; // Added RawSourceMap type
 
-import {SourceMapConsumer} from "source-map-js";
+import { SourceMapConsumer } from "source-map-js";
 
 // Define types for Babel file and state objects
 interface BabelFile {
@@ -17,20 +17,15 @@ interface BabelState {
   [key: string]: unknown;
 }
 
-// Define a type for error objects
-type ErrorWithMessage = Error & {
-  message: string;
-};
-
 interface CustomPluginOptions {
   inputSourceMap?: RawSourceMap | string; // Specify type for inputSourceMap
   types: typeof BabelTypes;
 }
 
 // Helper to create the plugin object, allows cleaner passing of `t` and options
-const createPluginLogic = (babel: {types: typeof BabelTypes}, options: CustomPluginOptions) => {
+const createPluginLogic = (babel: { types: typeof BabelTypes }, options: CustomPluginOptions) => {
   const t = babel.types;
-  const consumerHolder: {consumer?: SourceMapConsumer} = {};
+  const consumerHolder: { consumer?: SourceMapConsumer } = {};
 
   return {
     name: "inject-data-locator-original-source",
@@ -40,8 +35,8 @@ const createPluginLogic = (babel: {types: typeof BabelTypes}, options: CustomPlu
       // Clearing the reference is enough for GC if needed.
       consumerHolder.consumer = undefined;
     },
-    pre(file: BabelFile) {
-      // `file` is Babel's File object, has `opts` like `filename`
+    pre(_file: BabelFile) {
+      // `_file` is Babel's File object, has `opts` like `filename`
       if (options.inputSourceMap) {
         try {
           let rawMap: RawSourceMap;
@@ -52,13 +47,8 @@ const createPluginLogic = (babel: {types: typeof BabelTypes}, options: CustomPlu
             rawMap = options.inputSourceMap;
           }
           consumerHolder.consumer = new SourceMapConsumer(rawMap);
-        } catch (errCaught: unknown) {
-          const error = errCaught as ErrorWithMessage;
-
-          console.warn(
-            `[inject-data-locator-original-source] Failed to initialize SourceMapConsumer for ${file.opts.filename}:`,
-            error.message,
-          );
+        } catch {
+          // Silently fail if source map initialization fails
           consumerHolder.consumer = undefined;
         }
       } else {
@@ -98,10 +88,9 @@ const createPluginLogic = (babel: {types: typeof BabelTypes}, options: CustomPlu
             elementName = openingElement.name.property.name;
           }
 
-          const {start} = path.node.loc;
+          const { start } = path.node.loc;
           let finalLine = start.line; // 1-indexed
           let finalColumn = start.column; // 0-indexed
-          let mapped = false;
 
           if (currentConsumer) {
             try {
@@ -118,15 +107,9 @@ const createPluginLogic = (babel: {types: typeof BabelTypes}, options: CustomPlu
               ) {
                 finalLine = originalPosition.line; // 1-indexed from sourcemap
                 finalColumn = originalPosition.column; // 0-indexed from sourcemap
-                mapped = true;
               }
-            } catch (errCaught: unknown) {
-              const error = errCaught as ErrorWithMessage;
-
-              console.warn(
-                `[inject-data-locator-original-source] Error during source map lookup for ${elementName} in ${filename}:L${start.line}:C${start.column}`,
-                error.message,
-              );
+            } catch {
+              // Silently fail if source map lookup fails
             }
           }
 
@@ -137,10 +120,6 @@ const createPluginLogic = (babel: {types: typeof BabelTypes}, options: CustomPlu
           );
 
           openingElement.attributes.push(dataLocatorAttr);
-
-          console.log(
-            `[inject-data-locator-original-source] Added data-locator (${mapped ? "original" : "generated"}): ${locatorValue} to ${elementName} in ${filename}${mapped ? ` (gen L${start.line}:C${start.column})` : `(L${start.line}:C${start.column})`}`,
-          );
         }
       },
     },
@@ -150,7 +129,7 @@ const createPluginLogic = (babel: {types: typeof BabelTypes}, options: CustomPlu
 // Babel plugin signature: a function that returns the plugin object.
 // Receives babel object (with types, etc.) as first argument, and plugin options as second.
 export default function (
-  babelAPI: {types: typeof BabelTypes; assertVersion: (version: number) => void},
+  babelAPI: { types: typeof BabelTypes; assertVersion: (version: number) => void },
   options: CustomPluginOptions,
 ) {
   babelAPI.assertVersion(7); // Ensure compatibility with Babel 7+

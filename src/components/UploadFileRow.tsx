@@ -1,5 +1,5 @@
 import { Icon } from "@iconify/react";
-import { Button, Chip, Tooltip } from "@heroui/react";
+import { AlertDialog, Button, Chip, Tooltip } from "@heroui/react";
 import { Table } from "./pricing/Table";
 import { TOOLTIP_DELAY, TRANSITION_DURATION_SLOW } from "../constants/ui-tokens";
 import { formatFileSize } from "../utils/formatters";
@@ -71,20 +71,49 @@ export function UploadFileRow({ file, onPause, onCancel }: UploadFileRowProps) {
                         </Tooltip.Trigger>
                         <Tooltip.Content>Pause Upload</Tooltip.Content>
                     </Tooltip>
-                    <Tooltip delay={TOOLTIP_DELAY}>
-                        <Tooltip.Trigger>
-                            <Button
-                                isIconOnly
-                                variant="ghost"
-                                size="sm"
-                                className="rounded-full bg-default-100/50 border border-transparent hover:border-danger/20 hover:bg-danger/10 text-danger"
-                                onPress={() => onCancel?.(file.id)}
-                            >
-                                <Icon icon="lucide:trash-2" className="w-4 h-4" />
-                            </Button>
-                        </Tooltip.Trigger>
-                        <Tooltip.Content>Cancel Upload</Tooltip.Content>
-                    </Tooltip>
+                    <AlertDialog>
+                        <Tooltip delay={TOOLTIP_DELAY}>
+                            <Tooltip.Trigger>
+                                <Button
+                                    isIconOnly
+                                    variant="ghost"
+                                    size="sm"
+                                    className="rounded-full bg-default-100/50 border border-transparent hover:border-danger/20 hover:bg-danger/10 text-danger"
+                                >
+                                    <Icon icon="lucide:trash-2" className="w-4 h-4" />
+                                </Button>
+                            </Tooltip.Trigger>
+                            <Tooltip.Content>Cancel Upload</Tooltip.Content>
+                        </Tooltip>
+                        <AlertDialog.Backdrop variant="blur">
+                            <AlertDialog.Container>
+                                <AlertDialog.Dialog className="sm:max-w-[400px]">
+                                    <AlertDialog.CloseTrigger />
+                                    <AlertDialog.Header>
+                                        <AlertDialog.Icon status="danger" />
+                                        <AlertDialog.Heading>Delete this file?</AlertDialog.Heading>
+                                    </AlertDialog.Header>
+                                    <AlertDialog.Body>
+                                        <p>
+                                            This will permanently remove <strong>{file.name}</strong> from the upload queue. This action cannot be undone.
+                                        </p>
+                                    </AlertDialog.Body>
+                                    <AlertDialog.Footer>
+                                        <Button slot="close" variant="tertiary">
+                                            Cancel
+                                        </Button>
+                                        <Button
+                                            slot="close"
+                                            variant="danger"
+                                            onPress={() => onCancel?.(file.id)}
+                                        >
+                                            Delete File
+                                        </Button>
+                                    </AlertDialog.Footer>
+                                </AlertDialog.Dialog>
+                            </AlertDialog.Container>
+                        </AlertDialog.Backdrop>
+                    </AlertDialog>
                 </div>
             </Table.Cell>
         </Table.Row>
