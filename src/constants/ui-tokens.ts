@@ -70,3 +70,8 @@ export const CURRENCY_DECIMALS = 2; // For currency amounts (e.g., "€45.80")
 
 // Table cell constraints
 export const FILE_NAME_MAX_WIDTH = "max-w-[180px]";
+
+// Matching tab animation timing
+export const DROP_EXIT_ANIMATION_MS = 500;
+export const MATCHED_ROW_STAGGER_MS = 50;
+export const PANEL_SCROLL_HEIGHT = "h-[560px]";

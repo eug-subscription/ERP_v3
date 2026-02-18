@@ -49,7 +49,7 @@ const originalRoute = createRoute({
 const itemsRoute = createRoute({
   getParentRoute: () => orderLayoutRoute,
   path: "/items",
-  component: React.lazy(() => import("./components/UnmatchedItems").then(m => ({ default: m.UnmatchedItems }))),
+  component: React.lazy(() => import("./components/Matching/MatchingTab").then(m => ({ default: m.MatchingTab }))),
 });
 
 const teamRoute = createRoute({

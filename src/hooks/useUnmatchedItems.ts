@@ -1,30 +1,51 @@
 import React from "react";
+import { useQuery } from "@tanstack/react-query";
 import { mockItems, mockPhotos } from "../data/mock-unmatched-items";
+import { Item, Photo, MatchStats } from "../types/matching";
+import { MOCK_API_DELAY, DEFAULT_STALE_TIME } from "../constants/query-config";
+import { DROP_EXIT_ANIMATION_MS } from "../constants/ui-tokens";
+
+interface MatchingData {
+  items: Item[];
+  photos: Photo[];
+}
+
+async function fetchMatchingData(): Promise<MatchingData> {
+  await new Promise((resolve) => setTimeout(resolve, MOCK_API_DELAY));
+  return { items: mockItems, photos: mockPhotos };
+}
 
 export function useUnmatchedItems() {
+  const {
+    data,
+    isLoading,
+    isError,
+    refetch,
+  } = useQuery({
+    queryKey: ["matchingData"],
+    queryFn: fetchMatchingData,
+    staleTime: DEFAULT_STALE_TIME,
+  });
+
+  const items = React.useMemo(() => data?.items ?? [], [data]);
+  const photos = React.useMemo(() => data?.photos ?? [], [data]);
+
   const [viewMode, setViewMode] = React.useState<"grid" | "list">("list");
   const [matchedPhotos, setMatchedPhotos] = React.useState<{ [itemId: string]: string }>({});
   const [dragOverItem, setDragOverItem] = React.useState<string | null>(null);
   const [draggedPhoto, setDraggedPhoto] = React.useState<string | null>(null);
   const [exitingItems, setExitingItems] = React.useState<string[]>([]);
-  const [recentlyUnmatched, setRecentlyUnmatched] = React.useState<{
-    itemId: string;
-    photoUrl: string;
-  } | null>(null);
   const [searchTerm, setSearchTerm] = React.useState<string>("");
   const searchInputRef = React.useRef<HTMLInputElement>(null);
 
   const matchedItems = React.useMemo(() => {
-    return mockItems.filter((item) => matchedPhotos[item.id]);
-  }, [matchedPhotos]);
+    return items.filter((item) => matchedPhotos[item.id]);
+  }, [items, matchedPhotos]);
 
   const unmatchedItems = React.useMemo(() => {
-    return mockItems.filter((item) => !matchedPhotos[item.id]);
-  }, [matchedPhotos]);
+    return items.filter((item) => !matchedPhotos[item.id]);
+  }, [items, matchedPhotos]);
 
-  /**
-   * Filtered list of unmatched items based on current search term
-   */
   const filteredUnmatchedItems = React.useMemo(() => {
     if (!searchTerm.trim()) return unmatchedItems;
 
@@ -36,12 +57,6 @@ export function useUnmatchedItems() {
     );
   }, [unmatchedItems, searchTerm]);
 
-  /**
-   * Splits text into parts for highlighting based on the search query
-   * @param text The text to process
-   * @param query The search term to highlight
-   * @returns Array of text parts for rendering
-   */
   const highlightMatch = (text: string, query: string) => {
     if (!query.trim()) return text;
 
@@ -61,43 +76,20 @@ export function useUnmatchedItems() {
     }
   };
 
-  /**
-   * Unmatches a photo from an item and provides an undo window
-   * @param itemId The ID of the item to unmatch
-   */
   const handleUnmatch = (itemId: string) => {
-    const photoUrl = matchedPhotos[itemId];
-    setRecentlyUnmatched({ itemId, photoUrl });
-
     setMatchedPhotos((prev) => {
       const newMatched = { ...prev };
       delete newMatched[itemId];
       return newMatched;
     });
-
-    setTimeout(() => {
-      setRecentlyUnmatched(null);
-    }, 5000);
   };
 
-  /**
-   * Reverts the last unmatch operation
-   */
-  const handleUndoUnmatch = () => {
-    if (recentlyUnmatched) {
-      setMatchedPhotos((prev) => ({
-        ...prev,
-        [recentlyUnmatched.itemId]: recentlyUnmatched.photoUrl,
-      }));
-      setRecentlyUnmatched(null);
-    }
+  const handleUndoUnmatch = (itemId: string, photoUrl: string) => {
+    setMatchedPhotos((prev) => ({ ...prev, [itemId]: photoUrl }));
   };
 
-  /**
-   * Calculates statistics for matched vs unmatched items
-   */
-  const matchStats = React.useMemo(() => {
-    const totalItems = mockItems.length;
+  const matchStats = React.useMemo((): MatchStats => {
+    const totalItems = items.length;
     const matchedCount = Object.keys(matchedPhotos).length;
     const percentComplete = totalItems > 0 ? Math.round((matchedCount / totalItems) * 100) : 0;
 
@@ -107,17 +99,15 @@ export function useUnmatchedItems() {
       remaining: totalItems - matchedCount,
       percent: percentComplete,
     };
-  }, [matchedPhotos]);
+  }, [items, matchedPhotos]);
 
-  /**
-   * Handles the start of a drag-and-drop operation
-   * @param e Drag event
-   * @param photo Data of the photo being dragged
-   */
   const handleDragStart = (
     e: React.DragEvent,
     photo: { id: string; image: string; filename: string }
   ) => {
+    const row = e.currentTarget as HTMLElement;
+    const rect = row.getBoundingClientRect();
+    e.dataTransfer.setDragImage(row, e.clientX - rect.left, e.clientY - rect.top);
     e.dataTransfer.setData("photoId", photo.id);
     e.dataTransfer.setData("photoImage", photo.image);
     e.dataTransfer.setData("photoFilename", photo.filename);
@@ -138,11 +128,6 @@ export function useUnmatchedItems() {
     setDragOverItem(null);
   };
 
-  /**
-   * Completes the drag-and-drop matching operation with exit animation
-   * @param e Drop event
-   * @param itemId The ID of the item being dropped onto
-   */
   const handleDrop = (e: React.DragEvent, itemId: string) => {
     e.preventDefault();
     const photoImage = e.dataTransfer.getData("photoImage");
@@ -153,43 +138,40 @@ export function useUnmatchedItems() {
       setMatchedPhotos((prev) => ({ ...prev, [itemId]: photoImage }));
       setTimeout(() => {
         setExitingItems((prev) => prev.filter((id) => id !== itemId));
-      }, 500);
-    }, 500);
+      }, DROP_EXIT_ANIMATION_MS);
+    }, DROP_EXIT_ANIMATION_MS);
 
     setDragOverItem(null);
     setDraggedPhoto(null);
   };
 
   return {
-    state: {
-      items: mockItems,
-      photos: mockPhotos,
-      viewMode,
-      matchedPhotos,
-      dragOverItem,
-      draggedPhoto,
-      exitingItems,
-      recentlyUnmatched,
-      searchTerm,
-      matchedItems,
-      unmatchedItems,
-      filteredUnmatchedItems,
-      matchStats,
-      searchInputRef,
-    },
-    actions: {
-      setViewMode,
-      setSearchTerm,
-      handleClearSearch,
-      handleSearchKeyDown,
-      handleUnmatch,
-      handleUndoUnmatch,
-      highlightMatch,
-      handleDragStart,
-      handleDragEnd,
-      handleDragOver,
-      handleDragLeave,
-      handleDrop,
-    },
+    photos,
+    isLoading,
+    isError,
+    refetch,
+    viewMode,
+    matchedPhotos,
+    dragOverItem,
+    draggedPhoto,
+    exitingItems,
+    searchTerm,
+    matchedItems,
+    unmatchedItems,
+    filteredUnmatchedItems,
+    matchStats,
+    searchInputRef,
+    setViewMode,
+    setSearchTerm,
+    handleClearSearch,
+    handleSearchKeyDown,
+    handleUnmatch,
+    handleUndoUnmatch,
+    highlightMatch,
+    handleDragStart,
+    handleDragEnd,
+    handleDragOver,
+    handleDragLeave,
+    handleDrop,
   };
 }
