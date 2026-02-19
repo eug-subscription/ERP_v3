@@ -43,7 +43,6 @@ export function BillingLinesSection({
                         size="sm"
                         variant="danger-soft"
                         onPress={() => refetch()}
-                        className="font-bold mt-2"
                     >
                         Retry
                     </Button>
@@ -80,11 +79,10 @@ export function BillingLinesSection({
                     <div className="flex items-center gap-2">
                         <Button
                             variant="primary"
-                            className="shadow-accent-md font-bold px-6 h-12 rounded-xl"
                             onPress={() => setIsAddModalOpen(true)}
                             isPending={addManualLine.isPending}
                         >
-                            <Icon icon="lucide:plus" className="w-5 h-5 mr-2" />
+                            <Icon icon="lucide:plus" />
                             Add Line Item
                         </Button>
                     </div>
@@ -123,7 +121,6 @@ export function BillingLinesSection({
                             });
                         }}
                         onEditModifiers={(line) => {
-                            // Extract modifier fields including type and fixed amounts
                             const {
                                 clientModifierType, clientModifierValue, clientModifierFixedAmount,
                                 clientModifierReasonCode, clientModifierNote, clientModifierSource,

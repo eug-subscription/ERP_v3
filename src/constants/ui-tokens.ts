@@ -54,6 +54,7 @@ export const FLEX_COL_GAP_1 = "flex flex-col gap-1";
 export const FLEX_COL_GAP_2 = "flex flex-col gap-2";
 export const FLEX_COL_GAP_4 = "flex flex-col gap-4";
 export const SPACE_Y_4 = "space-y-4";
+export const SPACE_Y_6 = "space-y-6";
 
 // Border radius
 export const ROUNDED_STANDARD = "rounded-xl";
@@ -75,3 +76,9 @@ export const FILE_NAME_MAX_WIDTH = "max-w-[180px]";
 export const DROP_EXIT_ANIMATION_MS = 500;
 export const MATCHED_ROW_STAGGER_MS = 50;
 export const PANEL_SCROLL_HEIGHT = "h-[560px]";
+
+// Messages tab
+export const MESSAGE_BUBBLE_MAX_WIDTH = "max-w-[80%]";
+export const MESSAGE_SCROLL_HEIGHT = "max-h-[480px]";
+export const MESSAGE_ATTACHMENT_IMAGE_MAX_WIDTH = "max-w-[320px]";
+export const MESSAGE_ATTACHMENT_FILE_MAX_WIDTH = "max-w-[280px]";

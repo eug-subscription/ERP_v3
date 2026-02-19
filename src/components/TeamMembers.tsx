@@ -1,13 +1,21 @@
-import React from "react";
-import { Avatar, Button, Chip, Checkbox, Input, Label, Separator } from "@heroui/react";
+import { Avatar, Button, Chip, Checkbox, Dropdown, Label } from "@heroui/react";
 import { Icon } from "@iconify/react";
 import { TeamMemberModal } from "./TeamMemberModal";
 import { useTeam } from "../hooks/useTeam";
+import { Table } from "./pricing/Table";
 
 export function TeamMembers() {
-  const { state, actions } = useTeam();
-  const { teamMembers, selectedKeys, page, isOpen, isLoading } = state;
-  const { setIsOpen, setPage, toggleSelected, handleAddMember } = actions;
+  const {
+    teamMembers,
+    selectedKeys,
+    page,
+    isOpen,
+    isLoading,
+    setIsOpen,
+    setPage,
+    toggleSelected,
+    handleAddMember,
+  } = useTeam();
 
   const statusColorMap: Record<string, "success" | "warning" | "default"> = {
     Active: "success",
@@ -38,162 +46,133 @@ export function TeamMembers() {
         </div>
         <Button
           variant="primary"
-          className="shadow-accent-md font-bold px-6 py-6"
+          size="md"
           onPress={() => setIsOpen(true)}
         >
-          <Icon icon="lucide:user-plus" className="w-5 h-5 mr-3" />
+          <Icon icon="lucide:user-plus" />
           Add Member
         </Button>
       </div>
 
-      <div className="rounded-premium-lg border border-default-200 overflow-hidden bg-background shadow-premium">
-        <div className="flex flex-col md:flex-row justify-between items-center p-6 bg-default-50/50 border-b border-default-200 gap-4">
-          <div className="w-full max-w-sm">
-            <div className="space-y-1">
-              <Label className="sr-only">Search team members</Label>
-              <Input
-                placeholder="Search by name, email or role..."
-                className="w-full h-12 px-5 rounded-2xl border border-default-200 bg-background shadow-sm focus:ring-2 focus:ring-accent/20"
-                aria-label="Search team members"
-              />
-            </div>
-          </div>
-          <div className="flex items-center gap-3">
-            <Button
-              variant="ghost"
-              className="bg-surface border-default-200 rounded-xl px-5 h-12 font-bold flex items-center gap-2"
+      <Table>
+        <Table.Header>
+          <tr>
+            <Table.Column className="w-10">
+              <Checkbox>
+                <Checkbox.Control>
+                  <Checkbox.Indicator />
+                </Checkbox.Control>
+              </Checkbox>
+            </Table.Column>
+            <Table.Column isBlack>Member</Table.Column>
+            <Table.Column>Role</Table.Column>
+            <Table.Column>Status</Table.Column>
+            <Table.Column>Added Date</Table.Column>
+            <Table.Column>Last Activity</Table.Column>
+            <Table.Column align="right">Actions</Table.Column>
+          </tr>
+        </Table.Header>
+        <Table.Body>
+          {teamMembers.map((member) => (
+            <Table.Row
+              key={member.id}
+              className={selectedKeys.has(member.id) ? "!bg-accent/5" : ""}
             >
-              <Icon icon="lucide:filter" className="w-4 h-4" /> Filter
-            </Button>
-            <Button
-              variant="ghost"
-              className="bg-surface border-default-200 rounded-xl px-5 h-12 font-bold flex items-center gap-2"
-            >
-              <Icon icon="lucide:arrow-up-down" className="w-4 h-4" /> Sort
-            </Button>
-            <Separator orientation="vertical" className="h-8 bg-default-200 mx-2" />
-            <span className="text-xs font-black text-default-400 uppercase tracking-widest whitespace-nowrap">
-              {selectedKeys.size} Selected
-            </span>
-          </div>
-        </div>
-
-        <div className="overflow-x-auto custom-scrollbar">
-          <table className="w-full text-left text-sm border-collapse">
-            <thead className="bg-default-50 text-default-500 font-black t-mini uppercase tracking-[0.2em] border-b border-default-200">
-              <tr>
-                <th className="px-6 py-5 w-10">
-                  <Checkbox />
-                </th>
-                <th className="px-6 py-5">Member</th>
-                <th className="px-6 py-5">Role</th>
-                <th className="px-6 py-5 text-center">Status</th>
-                <th className="px-6 py-5">Added Date</th>
-                <th className="px-6 py-5">Last Activity</th>
-                <th className="px-6 py-5 text-right">Actions</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-default-100">
-              {teamMembers.map((member) => (
-                <tr
-                  key={member.id}
-                  className={
-                    selectedKeys.has(member.id)
-                      ? "bg-accent/5"
-                      : "hover:bg-default-50/50 transition-colors group"
-                  }
+              <Table.Cell>
+                <Checkbox
+                  isSelected={selectedKeys.has(member.id)}
+                  onChange={() => toggleSelected(member.id)}
                 >
-                  <td className="px-6 py-5">
-                    <Checkbox
-                      isSelected={selectedKeys.has(member.id)}
-                      onChange={() => toggleSelected(member.id)}
-                    />
-                  </td>
-                  <td className="px-6 py-5">
-                    <div className="flex items-center gap-4">
-                      <Avatar size="md" className="ring-2 ring-white shadow-sm">
-                        <Avatar.Image src={member.user.avatar} alt={member.user.name} />
-                      </Avatar>
-                      <div>
-                        <div className="font-bold text-default-900">{member.user.name}</div>
-                        <div className="text-xs text-default-400 font-medium">
-                          {member.user.email}
-                        </div>
-                      </div>
+                  <Checkbox.Control>
+                    <Checkbox.Indicator />
+                  </Checkbox.Control>
+                </Checkbox>
+              </Table.Cell>
+              <Table.Cell>
+                <div className="flex items-center gap-3">
+                  <Avatar size="sm">
+                    <Avatar.Image src={member.user.avatar} alt={member.user.name} />
+                  </Avatar>
+                  <div>
+                    <div className="text-sm font-medium text-default-900">{member.user.name}</div>
+                    <div className="text-xs text-default-400 font-normal">
+                      {member.user.email}
                     </div>
-                  </td>
-                  <td className="px-6 py-5 text-default-600 font-bold">{member.role}</td>
-                  <td className="px-6 py-5">
-                    <div className="flex justify-center">
-                      <Chip
-                        size="sm"
-                        variant="soft"
-                        color={statusColorMap[member.status]}
-                        className="font-black px-3 py-1"
-                      >
-                        {member.status.toUpperCase()}
-                      </Chip>
-                    </div>
-                  </td>
-                  <td className="px-6 py-5 text-default-500 font-medium">{member.addedDate}</td>
-                  <td className="px-6 py-5 text-default-500 font-medium">{member.lastActivity}</td>
-                  <td className="px-6 py-5 text-right">
-                    <div className="flex items-center justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                      <Button isIconOnly variant="ghost" size="sm" className="rounded-xl">
-                        <Icon icon="lucide:eye" className="w-4 h-4 text-default-400" />
-                      </Button>
-                      <Button isIconOnly variant="ghost" size="sm" className="rounded-xl">
-                        <Icon icon="lucide:pencil" className="w-4 h-4 text-default-400" />
-                      </Button>
-                      <Button
-                        isIconOnly
-                        variant="ghost"
-                        size="sm"
-                        className="rounded-xl text-danger hover:bg-danger/10 border-none"
-                      >
-                        <Icon icon="lucide:trash-2" className="w-4 h-4" />
-                      </Button>
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-
-        <div className="flex justify-between items-center px-8 py-6 bg-default-50/50 border-t border-default-200">
-          <div className="t-mini font-black text-default-400 uppercase tracking-[0.2em]">
-            {selectedKeys.size} of {teamMembers.length} selected
-          </div>
-          <div className="flex items-center gap-4">
-            <Button
-              variant="ghost"
-              size="sm"
-              className="bg-surface border-default-200 rounded-xl font-bold px-4"
-            >
-              Previous
-            </Button>
-            <div className="flex gap-2">
-              {[1].map((pageNum) => (
-                <Button
-                  key={pageNum}
+                  </div>
+                </div>
+              </Table.Cell>
+              <Table.Cell>
+                <span className="text-sm font-medium text-default-600">{member.role}</span>
+              </Table.Cell>
+              <Table.Cell>
+                <Chip
                   size="sm"
-                  variant={pageNum === page ? "primary" : "ghost"}
-                  className="font-black min-w-[36px] rounded-xl"
-                  onPress={() => setPage(pageNum)}
+                  variant="soft"
+                  color={statusColorMap[member.status]}
                 >
-                  {pageNum}
-                </Button>
-              ))}
-            </div>
-            <Button
-              variant="ghost"
-              size="sm"
-              className="bg-surface border-default-200 rounded-xl font-bold px-4"
-            >
-              Next
-            </Button>
+                  {member.status}
+                </Chip>
+              </Table.Cell>
+              <Table.Cell>
+                <span className="text-xs font-medium text-default-500 whitespace-nowrap">{member.addedDate}</span>
+              </Table.Cell>
+              <Table.Cell>
+                <span className="text-xs font-medium text-default-500 whitespace-nowrap">{member.lastActivity}</span>
+              </Table.Cell>
+              <Table.Cell align="right">
+                <Dropdown>
+                  <Dropdown.Trigger
+                    aria-label="Actions"
+                    className="button button-sm button--ghost button--icon-only rounded-full bg-default-100/50 border border-transparent hover:border-accent/20 hover:bg-accent/10 text-default-500"
+                  >
+                    <Icon icon="lucide:ellipsis-vertical" className="w-4 h-4" />
+                  </Dropdown.Trigger>
+                  <Dropdown.Popover>
+                    <Dropdown.Menu>
+                      <Dropdown.Item id="view" textValue="View">
+                        <Icon icon="lucide:eye" className="w-4 h-4 text-default-500" />
+                        <Label>View</Label>
+                      </Dropdown.Item>
+                      <Dropdown.Item id="edit" textValue="Edit">
+                        <Icon icon="lucide:pencil" className="w-4 h-4 text-default-500" />
+                        <Label>Edit</Label>
+                      </Dropdown.Item>
+                      <Dropdown.Item id="delete" textValue="Delete" className="text-danger">
+                        <Icon icon="lucide:trash-2" className="w-4 h-4" />
+                        <Label>Delete</Label>
+                      </Dropdown.Item>
+                    </Dropdown.Menu>
+                  </Dropdown.Popover>
+                </Dropdown>
+              </Table.Cell>
+            </Table.Row>
+          ))}
+        </Table.Body>
+      </Table>
+
+      <div className="flex justify-between items-center px-8 py-6 bg-default-50/50 border-t border-default-200 rounded-b-2xl">
+        <div className="t-mini font-black text-default-400 uppercase tracking-[0.2em]">
+          {selectedKeys.size} of {teamMembers.length} selected
+        </div>
+        <div className="flex items-center gap-4">
+          <Button variant="ghost" size="sm">
+            Previous
+          </Button>
+          <div className="flex gap-2">
+            {[1].map((pageNum) => (
+              <Button
+                key={pageNum}
+                size="sm"
+                variant={pageNum === page ? "primary" : "ghost"}
+                onPress={() => setPage(pageNum)}
+              >
+                {pageNum}
+              </Button>
+            ))}
           </div>
+          <Button variant="ghost" size="sm">
+            Next
+          </Button>
         </div>
       </div>
 

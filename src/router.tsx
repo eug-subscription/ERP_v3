@@ -74,7 +74,7 @@ const billingRoute = createRoute({
 const messagesRoute = createRoute({
   getParentRoute: () => orderLayoutRoute,
   path: "/messages",
-  component: React.lazy(() => import("./components/Messages").then(m => ({ default: m.Messages }))),
+  component: React.lazy(() => import("./components/Messages/MessagesTab").then(m => ({ default: m.MessagesTab }))),
 });
 
 // 4. Project Page Route (Parent)

@@ -17,15 +17,17 @@ export function OriginalPhotos() {
 
   return (
     <section className="mb-8 scroll-mt-32">
-      <h2 className="text-lg font-semibold mb-1 text-default-900">Original photos</h2>
-      <p className="text-default-600 text-sm mb-6">
+      <h2 className="text-2xl font-black text-default-900 tracking-tight">Original photos</h2>
+      <p className="text-sm font-medium text-default-500 mt-1">
         Archives with all original photos for this order.
       </p>
 
-      <PhotosTable photos={photos} />
+      <div className="mt-6">
+        <PhotosTable photos={photos} />
+      </div>
 
       <div className="flex justify-end mt-4">
-        <Button variant="ghost" className="text-accent border-accent font-bold px-6">
+        <Button variant="outline">
           View Contact Sheet
         </Button>
       </div>

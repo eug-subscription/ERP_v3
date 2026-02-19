@@ -17,9 +17,9 @@ export function OrderLayout() {
     const { location } = useRouterState();
     const { data: order, isLoading } = useOrder();
 
-    // Determine if sidebar should be shown (hidden on billing tab)
-    const isBillingTab = location.pathname === "/billing";
-    const showSidebar = !isBillingTab;
+    // Determine if sidebar should be shown (hidden on billing and team tabs)
+    const NO_SIDEBAR_ROUTES = ["/billing", "/team"];
+    const showSidebar = !NO_SIDEBAR_ROUTES.includes(location.pathname);
 
     if (isLoading || !order) {
         return (

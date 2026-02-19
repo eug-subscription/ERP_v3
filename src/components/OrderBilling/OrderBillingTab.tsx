@@ -17,14 +17,14 @@ export function OrderBillingTab({ orderId }: OrderBillingTabProps) {
 
     return (
         <div className="space-y-8 pb-4">
-            <header className="space-y-2">
-                <h2 className="text-3xl font-black text-default-900 tracking-tight flex items-center gap-3">
+            <header>
+                <h2 className="text-2xl font-black text-default-900 tracking-tight flex items-center gap-3">
                     Order Billing
                     <Chip size="sm" variant="soft" color="accent" className="font-black t-mini h-5 px-2">
                         Beta
                     </Chip>
                 </h2>
-                <p className="text-default-500 text-sm font-medium">
+                <p className="text-sm font-medium text-default-500 mt-1">
                     Track revenue, expenses, and margins for each line item.
                 </p>
             </header>

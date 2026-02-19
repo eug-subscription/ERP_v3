@@ -111,6 +111,7 @@ body {
     opacity: 0.6;
     transform: scale(0.95);
   }
+
   100% {
     opacity: 1;
     transform: scale(1);
@@ -119,6 +120,25 @@ body {
 
 .animate-value-update {
   animation: value-update 0.25s ease-out;
+}
+
+@keyframes typing-dot {
+
+  0%,
+  60%,
+  100% {
+    transform: translateY(0);
+    opacity: 0.4;
+  }
+
+  30% {
+    transform: translateY(-4px);
+    opacity: 1;
+  }
+}
+
+.animate-typing-dot {
+  animation: typing-dot 1.2s ease-in-out infinite;
 }
 
 @keyframes pulse-subtle {
