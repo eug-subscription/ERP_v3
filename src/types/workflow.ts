@@ -438,13 +438,24 @@ export interface OrderBatch {
 }
 
 /**
+ * A single segment in a pipeline step's sub-status description.
+ * Supports rich text with clickable user mentions.
+ */
+export interface SubStatusSegment {
+    type: 'text' | 'mention';
+    value: string;
+    /** User ID for mention segments — used for future profile navigation. */
+    userId?: string;
+}
+
+/**
  * Progress tracking data for a specific block in a live order.
  */
 export interface OrderBlockProgress {
     blockId: string;
     status: BlockStatus;
-    /** Optional detailed status (e.g., 'Retouching (3/10 done)'). */
-    subStatus?: string;
+    /** Rich description segments with user mentions and plain text. */
+    subStatus?: SubStatusSegment[];
     /** Track multiple batches through the same block (e.g., for revisions). */
     batches?: OrderBatch[];
     completedAt?: string;
@@ -463,3 +474,22 @@ export interface OrderWorkflowInstance {
     /** Detailed progress for each block. */
     blockProgress: Record<string, OrderBlockProgress>;
 }
+
+// Pipeline Rendering Tree Types
+
+/** A flat step in the pipeline (existing linear behaviour). */
+export interface PipelineStepNode {
+    kind: 'step';
+    key: string;
+    label: string;
+    icon: string;
+    status: BlockStatus;
+    subStatus?: SubStatusSegment[];
+    completedAt?: string;
+    batches?: OrderBatch[];
+    /** 0 = main spine, 1 = indented child within a group. */
+    depth?: number;
+    /** True if this step is a group header (e.g. "Photo Shoot", "Batch 1"). */
+    isGroupHeader?: boolean;
+}
+

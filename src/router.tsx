@@ -65,6 +65,12 @@ const timelineRoute = createRoute({
   component: React.lazy(() => import("./components/Timeline").then(m => ({ default: m.Timeline }))),
 });
 
+const timelineLabRoute = createRoute({
+  getParentRoute: () => orderLayoutRoute,
+  path: "/timeline-lab",
+  component: React.lazy(() => import("./components/TimelineLab").then(m => ({ default: m.TimelineLab }))),
+});
+
 const billingRoute = createRoute({
   getParentRoute: () => orderLayoutRoute,
   path: "/billing",
@@ -195,6 +201,7 @@ const routeTree = rootRoute.addChildren([
     teamRoute,
     billingRoute,
     timelineRoute,
+    timelineLabRoute,
     messagesRoute,
   ]),
   projectRoute.addChildren([

@@ -17,12 +17,14 @@ export function OriginalPhotos() {
 
   return (
     <section className="mb-8 scroll-mt-32">
-      <h2 className="text-2xl font-black text-default-900 tracking-tight">Original photos</h2>
-      <p className="text-sm font-medium text-default-500 mt-1">
-        Archives with all original photos for this order.
-      </p>
+      <header className="mb-6">
+        <h2 className="text-2xl font-black text-default-900 tracking-tight">Original photos</h2>
+        <p className="text-sm font-medium text-default-500 mt-1">
+          Archives with all original photos for this order.
+        </p>
+      </header>
 
-      <div className="mt-6">
+      <div>
         <PhotosTable photos={photos} />
       </div>
 

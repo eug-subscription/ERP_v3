@@ -26,10 +26,10 @@ export function TeamMembers() {
   if (isLoading) {
     return (
       <section className="mb-8 scroll-mt-32">
-        <div className="flex justify-between items-center mb-6">
+        <header className="flex items-center justify-between mb-6">
           <div className="h-10 w-48 bg-default-200 animate-pulse rounded-lg" />
           <div className="h-12 w-32 bg-default-200 animate-pulse rounded-xl" />
-        </div>
+        </header>
         <div className="h-64 bg-default-50 animate-pulse rounded-premium-lg border border-default-200" />
       </section>
     );
@@ -37,7 +37,7 @@ export function TeamMembers() {
 
   return (
     <section className="mb-8 scroll-mt-32">
-      <div className="flex justify-between items-center mb-6">
+      <header className="flex items-center justify-between mb-6">
         <div>
           <h2 className="text-2xl font-black text-default-900 tracking-tight">Team Members</h2>
           <p className="text-default-500 text-sm mt-1 font-medium">
@@ -52,7 +52,7 @@ export function TeamMembers() {
           <Icon icon="lucide:user-plus" />
           Add Member
         </Button>
-      </div>
+      </header>
 
       <Table>
         <Table.Header>

@@ -1,6 +1,13 @@
 import { useQuery } from '@tanstack/react-query';
 import { mockOrderInstance } from '../data/mock-workflow-instance';
+import { mockBranchedInstance } from '../data/mock-workflow-instance-branched';
 import { OrderWorkflowInstance } from '../types/workflow';
+
+/** Map of orderId → mock instance. Add new scenarios here as needed. */
+const MOCK_INSTANCES: Record<string, OrderWorkflowInstance> = {
+    'ord-12345': mockOrderInstance,
+    'ord-branched-001': mockBranchedInstance,
+};
 
 /**
  * useOrderWorkflow Hook
@@ -13,8 +20,9 @@ export function useOrderWorkflow(orderId: string) {
         queryFn: async () => {
             // Simulate network latency
             await new Promise(r => setTimeout(r, 600));
-            return mockOrderInstance;
+            return MOCK_INSTANCES[orderId] ?? mockOrderInstance;
         },
         enabled: !!orderId,
     });
 }
+

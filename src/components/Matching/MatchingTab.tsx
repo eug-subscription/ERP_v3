@@ -6,6 +6,7 @@ import { UnmatchedPhotoPanel } from "./UnmatchedPhotoPanel";
 import { ItemMatchPanel } from "./ItemMatchPanel";
 import { MatchedItemsSection } from "./MatchedItemsSection";
 import {
+    CARD_HEADER,
     ICON_CONTAINER_LG,
     ICON_SIZE_CONTAINER,
     TEXT_SECTION_TITLE,
@@ -68,7 +69,7 @@ export function MatchingTab() {
 
     return (
         <Card className="mb-8 scroll-mt-32">
-            <Card.Header className="p-8 border-b border-default-200 bg-default-50/50">
+            <Card.Header className={CARD_HEADER}>
                 <div className="flex items-center gap-4">
                     <div className={ICON_CONTAINER_LG}>
                         <Icon icon="lucide:link-2" className={ICON_SIZE_CONTAINER} />

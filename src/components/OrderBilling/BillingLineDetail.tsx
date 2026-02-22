@@ -6,6 +6,7 @@ import { ModifierBadge } from "../pricing/ModifierBadge";
 import { PRICING_LABEL_CLASSES } from "../../constants/pricing";
 import { formatPercentage } from "../../utils/formatters";
 import { mockUsers } from "../../data/mock-users";
+import { formatRelativeTime } from "../../utils/format-time";
 
 const getUserName = (userId: string) => mockUsers.find(u => u.id === userId)?.name ?? userId;
 
@@ -13,12 +14,7 @@ interface BillingLineDetailProps {
     line: BillingLineInstance;
 }
 
-const formatAuditDate = (dateStr: string) => {
-    return new Date(dateStr).toLocaleString(undefined, {
-        dateStyle: 'medium',
-        timeStyle: 'short'
-    });
-};
+
 
 export function BillingLineDetail({ line }: BillingLineDetailProps) {
     return (
@@ -151,25 +147,25 @@ export function BillingLineDetail({ line }: BillingLineDetailProps) {
                             <div className="text-xs text-default-500 space-y-1">
                                 <div className="flex items-center gap-2">
                                     <Icon icon="lucide:plus-circle" className="size-3" />
-                                    Created: {formatAuditDate(line.createdAt)} by <span className="font-bold text-default-700">{getUserName(line.createdBy)}</span>
+                                    Created: {formatRelativeTime(line.createdAt)} by <span className="font-bold text-default-700">{getUserName(line.createdBy)}</span>
                                 </div>
                                 {line.modifiedAt && (
                                     <div className="text-warning font-medium flex items-center gap-2">
                                         <Icon icon="lucide:pencil" className="size-3" />
-                                        Modified: {formatAuditDate(line.modifiedAt)} by <span className="font-bold">{getUserName(line.modifiedBy ?? '')}</span>
+                                        Modified: {formatRelativeTime(line.modifiedAt)} by <span className="font-bold">{getUserName(line.modifiedBy ?? '')}</span>
                                     </div>
                                 )}
                                 {line.confirmedAt && (
                                     <div className="text-success font-medium flex items-center gap-2">
                                         <Icon icon="lucide:check-circle" className="size-3" />
-                                        Confirmed: {formatAuditDate(line.confirmedAt)} by {getUserName(line.confirmedBy ?? '')}
+                                        Confirmed: {formatRelativeTime(line.confirmedAt)} by {getUserName(line.confirmedBy ?? '')}
                                     </div>
                                 )}
                                 {line.voidedAt && (
                                     <div>
                                         <div className="text-danger font-medium flex items-center gap-2">
                                             <Icon icon="lucide:x-circle" className="w-3 h-3 shrink-0" />
-                                            Voided: {formatAuditDate(line.voidedAt)} by <span className="font-bold">{getUserName(line.voidedBy ?? '')}</span>
+                                            Voided: {formatRelativeTime(line.voidedAt)} by <span className="font-bold">{getUserName(line.voidedBy ?? '')}</span>
                                         </div>
                                         {line.voidReason && (
                                             <p className="text-xs text-default-400 italic ml-5 mt-0.5">

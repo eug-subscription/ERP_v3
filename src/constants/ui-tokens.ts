@@ -82,3 +82,26 @@ export const MESSAGE_BUBBLE_MAX_WIDTH = "max-w-[80%]";
 export const MESSAGE_SCROLL_HEIGHT = "max-h-[480px]";
 export const MESSAGE_ATTACHMENT_IMAGE_MAX_WIDTH = "max-w-[320px]";
 export const MESSAGE_ATTACHMENT_FILE_MAX_WIDTH = "max-w-[280px]";
+
+// Timeline / Pipeline
+export const PIPELINE_SIDEBAR_WIDTH = "w-[320px]";
+export const ACTIVITY_LOG_SCROLL_HEIGHT = "max-h-[600px]";
+export const TEXT_TINY_MUTED_BOLD = "text-tiny font-black uppercase tracking-widest text-default-400";
+export const COMMENT_BUBBLE = "bg-default-50 text-default-900 shadow-surface rounded-2xl rounded-tl-sm px-3 py-2.5";
+// Pipeline track geometry — derived from uniform Card p-4 padding
+export const PIPELINE_DOT_OFFSET = "mt-[18px]";   // dot aligns with card title baseline
+export const PIPELINE_TRACK_HEIGHT = "h-[34px]";  // upper track height = dotOffset(18) + half-dot(16)
+export const PIPELINE_TRACK_MARGIN = "mt-[34px]"; // lower track top margin on first step
+export const PIPELINE_LINE_WIDTH = "w-[2px]";      // vertical connector line width
+export const PIPELINE_LINE_HEIGHT = "h-[2px]";     // horizontal connector line height
+export const PIPELINE_LAB_SIDEBAR_WIDTH = "w-[400px]"; // lab sidebar width (wider than default)
+
+// Pipeline fork junction geometry
+export const JUNCTION_BRANCH_TOP = "29px";   // where the horizontal branch starts (from top of the fork area)
+export const JUNCTION_SPINE_SPLIT = "31px";  // where the upper spine ends and lower spine begins
+export const JUNCTION_BRANCH_WIDTH = "24px"; // horizontal branch length (spine centre → child dot edge)
+
+// Card header — consistent section header pattern across all tabs
+export const CARD_HEADER = "p-8 border-b border-default-200 bg-default-50/50";
+
+

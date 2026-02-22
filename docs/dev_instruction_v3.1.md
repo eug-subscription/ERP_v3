@@ -40,12 +40,13 @@
 2. [🛑 Rule #0: Check HeroUI First](#-rule-0-check-heroui-first)
 3. [Architectural Standards](#architectural-standards)
 4. [Coding Standards](#coding-standards)
-5. [Core Principles](#core-principles)
-6. [File Structure & Naming](#file-structure--naming)
-7. [Component Patterns](#component-patterns)
-8. [Styling & Theming](#styling--theming)
-9. [Developer Workflow](#developer-workflow)
-10. [Pre-Commit Checklist](#pre-commit-checklist)
+5. [Shared Utilities](#shared-utilities)
+6. [Core Principles](#core-principles)
+7. [File Structure & Naming](#file-structure--naming)
+8. [Component Patterns](#component-patterns)
+9. [Styling & Theming](#styling--theming)
+10. [Developer Workflow](#developer-workflow)
+11. [Pre-Commit Checklist](#pre-commit-checklist)
 
 ---
 
@@ -294,6 +295,55 @@ someCode();
 // @ts-expect-error - HeroUI v3 beta version mismatch
 someCode();
 ```
+
+---
+
+## Shared Utilities
+
+### Timestamp Formatting — `src/utils/format-time.ts`
+
+**Rule**: Never use inline `toLocaleString()` or `new Date().toLocaleString()` for timestamps. Always import from `format-time.ts`.
+
+#### `formatRelativeTime(iso, format?)`
+
+Returns a human-friendly relative timestamp. Uses calendar day boundaries (not 24h math).
+
+| Format | Use case | Example output |
+|:--|:--|:--|
+| `'short'` (default) | Sidebars, compact UI | `Yesterday · 14:45` |
+| `'long'` | Activity logs, detail views | `Yesterday at 14:45` |
+
+**Resolution ladder:**
+
+| Time delta | Short | Long |
+|:--|:--|:--|
+| < 1 min | Just now | Just now |
+| 1–59 min | 5 min ago | 5 minutes ago |
+| 1–23h (same day) | 3h ago | 3 hours ago |
+| Yesterday | Yesterday · 14:45 | Yesterday at 14:45 |
+| 2–6 days | Wed · 14:45 | Wednesday at 14:45 |
+| 7+ days, same year | 17 Feb · 14:45 | 17 February at 14:45 |
+| Previous year | 17 Feb 2025 | 17 February 2025 at 14:45 |
+
+```tsx
+import { formatRelativeTime, formatAbsoluteTime } from '../../utils/format-time';
+
+// Pipeline sidebar
+<span title={formatAbsoluteTime(timestamp)}>
+    {formatRelativeTime(timestamp)}
+</span>
+
+// Activity log detail
+<span>{formatRelativeTime(timestamp, 'long')}</span>
+```
+
+#### `formatAbsoluteTime(iso)`
+
+Always returns the full date+time string. Use in `title` attributes for hover tooltips.
+
+#### `formatDateGroupLabel(dateKey)`
+
+Formats a `YYYY-MM-DD` key for date group headers. Returns `"Today"`, `"Yesterday"`, or a date string.
 
 ---
 
@@ -605,6 +655,24 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
 // .button[data-hovered="true"] { background: var(--accent-hover); }
 // .button[data-pressed="true"] { transform: scale(0.97); }
 ```
+
+### 4. ⚠️ HeroUI v3 Color Utilities Gotcha (Tailwind v4)
+
+In Tailwind v4 + HeroUI v3, **`bg-default-{shade}` classes resolve to transparent** — they do not generate real background utilities. Only the **base semantic tokens** produce a visible background:
+
+```tsx
+// ❌ Invisible — shade scale does NOT generate bg utilities
+<div className="bg-default-200" />   // → rgba(0, 0, 0, 0)
+<div className="bg-default-300" />   // → rgba(0, 0, 0, 0)
+
+// ✅ Works — base semantic tokens
+<div className="bg-default" />       // → oklch(94% ...) light / oklch(27.4% ...) dark
+<div className="bg-surface" />       // → white light / dark grey dark
+<div className="bg-surface-secondary" />  // → oklch(95.2% ...) light
+```
+
+> [!IMPORTANT]
+> `text-default-{shade}` classes (e.g. `text-default-400`, `text-default-700`) **do work** for text. This inconsistency only affects `bg-` utilities. For de-emphasized content, prefer the HeroUI semantic token `text-muted`.
 
 ---
 

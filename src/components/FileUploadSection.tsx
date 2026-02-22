@@ -4,7 +4,7 @@ import { useUpload } from "../hooks/useUpload";
 import { EmptyState } from "./pricing/EmptyState";
 import { UploadDropZone } from "./UploadDropZone";
 import { UploadFileTable } from "./UploadFileTable";
-import { ICON_CONTAINER_LG, ICON_SIZE_CONTAINER, TEXT_SECTION_TITLE } from "../constants/ui-tokens";
+import { CARD_HEADER, ICON_CONTAINER_LG, ICON_SIZE_CONTAINER, TEXT_SECTION_TITLE } from "../constants/ui-tokens";
 
 interface FileUploadSectionProps {
   title: string;
@@ -65,7 +65,7 @@ export function FileUploadSection({
   return (
     <section className="mb-10 scroll-mt-32">
       <Card>
-        <Card.Header className="flex flex-col sm:flex-row items-start sm:items-center justify-between p-8 gap-4 border-b border-default-200 bg-default-50/50">
+        <Card.Header className={`flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 ${CARD_HEADER}`}>
           <div className="flex items-center justify-between gap-4 w-full">
             <div className="flex items-center gap-4">
               <div className={ICON_CONTAINER_LG}>

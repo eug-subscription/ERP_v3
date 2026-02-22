@@ -16,8 +16,8 @@ export function OrderBillingTab({ orderId }: OrderBillingTabProps) {
     const { data: order } = useOrder();
 
     return (
-        <div className="space-y-8 pb-4">
-            <header>
+        <div className="pb-4">
+            <header className="mb-6">
                 <h2 className="text-2xl font-black text-default-900 tracking-tight flex items-center gap-3">
                     Order Billing
                     <Chip size="sm" variant="soft" color="accent" className="font-black t-mini h-5 px-2">

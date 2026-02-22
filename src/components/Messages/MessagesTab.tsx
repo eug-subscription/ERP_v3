@@ -3,6 +3,7 @@ import { Alert, Button, Card, Chip, ScrollShadow, Skeleton } from "@heroui/react
 import type { ScrollShadowVisibility } from "@heroui/react";
 import { Icon } from "@iconify/react";
 import {
+    CARD_HEADER,
     ICON_CONTAINER_LG,
     ICON_SIZE_CONTAINER,
     MESSAGE_SCROLL_HEIGHT,
@@ -110,7 +111,7 @@ export function MessagesTab() {
     if (isLoading) {
         return (
             <Card className="mb-8 scroll-mt-32">
-                <Card.Header className="p-8 border-b border-default-200 bg-default-50/50">
+                <Card.Header className={CARD_HEADER}>
                     <div className="flex items-center gap-4">
                         <Skeleton className="size-10 rounded-full" />
                         <div className="flex-1 space-y-2">
@@ -148,7 +149,7 @@ export function MessagesTab() {
 
     return (
         <Card className="mb-8 scroll-mt-32">
-            <Card.Header className="p-8 border-b border-default-200 bg-default-50/50">
+            <Card.Header className={CARD_HEADER}>
                 <div className="flex items-center gap-4">
                     <div className={ICON_CONTAINER_LG}>
                         <Icon icon="lucide:message-circle" className={ICON_SIZE_CONTAINER} />
