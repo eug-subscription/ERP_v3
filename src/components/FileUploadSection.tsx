@@ -115,14 +115,17 @@ export function FileUploadSection({
                         <Tabs.Indicator />
                       </Tabs.Tab>
                       <Tabs.Tab id="uploading">
+                        <Tabs.Separator />
                         Uploading ({fileCounts.uploading})
                         <Tabs.Indicator />
                       </Tabs.Tab>
                       <Tabs.Tab id="completed">
+                        <Tabs.Separator />
                         Completed ({fileCounts.completed})
                         <Tabs.Indicator />
                       </Tabs.Tab>
                       <Tabs.Tab id="failed">
+                        <Tabs.Separator />
                         Failed ({fileCounts.failed})
                         <Tabs.Indicator />
                       </Tabs.Tab>

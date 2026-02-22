@@ -84,7 +84,7 @@ export function TemplateSelectorModal({
                                 <Tabs.ListContainer>
                                     <Tabs.List aria-label="Template types">
                                         <Tabs.Tab id="system">System Templates<Tabs.Indicator /></Tabs.Tab>
-                                        <Tabs.Tab id="user">My Templates<Tabs.Indicator /></Tabs.Tab>
+                                        <Tabs.Tab id="user"><Tabs.Separator />My Templates<Tabs.Indicator /></Tabs.Tab>
                                     </Tabs.List>
                                 </Tabs.ListContainer>
 

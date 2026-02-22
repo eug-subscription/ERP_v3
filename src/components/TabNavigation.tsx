@@ -1,7 +1,6 @@
-import React from "react";
 import { Tabs } from "@heroui/react";
 import { Icon } from "@iconify/react";
-import { useNavigate, useRouterState } from "@tanstack/react-router";
+import { Link, useRouterState } from "@tanstack/react-router";
 
 interface Section {
   id: string;
@@ -10,9 +9,12 @@ interface Section {
   path: string;
 }
 
+/**
+ * TabNavigation - Order management section tabs.
+ * Uses HeroUI v3 href+render pattern for native routing integration.
+ */
 export function TabNavigation() {
   const routerState = useRouterState();
-  const navigate = useNavigate();
 
   // Map internal IDs to the paths defined in router.tsx
   const sections: Section[] = [
@@ -34,17 +36,18 @@ export function TabNavigation() {
     <div className="mb-6">
       <Tabs
         selectedKey={activeTab}
-        onSelectionChange={(key) => {
-          const section = sections.find((s) => s.id === key);
-          if (section) {
-            navigate({ to: section.path });
-          }
-        }}
       >
         <Tabs.ListContainer>
           <Tabs.List aria-label="Order Management sections" className="p-1">
-            {sections.map((section) => (
-              <Tabs.Tab key={section.id} id={section.id}>
+            {sections.map((section, index) => (
+              <Tabs.Tab
+                key={section.id}
+                id={section.id}
+                href={section.path}
+                // @ts-expect-error - HeroUI v3 render prop types don't align with TanStack Router Link props
+                render={(domProps) => <Link {...domProps} to={section.path} />}
+              >
+                {index > 0 && <Tabs.Separator />}
                 <div className="flex items-center gap-2 px-2">
                   <Icon icon={section.icon} className="w-4 h-4" />
                   <span className="font-medium">{section.name}</span>
@@ -58,3 +61,4 @@ export function TabNavigation() {
     </div>
   );
 }
+

@@ -8,7 +8,6 @@ import {
   Label,
   DateField,
   TimeField,
-  DateInputGroup,
   ListBox,
   TagGroup,
   Tag,
@@ -235,11 +234,11 @@ export function OrderInfo() {
                       }
                       aria-label="Order Date"
                     >
-                      <DateInputGroup>
-                        <DateInputGroup.Input>
-                          {(segment) => <DateInputGroup.Segment segment={segment} />}
-                        </DateInputGroup.Input>
-                      </DateInputGroup>
+                      <DateField.Group>
+                        <DateField.Input>
+                          {(segment) => <DateField.Segment segment={segment} />}
+                        </DateField.Input>
+                      </DateField.Group>
                     </DateField>
                   </div>
                   <div className="space-y-1">
@@ -252,11 +251,11 @@ export function OrderInfo() {
                       }
                       aria-label="Order Time"
                     >
-                      <DateInputGroup>
-                        <DateInputGroup.Input>
-                          {(segment) => <DateInputGroup.Segment segment={segment} />}
-                        </DateInputGroup.Input>
-                      </DateInputGroup>
+                      <TimeField.Group>
+                        <TimeField.Input>
+                          {(segment) => <TimeField.Segment segment={segment} />}
+                        </TimeField.Input>
+                      </TimeField.Group>
                     </TimeField>
                   </div>
                   <div className="flex justify-end">

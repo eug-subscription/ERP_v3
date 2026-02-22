@@ -137,8 +137,9 @@ export function TimelineConfigModal({
                                     >
                                         <Tabs.ListContainer>
                                             <Tabs.List aria-label="Select audience">
-                                                {(['client', 'pro', 'ops'] as TimelineAudience[]).map(audience => (
+                                                {(['client', 'pro', 'ops'] as TimelineAudience[]).map((audience, index) => (
                                                     <Tabs.Tab key={audience} id={audience}>
+                                                        {index > 0 && <Tabs.Separator />}
                                                         <div className="flex items-center gap-2">
                                                             {audience.charAt(0).toUpperCase() + audience.slice(1)}
                                                             <Chip

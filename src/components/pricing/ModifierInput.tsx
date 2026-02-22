@@ -67,7 +67,6 @@ export function ModifierInput({
                     selectedKey={type}
                     onSelectionChange={(key) => onTypeChange(key as ModifierType)}
                     className="w-full"
-                    hideSeparator
                 >
                     <Tabs.ListContainer>
                         <Tabs.List aria-label="Modifier type">

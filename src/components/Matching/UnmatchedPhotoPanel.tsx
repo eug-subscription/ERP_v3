@@ -56,6 +56,7 @@ export function UnmatchedPhotoPanel({
                                 <Tabs.Indicator />
                             </Tabs.Tab>
                             <Tabs.Tab id="grid">
+                                <Tabs.Separator />
                                 Grid view
                                 <Tabs.Indicator />
                             </Tabs.Tab>

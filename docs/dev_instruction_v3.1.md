@@ -27,7 +27,7 @@
 | **Framework** | React | `^19.2.4` | `19.x` |
 | **Build** | Vite | `^7.3.1` | `7.x` |
 | **Styling** | Tailwind CSS | `^4.1.18` | `4.x` |
-| **UI Library** | HeroUI | `^3.0.0-beta.6` | `v3.0.0-beta.x` |
+| **UI Library** | HeroUI | `^3.0.0-beta.7` | `v3.0.0-beta.x` |
 | **Routing** | TanStack Router | `^1.159.5` | `1.x` |
 | **Data** | TanStack Query | `^5.90.21` | `5.x` |
 | **Icons** | Iconify (lucide) | `^6.0.0` | `6.x` |

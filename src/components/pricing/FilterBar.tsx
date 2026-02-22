@@ -84,12 +84,13 @@ export function FilterBar<T extends string = string>({ search, status, currency 
                                 aria-label="Currency filters"
                                 className="bg-default-200/50 dark:bg-default-100/80 p-1 rounded-full flex items-center gap-1"
                             >
-                                {currency.options.map((opt) => (
+                                {currency.options.map((opt, index) => (
                                     <Tabs.Tab
                                         key={opt.key}
                                         id={opt.key}
                                         className="h-8 px-5 rounded-full text-xs font-semibold data-[selected=true]:text-foreground text-default-500 transition-colors whitespace-nowrap relative"
                                     >
+                                        {index > 0 && <Tabs.Separator />}
                                         {opt.label}
                                         <Tabs.Indicator className="bg-surface-base dark:bg-default-200 rounded-full shadow-sm" />
                                     </Tabs.Tab>
