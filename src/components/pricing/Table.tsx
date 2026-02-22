@@ -2,16 +2,16 @@ import { Button, tv } from "@heroui/react";
 import { Icon } from "@iconify/react";
 import type { ReactNode } from "react";
 import { TABLE_HEADER_TRACKING } from "../../constants/pricing";
-import { HOVER_OPACITY_SUBTLE, INACTIVE_ICON_HOVER_OPACITY, SKELETON_ROW_HEIGHT } from "../../constants/ui-tokens";
+import { INACTIVE_ICON_HOVER_OPACITY, SKELETON_ROW_HEIGHT } from "../../constants/ui-tokens";
 
 const tableStyles = tv({
     slots: {
         wrapper: "overflow-hidden rounded-2xl shadow-sm",
         base: "w-full text-left bg-background border-collapse",
-        thead: "bg-default-50/50 sticky top-0 z-10",
+        thead: "bg-[var(--color-table-header)] sticky top-0 z-10",
         headerCell: `px-6 t-mini uppercase ${TABLE_HEADER_TRACKING} text-default-400 font-bold ${SKELETON_ROW_HEIGHT} align-middle`,
         bodyCell: "px-6 py-4 align-middle",
-        row: `group/row transition-colors duration-200 odd:bg-[var(--color-zebra-odd)] even:bg-[var(--color-zebra-even)] ${HOVER_OPACITY_SUBTLE} cursor-default`,
+        row: `group/row transition-colors duration-200 odd:bg-[var(--color-zebra-odd)] even:bg-[var(--color-zebra-even)] hover:!bg-[var(--color-table-row-hover)] cursor-default`,
     }
 });
 

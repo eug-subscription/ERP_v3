@@ -47,6 +47,10 @@
   /* Table Zebra Stripes (stark alternation for high-density data) */
   --color-zebra-odd: white;
   --color-zebra-even: oklch(0.97 0 0 / 0.3);
+
+  /* Table: header and row hover */
+  --color-table-header: oklch(0.96 0 0);
+  --color-table-row-hover: oklch(0.93 0 0);
 }
 
 :root {
@@ -62,7 +66,11 @@
 
   /* Dark mode zebra stripes */
   --color-zebra-odd: oklch(0.15 0 0);
-  --color-zebra-even: oklch(0.18 0 0 / 0.5);
+  --color-zebra-even: oklch(0.22 0 0);
+
+  /* Dark mode: header and row hover */
+  --color-table-header: oklch(0.25 0 0);
+  --color-table-row-hover: oklch(0.30 0 0);
 }
 
 body {
