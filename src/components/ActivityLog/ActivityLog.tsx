@@ -46,8 +46,12 @@ function groupByDate(events: ActivityLogEvent[]): DateGroup[] {
         }));
 }
 
-export function ActivityLog() {
-    const { data: events, isLoading, isError, refetch } = useActivityLog('ord-12345');
+interface ActivityLogProps {
+    orderId: string;
+}
+
+export function ActivityLog({ orderId }: ActivityLogProps) {
+    const { data: events, isLoading, isError, refetch } = useActivityLog(orderId);
 
     const handleCommentSubmit = (_comment: string) => {
         // UI-only placeholder — no persistence

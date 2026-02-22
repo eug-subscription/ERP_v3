@@ -1,7 +1,7 @@
 import { Card, Skeleton, Alert, Button } from '@heroui/react';
 import { Icon } from '@iconify/react';
 import { DEFAULT_AUDIENCE_VISIBILITY } from '../../constants/timeline';
-import { CARD_HEADER, ICON_CONTAINER_LG, ICON_SIZE_CONTAINER, JUNCTION_BRANCH_TOP, JUNCTION_BRANCH_WIDTH, JUNCTION_SPINE_SPLIT, PIPELINE_LAB_SIDEBAR_WIDTH, PIPELINE_LINE_HEIGHT, PIPELINE_LINE_WIDTH, TEXT_SECTION_TITLE } from '../../constants/ui-tokens';
+import { CARD_HEADER, ICON_CONTAINER_LG, ICON_SIZE_CONTAINER, JUNCTION_BRANCH_TOP, JUNCTION_BRANCH_WIDTH, JUNCTION_SPINE_SPLIT, PIPELINE_LINE_HEIGHT, PIPELINE_LINE_WIDTH, TEXT_SECTION_TITLE } from '../../constants/ui-tokens';
 import { WorkflowBlockType, BlockStatus } from '../../types/workflow';
 import { useOrderWorkflow } from '../../hooks/useOrderWorkflow';
 import { buildBlockMeta, buildFlatPipelineTree } from '../../utils/pipeline-resolver';
@@ -34,7 +34,7 @@ export function OrderPipelineLab({ orderId }: OrderPipelineLabProps) {
 
     if (isLoading) {
         return (
-            <Card className={`${PIPELINE_LAB_SIDEBAR_WIDTH} shrink-0`}>
+            <Card className="w-full">
                 <Card.Header className={CARD_HEADER}>
                     <div className="flex items-center gap-4">
                         <div className={ICON_CONTAINER_LG}>
@@ -63,7 +63,7 @@ export function OrderPipelineLab({ orderId }: OrderPipelineLabProps) {
 
     if (isError || !instance) {
         return (
-            <Card className={`${PIPELINE_LAB_SIDEBAR_WIDTH} shrink-0`}>
+            <Card className="w-full">
                 <Card.Content className="py-6 px-4 space-y-3">
                     <Alert status="danger">
                         <Alert.Indicator />
@@ -105,7 +105,7 @@ export function OrderPipelineLab({ orderId }: OrderPipelineLabProps) {
     }
 
     return (
-        <Card className={`${PIPELINE_LAB_SIDEBAR_WIDTH} shrink-0`}>
+        <Card className="w-full">
             <Card.Header className={CARD_HEADER}>
                 <div className="flex items-center gap-4">
                     <div className={ICON_CONTAINER_LG}>

@@ -1,5 +1,6 @@
 import { ActivityLog } from './ActivityLog/ActivityLog';
 import { OrderPipeline } from './OrderPipeline/OrderPipeline';
+import { OrderPipelineLab } from './OrderPipeline/OrderPipelineLab';
 
 export function Timeline() {
   return (
@@ -14,15 +15,16 @@ export function Timeline() {
       </header>
 
       {/*
-             * Two-column grid: Activity Log (left, grows) + Order Pipeline (right, fixed width).
-             * On mobile (<lg) stacks vertically — Pipeline on top, Activity Log below.
+             * Two-column grid: Activity Log (left, grows) + Order Pipelines (right, fixed width).
+             * On mobile (<lg) stacks vertically — Pipelines on top, Activity Log below.
              */}
-      <div className="grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-[1fr_400px] gap-6">
         <div className="order-2 lg:order-1">
-          <ActivityLog />
+          <ActivityLog orderId="ord-12345" />
         </div>
-        <div className="order-1 lg:order-2">
+        <div className="order-1 lg:order-2 flex flex-col gap-6 lg:sticky lg:top-4 lg:self-start">
           <OrderPipeline orderId="ord-12345" />
+          <OrderPipelineLab orderId="ord-branched-001" />
         </div>
       </div>
     </section>

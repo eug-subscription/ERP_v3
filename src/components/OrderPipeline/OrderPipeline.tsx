@@ -2,7 +2,7 @@ import { Alert, Button, Card, Skeleton } from '@heroui/react';
 import { Icon } from '@iconify/react';
 import { useOrderWorkflow } from '../../hooks/useOrderWorkflow';
 import { DEFAULT_AUDIENCE_VISIBILITY } from '../../constants/timeline';
-import { CARD_HEADER, ICON_CONTAINER_LG, ICON_SIZE_CONTAINER, PIPELINE_SIDEBAR_WIDTH, TEXT_SECTION_TITLE } from '../../constants/ui-tokens';
+import { CARD_HEADER, ICON_CONTAINER_LG, ICON_SIZE_CONTAINER, TEXT_SECTION_TITLE } from '../../constants/ui-tokens';
 import { BLOCK_TYPE_TO_ID, buildBlockMeta } from '../../utils/pipeline-resolver';
 import { WorkflowBlockType } from '../../types/workflow';
 import { PipelineStep } from './PipelineStep';
@@ -46,7 +46,7 @@ export function OrderPipeline({ orderId }: OrderPipelineProps) {
 
     if (isLoading) {
         return (
-            <Card className={`${PIPELINE_SIDEBAR_WIDTH} shrink-0`}>
+            <Card className="w-full">
                 <Card.Header className={CARD_HEADER}>
                     <div className="flex items-center gap-4">
                         <div className={ICON_CONTAINER_LG}>
@@ -75,7 +75,7 @@ export function OrderPipeline({ orderId }: OrderPipelineProps) {
 
     if (isError || !instance) {
         return (
-            <Card className={`${PIPELINE_SIDEBAR_WIDTH} shrink-0`}>
+            <Card className="w-full">
                 <Card.Content className="py-6 px-4 space-y-3">
                     <Alert status="danger">
                         <Alert.Indicator />
@@ -120,7 +120,7 @@ export function OrderPipeline({ orderId }: OrderPipelineProps) {
     });
 
     return (
-        <Card className={`${PIPELINE_SIDEBAR_WIDTH} shrink-0`}>
+        <Card className="w-full">
             <Card.Header className={CARD_HEADER}>
                 <div className="flex items-center gap-4">
                     <div className={ICON_CONTAINER_LG}>

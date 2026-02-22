@@ -25,7 +25,6 @@ export function TabNavigation() {
     { id: "team", name: "Team", icon: "lucide:users", path: "/team" },
     { id: "billing", name: "Billing (Beta)", icon: "lucide:receipt", path: "/billing" },
     { id: "timeline", name: "Timeline", icon: "lucide:clock", path: "/timeline" },
-    { id: "timeline-lab", name: "Timeline Lab", icon: "lucide:flask-conical", path: "/timeline-lab" },
   ];
 
   // Determine active tab based on current pathname
