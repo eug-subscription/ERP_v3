@@ -15,6 +15,8 @@ interface PipelineStepProps {
     isLast: boolean;
     /** 0 (default) = main spine level, 1 = indented child step with smaller dot. */
     depth?: number;
+    /** Position index in the list — drives staggered entrance animation delay. */
+    index?: number;
 }
 
 const STATUS_CONFIG: Record<BlockStatus, { icon: string; color: string; pulse: boolean }> = {
@@ -33,8 +35,6 @@ const DISCLOSURE_TRIGGER_RESET = [
     'group',
 ].join(' ');
 
-
-
 export function PipelineStep({
     label,
     status,
@@ -45,6 +45,7 @@ export function PipelineStep({
     isFirst,
     isLast,
     depth = 0,
+    index = 0,
 }: PipelineStepProps) {
     const isChild = depth > 0;
     const cfg = STATUS_CONFIG[status];
@@ -68,7 +69,10 @@ export function PipelineStep({
     const tsAbsolute = hasSubtitle ? formatAbsoluteTime(completedAt!) : null;
 
     return (
-        <div className={`relative transition-all duration-300 group flex w-full py-1 ${isActive ? 'z-10' : ''} ${status === 'PENDING' ? 'opacity-(--disabled-opacity)' : ''}`}>
+        <div
+            className={`relative transition-all duration-300 group flex w-full py-1 animate-fade-slide-up motion-reduce:animate-none ${isActive ? 'z-10' : ''} ${status === 'PENDING' ? 'opacity-(--disabled-opacity)' : ''}`}
+            style={{ animationDelay: `${index * 60}ms` }}
+        >
             {/* Left chronology column */}
             <div className="flex flex-col items-start w-8 shrink-0 relative -my-2">
                 {/* Single-layer tracks — each segment gets its final color directly (no overlay stacking) */}
@@ -85,24 +89,24 @@ export function PipelineStep({
                         {!isLast && (
                             <div className={`flex-1 ${PIPELINE_LINE_WIDTH} ${isFirst ? PIPELINE_TRACK_MARGIN : ''} ${isLowerGreen ? 'bg-success'
                                 : isLowerBlue ? 'bg-accent'
-                                    : `bg-default ${status !== 'PENDING' && nextStatus === 'PENDING' ? 'opacity-(--disabled-opacity)' : ''}`
+                                    : 'bg-default'
                                 }`} />
                         )}
                     </div>
                 </div>
 
-                {/* 3. The Dot */}
+                {/* Step status dot */}
                 <div className={`relative flex items-center justify-center w-8 h-8 shrink-0 z-10 ${PIPELINE_DOT_OFFSET}`}>
                     {/* Glow — lives outside overflow-hidden so it is not clipped */}
                     {isActive && !isChild && (
-                        <div className="absolute inset-x-[-8px] inset-y-[-8px] bg-accent/15 rounded-full blur-lg animate-pulse pointer-events-none" />
+                        <div className="absolute inset-x-[-8px] inset-y-[-8px] bg-accent/15 rounded-full blur-lg animate-breathe-glow motion-reduce:animate-none pointer-events-none" />
                     )}
                     {/* Inner mask to block the line from showing inside the icon */}
                     <div className={`absolute z-10 bg-surface rounded-full ${isChild ? 'w-4 h-4' : 'w-5 h-5'}`} />
                     <div className="relative z-20 flex items-center justify-center w-full h-full">
                         <Icon
                             icon={cfg.icon}
-                            className={`${isChild ? 'w-[18px] h-[18px]' : 'w-6 h-6'} ${cfg.color} ${cfg.pulse ? 'animate-pulse' : ''}`}
+                            className={`${isChild ? 'w-[18px] h-[18px]' : 'w-6 h-6'} ${cfg.color} ${cfg.pulse ? 'animate-breathe-icon motion-reduce:animate-none' : ''}`}
                         />
                     </div>
                 </div>

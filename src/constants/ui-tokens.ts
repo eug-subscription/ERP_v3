@@ -84,7 +84,6 @@ export const MESSAGE_ATTACHMENT_IMAGE_MAX_WIDTH = "max-w-[320px]";
 export const MESSAGE_ATTACHMENT_FILE_MAX_WIDTH = "max-w-[280px]";
 
 // Timeline / Pipeline
-
 export const ACTIVITY_LOG_SCROLL_HEIGHT = "max-h-[600px]";
 export const TEXT_TINY_MUTED_BOLD = "text-tiny font-black uppercase tracking-widest text-default-400";
 export const COMMENT_BUBBLE = "bg-default-50 text-default-900 shadow-surface rounded-2xl rounded-tl-sm px-3 py-2.5";
@@ -94,7 +93,6 @@ export const PIPELINE_TRACK_HEIGHT = "h-[34px]";  // upper track height = dotOff
 export const PIPELINE_TRACK_MARGIN = "mt-[34px]"; // lower track top margin on first step
 export const PIPELINE_LINE_WIDTH = "w-[2px]";      // vertical connector line width
 export const PIPELINE_LINE_HEIGHT = "h-[2px]";     // horizontal connector line height
-
 
 // Pipeline fork junction geometry
 export const JUNCTION_BRANCH_TOP = "29px";   // where the horizontal branch starts (from top of the fork area)

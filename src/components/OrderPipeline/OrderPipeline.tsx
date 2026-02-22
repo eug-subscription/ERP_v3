@@ -147,6 +147,7 @@ export function OrderPipeline({ orderId }: OrderPipelineProps) {
                             prevStatus={steps[idx - 1]?.status}
                             isFirst={idx === 0}
                             isLast={idx === steps.length - 1}
+                            index={idx}
                         />
                     ))}
                 </div>

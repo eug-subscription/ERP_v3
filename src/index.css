@@ -159,6 +159,56 @@ body {
   animation: pulse-subtle 3s infinite ease-in-out;
 }
 
+@keyframes fade-slide-up {
+  0% {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@utility animate-fade-slide-up {
+  animation: fade-slide-up 0.35s ease-out both;
+}
+
+@keyframes breathe-glow {
+
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 0.15;
+  }
+
+  50% {
+    transform: scale(1.2);
+    opacity: 0.25;
+  }
+}
+
+@utility animate-breathe-glow {
+  animation: breathe-glow 2.5s ease-in-out infinite;
+}
+
+@keyframes breathe-icon {
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.6;
+  }
+}
+
+@utility animate-breathe-icon {
+  animation: breathe-icon 2.5s ease-in-out infinite;
+}
+
 @utility gpu-clipping-fix {
   transform: translateZ(0);
   -webkit-mask-image: -webkit-radial-gradient(white, black);

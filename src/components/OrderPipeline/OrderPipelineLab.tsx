@@ -121,107 +121,107 @@ export function OrderPipelineLab({ orderId }: OrderPipelineLabProps) {
             </Card.Header>
             <Card.Content className="p-0">
                 <div className="px-4 pb-4 pt-2">
-                    {sections.map((section, sIdx) => {
-                        const isFirstSection = sIdx === 0;
-                        const isLastSection = sIdx === sections.length - 1;
-                        const hasChildren = section.children.length > 0;
+                    {(() => {
+                        let stepCounter = 0; return sections.map((section, sIdx) => {
+                            const isFirstSection = sIdx === 0;
+                            const isLastSection = sIdx === sections.length - 1;
+                            const hasChildren = section.children.length > 0;
 
-                        // Parent steps live on the main spine, so prevStatus comes from the previous PARENT
-                        const prevSection = sIdx > 0 ? sections[sIdx - 1] : undefined;
-                        const prevParentStep = prevSection?.parent;
+                            // Parent steps live on the main spine, so prevStatus comes from the previous PARENT
+                            const prevSection = sIdx > 0 ? sections[sIdx - 1] : undefined;
+                            const prevParentStep = prevSection?.parent;
 
-                        // nextStatus: if has children, the next visible step is the first child
-                        const nextStepAfterParent = hasChildren
-                            ? section.children[0]
-                            : (sIdx < sections.length - 1 ? sections[sIdx + 1].parent : undefined);
+                            // nextStatus: if has children, the next visible step is the first child
+                            const nextStepAfterParent = hasChildren
+                                ? section.children[0]
+                                : (sIdx < sections.length - 1 ? sections[sIdx + 1].parent : undefined);
 
-                        return (
-                            <div key={section.parent.key}>
-                                {/* Parent step — sits on the main spine */}
-                                <PipelineStep
-                                    label={section.parent.label}
-                                    status={section.parent.status}
-                                    subStatus={section.parent.subStatus}
-                                    completedAt={section.parent.completedAt}
-                                    nextStatus={nextStepAfterParent?.status}
-                                    prevStatus={prevParentStep?.status}
-                                    isFirst={isFirstSection}
-                                    isLast={isLastSection && !hasChildren}
-                                />
+                            return (
+                                <div key={section.parent.key}>
+                                    {/* Parent step — sits on the main spine */}
+                                    <PipelineStep
+                                        label={section.parent.label}
+                                        status={section.parent.status}
+                                        subStatus={section.parent.subStatus}
+                                        completedAt={section.parent.completedAt}
+                                        nextStatus={nextStepAfterParent?.status}
+                                        prevStatus={prevParentStep?.status}
+                                        isFirst={isFirstSection}
+                                        isLast={isLastSection && !hasChildren}
+                                        index={stepCounter++}
+                                    />
 
-                                {/* Child steps — two-spine layout:
+                                    {/* Child steps — two-spine layout:
                                     Left column = main spine continuation,
                                     horizontal branch → right column = child spine */}
-                                {hasChildren && (() => {
-                                    const nextSection = sIdx < sections.length - 1 ? sections[sIdx + 1] : undefined;
-                                    const parentStatus = section.parent.status;
-                                    const nextParentStatus = nextSection?.parent.status;
-                                    const firstChildStatus = section.children[0]?.status;
+                                    {hasChildren && (() => {
+                                        const nextSection = sIdx < sections.length - 1 ? sections[sIdx + 1] : undefined;
+                                        const parentStatus = section.parent.status;
+                                        const nextParentStatus = nextSection?.parent.status;
+                                        const firstChildStatus = section.children[0]?.status;
 
-                                    // Helper: connector color between two statuses
-                                    // Green = both COMPLETED, Blue = one COMPLETED + one ACTIVE, Grey = anything else
-                                    const connectorColor = (a?: BlockStatus, b?: BlockStatus) => {
-                                        if (a === 'COMPLETED' && b === 'COMPLETED') return 'bg-success';
-                                        if ((a === 'COMPLETED' && b === 'ACTIVE') || (a === 'ACTIVE' && b === 'COMPLETED'))
-                                            return 'bg-accent';
-                                        return 'bg-default';
-                                    };
+                                        // Helper: connector color between two statuses
+                                        // Green = both COMPLETED, Blue = one COMPLETED + one ACTIVE, Grey = anything else
+                                        const connectorColor = (a?: BlockStatus, b?: BlockStatus) => {
+                                            if (a === 'COMPLETED' && b === 'COMPLETED') return 'bg-success';
+                                            if ((a === 'COMPLETED' && b === 'ACTIVE') || (a === 'ACTIVE' && b === 'COMPLETED'))
+                                                return 'bg-accent';
+                                            return 'bg-default';
+                                        };
 
-                                    // Upper spine (above junction): parent → first child branch
-                                    const upperColor = connectorColor(parentStatus, firstChildStatus);
-                                    // Lower spine (below junction → next parent): parent → next parent
-                                    const lowerColor = connectorColor(parentStatus, nextParentStatus);
-                                    // Branch: parent → first child
-                                    const branchColor = upperColor;
-                                    // Faded opacity only on grey (pending) connections
-                                    const upperOpacity = upperColor === 'bg-default' ? 'opacity-(--disabled-opacity)' : '';
-                                    const lowerOpacity = lowerColor === 'bg-default' ? 'opacity-(--disabled-opacity)' : '';
-                                    const branchOpacity = branchColor === 'bg-default' ? 'opacity-(--disabled-opacity)' : '';
+                                        // Upper spine (above junction): parent → first child branch
+                                        const upperColor = connectorColor(parentStatus, firstChildStatus);
+                                        // Lower spine (below junction → next parent): parent → next parent
+                                        const lowerColor = connectorColor(parentStatus, nextParentStatus);
+                                        // Branch: parent → first child
+                                        const branchColor = upperColor;
 
-                                    return (
-                                        <div className="flex w-full">
-                                            {/* Main spine continuation column */}
-                                            <div className="w-8 shrink-0 relative">
-                                                {/* Upper spine: top → junction */}
-                                                <div className={`absolute top-0 left-1/2 -translate-x-1/2 ${PIPELINE_LINE_WIDTH} ${upperColor} ${upperOpacity}`} style={{ height: JUNCTION_SPINE_SPLIT }} />
-                                                {/* Lower spine: junction → bottom */}
-                                                <div className={`absolute bottom-0 left-1/2 -translate-x-1/2 ${PIPELINE_LINE_WIDTH} ${lowerColor} ${lowerOpacity}`} style={{ top: JUNCTION_SPINE_SPLIT }} />
-                                                {/* Horizontal branch — stops at child dot's left edge */}
-                                                <div className={`absolute left-[calc(50%-1px)] ${PIPELINE_LINE_HEIGHT} ${branchColor} ${branchOpacity}`} style={{ top: JUNCTION_BRANCH_TOP, width: JUNCTION_BRANCH_WIDTH }} />
+                                        return (
+                                            <div className="flex w-full">
+                                                {/* Main spine continuation column */}
+                                                <div className="w-8 shrink-0 relative">
+                                                    {/* Upper spine: top → junction */}
+                                                    <div className={`absolute top-0 left-1/2 -translate-x-1/2 ${PIPELINE_LINE_WIDTH} ${upperColor}`} style={{ height: JUNCTION_SPINE_SPLIT }} />
+                                                    {/* Lower spine: junction → bottom */}
+                                                    <div className={`absolute bottom-0 left-1/2 -translate-x-1/2 ${PIPELINE_LINE_WIDTH} ${lowerColor}`} style={{ top: JUNCTION_SPINE_SPLIT }} />
+                                                    {/* Horizontal branch — stops at child dot's left edge */}
+                                                    <div className={`absolute left-[calc(50%-1px)] ${PIPELINE_LINE_HEIGHT} ${branchColor}`} style={{ top: JUNCTION_BRANCH_TOP, width: JUNCTION_BRANCH_WIDTH }} />
+                                                </div>
+                                                {/* Child steps with their own secondary spine */}
+                                                <div className="flex-1 min-w-0 relative z-10">
+                                                    {section.children.map((child, cIdx) => {
+                                                        const isLastChild = cIdx === section.children.length - 1;
+                                                        const prevChild = cIdx > 0
+                                                            ? section.children[cIdx - 1]
+                                                            : section.parent;
+                                                        const nextChild = cIdx < section.children.length - 1
+                                                            ? section.children[cIdx + 1]
+                                                            : undefined;
+
+                                                        return (
+                                                            <PipelineStep
+                                                                key={child.key}
+                                                                label={child.label}
+                                                                status={child.status}
+                                                                subStatus={child.subStatus}
+                                                                completedAt={child.completedAt}
+                                                                nextStatus={nextChild?.status}
+                                                                prevStatus={prevChild?.status}
+                                                                isFirst={cIdx === 0}
+                                                                isLast={isLastChild}
+                                                                depth={1}
+                                                                index={stepCounter++}
+                                                            />
+                                                        );
+                                                    })}
+                                                </div>
                                             </div>
-                                            {/* Child steps with their own secondary spine */}
-                                            <div className="flex-1 min-w-0 relative z-10">
-                                                {section.children.map((child, cIdx) => {
-                                                    const isLastChild = cIdx === section.children.length - 1;
-                                                    const prevChild = cIdx > 0
-                                                        ? section.children[cIdx - 1]
-                                                        : section.parent;
-                                                    const nextChild = cIdx < section.children.length - 1
-                                                        ? section.children[cIdx + 1]
-                                                        : undefined;
-
-                                                    return (
-                                                        <PipelineStep
-                                                            key={child.key}
-                                                            label={child.label}
-                                                            status={child.status}
-                                                            subStatus={child.subStatus}
-                                                            completedAt={child.completedAt}
-                                                            nextStatus={nextChild?.status}
-                                                            prevStatus={prevChild?.status}
-                                                            isFirst={cIdx === 0}
-                                                            isLast={isLastChild}
-                                                            depth={1}
-                                                        />
-                                                    );
-                                                })}
-                                            </div>
-                                        </div>
-                                    );
-                                })()}
-                            </div>
-                        );
-                    })}
+                                        );
+                                    })()}
+                                </div>
+                            );
+                        });
+                    })()}
                 </div>
             </Card.Content>
         </Card>
