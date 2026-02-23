@@ -73,6 +73,12 @@ const billingRoute = createRoute({
   component: React.lazy(() => import("./components/OrderBillingRoute").then(m => ({ default: m.OrderBillingRoute }))),
 });
 
+const moderationRoute = createRoute({
+  getParentRoute: () => orderLayoutRoute,
+  path: "/moderation",
+  component: React.lazy(() => import("./components/Moderation/ModerationTab").then(m => ({ default: m.ModerationTab }))),
+});
+
 const messagesRoute = createRoute({
   getParentRoute: () => orderLayoutRoute,
   path: "/messages",
@@ -197,7 +203,7 @@ const routeTree = rootRoute.addChildren([
     teamRoute,
     billingRoute,
     timelineRoute,
-
+    moderationRoute,
     messagesRoute,
   ]),
   projectRoute.addChildren([

@@ -99,6 +99,9 @@ export const JUNCTION_BRANCH_TOP = "29px";   // where the horizontal branch star
 export const JUNCTION_SPINE_SPLIT = "31px";  // where the upper spine ends and lower spine begins
 export const JUNCTION_BRANCH_WIDTH = "24px"; // horizontal branch length (spine centre → child dot edge)
 
+// Table action buttons — ghost icon buttons used in table rows
+export const ACTION_BUTTON_ICON = "rounded-full bg-default-100/50 border border-transparent hover:border-accent/20 hover:bg-accent/10 text-default-500";
+
 // Card header — consistent section header pattern across all tabs
 export const CARD_HEADER = "p-8 border-b border-default-200 bg-default-50/50";
 

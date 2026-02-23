@@ -1,0 +1,59 @@
+import type { ModerationEntry } from "../types/moderation";
+
+export type { ModerationEntry };
+
+export const mockModerationEntries: ModerationEntry[] = [
+    {
+        id: 101,
+        stage: "Moderation after file upload",
+        inputFileCount: 50,
+        batchLabel: "Batch #1",
+        approved: 40,
+        rejected: 10,
+        date: "2026-02-23T00:00:00Z",
+        userName: "Sofia Brenner",
+        userRole: "Moderator",
+    },
+    {
+        id: 102,
+        stage: "Quality check",
+        inputFileCount: 50,
+        batchLabel: "Batch #1",
+        approved: 35,
+        rejected: 15,
+        date: "2026-02-23T02:00:00Z",
+        userName: "Marcus Holt",
+        userRole: "Moderator",
+    },
+    {
+        id: 103,
+        stage: "Final review",
+        inputFileCount: 30,
+        batchLabel: "Batch #2",
+        approved: 30,
+        rejected: 0,
+        date: "2026-02-23T04:00:00Z",
+        userName: "Anna Kowalski",
+        userRole: "Moderator",
+    },
+    {
+        id: 195,
+        stage: "Client moderation",
+        inputFileCount: 20,
+        approved: 20,
+        rejected: 0,
+        date: "2026-02-23T06:00:00Z",
+        userName: "Lex Lutter",
+        userRole: "Client",
+    },
+    {
+        id: 196,
+        stage: "Client approval",
+        inputFileCount: 18,
+        approved: 16,
+        rejected: 2,
+        date: "2026-02-23T08:00:00Z",
+        userName: "Marie Dupont",
+        userRole: "Client",
+    },
+];
