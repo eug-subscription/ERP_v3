@@ -26,6 +26,7 @@ export function TabNavigation() {
     { id: "billing", name: "Billing (Beta)", icon: "lucide:receipt", path: "/billing" },
     { id: "timeline", name: "Timeline", icon: "lucide:clock", path: "/timeline" },
     { id: "moderation", name: "Moderation", icon: "lucide:shield-check", path: "/moderation" },
+    { id: "shot-list", name: "Shot List", icon: "lucide:clipboard-list", path: "/shot-list" },
   ];
 
   // Determine active tab based on current pathname

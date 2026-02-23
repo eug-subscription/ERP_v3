@@ -18,7 +18,7 @@ export function OrderLayout() {
     const { data: order, isLoading } = useOrder();
 
     // Determine if sidebar should be shown (hidden on billing and team tabs)
-    const NO_SIDEBAR_ROUTES = ["/billing", "/team", "/timeline", "/timeline-lab", "/moderation"];
+    const NO_SIDEBAR_ROUTES = ["/billing", "/team", "/timeline", "/timeline-lab", "/moderation", "/shot-list"];
     const showSidebar = !NO_SIDEBAR_ROUTES.includes(location.pathname);
 
     if (isLoading || !order) {

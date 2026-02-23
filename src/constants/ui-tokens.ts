@@ -33,6 +33,14 @@ export const INACTIVE_ICON_HOVER_OPACITY = "group-hover/btn:opacity-50";
 export const MODAL_BACKDROP = "backdrop-blur-sm bg-black/20";
 export const MODAL_WIDTH_SM = "sm:max-w-[400px]";
 export const MODAL_WIDTH_MD = "sm:max-w-[480px]";
+export const MODAL_WIDTH_FORM = "max-w-lg";
+export const MODAL_WIDTH_LG = "max-w-4xl";
+export const PREVIEW_IMAGE_MIN_HEIGHT = "min-h-[300px]";
+export const PREVIEW_IMAGE_MAX_HEIGHT = "max-h-[80vh]";
+
+// Shot list controls
+export const SEARCH_FIELD_WIDTH = "w-[240px]";
+export const FILTER_SELECT_WIDTH = "w-[180px]";
 
 // Container patterns
 export const CONTAINER_BASE_RATES = "p-3 rounded-xl border border-default-100 bg-default-50/50";
@@ -100,7 +108,7 @@ export const JUNCTION_SPINE_SPLIT = "31px";  // where the upper spine ends and l
 export const JUNCTION_BRANCH_WIDTH = "24px"; // horizontal branch length (spine centre → child dot edge)
 
 // Table action buttons — ghost icon buttons used in table rows
-export const ACTION_BUTTON_ICON = "rounded-full bg-default-100/50 border border-transparent hover:border-accent/20 hover:bg-accent/10 text-default-500";
+export const ACTION_BUTTON_ICON = "rounded-full bg-default/50 border border-transparent hover:border-accent/20 hover:bg-accent/10 text-default-500";
 
 // Card header — consistent section header pattern across all tabs
 export const CARD_HEADER = "p-8 border-b border-default-200 bg-default-50/50";

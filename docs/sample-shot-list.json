@@ -1,0 +1,62 @@
+[
+    {
+        "id": 101,
+        "externalId": "SL-101",
+        "name": "Margherita Pizza",
+        "status": "await-uploading",
+        "creatorName": "Ivan Petrov",
+        "creatorRole": "Moderator",
+        "createdAt": "2026-02-20T09:00:00Z",
+        "images": []
+    },
+    {
+        "id": 102,
+        "externalId": "SL-102",
+        "name": "Truffle Fries",
+        "status": "await-uploading",
+        "creatorName": "Anna Smith",
+        "creatorRole": "Client",
+        "createdAt": "2026-02-20T09:15:00Z",
+        "images": []
+    },
+    {
+        "id": 103,
+        "externalId": "SL-103",
+        "name": "Caesar Salad",
+        "status": "await-uploading",
+        "creatorName": "Ivan Petrov",
+        "creatorRole": "Moderator",
+        "createdAt": "2026-02-20T09:30:00Z",
+        "images": []
+    },
+    {
+        "id": 104,
+        "externalId": "SL-104",
+        "name": "Beef Ramen",
+        "status": "await-uploading",
+        "creatorName": "Ivan Petrov",
+        "creatorRole": "Moderator",
+        "createdAt": "2026-02-20T09:45:00Z",
+        "images": []
+    },
+    {
+        "id": 105,
+        "externalId": "SL-105",
+        "name": "Tiramisu",
+        "status": "await-uploading",
+        "creatorName": "Anna Smith",
+        "creatorRole": "Client",
+        "createdAt": "2026-02-20T10:00:00Z",
+        "images": []
+    },
+    {
+        "id": 3,
+        "externalId": "SL-003",
+        "name": "Beef Burger",
+        "status": "await-uploading",
+        "creatorName": "Ivan Petrov",
+        "creatorRole": "Moderator",
+        "createdAt": "2026-02-19T14:00:00Z",
+        "images": []
+    }
+]
