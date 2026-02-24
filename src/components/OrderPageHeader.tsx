@@ -37,13 +37,13 @@ export function OrderPageHeader({
             </h1>
             <div className="flex items-center gap-3 mt-2">
                 <Chip size="sm" variant="soft" color="default">
-                    {photoCount} {photoCount === 1 ? 'photo' : 'photos'}
+                    {`${photoCount} ${photoCount === 1 ? 'photo' : 'photos'}`}
                 </Chip>
                 <Chip size="sm" variant="soft" color="success">
                     {status}
                 </Chip>
                 <Chip size="sm" variant="soft" color="default">
-                    {profitMargin}% margin
+                    {`${profitMargin}% margin`}
                 </Chip>
             </div>
         </header>
