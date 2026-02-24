@@ -39,6 +39,7 @@ export function OrderLayout() {
                 status={order.status}
                 photoCount={order.photoCount}
                 profitMargin={order.profit}
+                createdAt={order.orderDate}
             />
 
             <TabNavigation />

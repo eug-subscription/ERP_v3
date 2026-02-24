@@ -1,4 +1,6 @@
 import { Breadcrumbs, Chip } from "@heroui/react";
+import { Icon } from "@iconify/react";
+import type { CalendarDateTime } from "@internationalized/date";
 
 interface OrderPageHeaderProps {
     orderName: string;
@@ -8,6 +10,18 @@ interface OrderPageHeaderProps {
     status: string;
     photoCount: number;
     profitMargin: number;
+    createdAt: CalendarDateTime;
+}
+
+/** Format a CalendarDateTime as "10 January 2025" — date only, no time. */
+function formatOrderDate(dt: CalendarDateTime): string {
+    // CalendarDateTime has year/month/day as numbers; convert via native Date
+    const d = new Date(dt.year, dt.month - 1, dt.day);
+    return d.toLocaleDateString("en-GB", {
+        day: "numeric",
+        month: "long",
+        year: "numeric",
+    });
 }
 
 export function OrderPageHeader({
@@ -18,6 +32,7 @@ export function OrderPageHeader({
     status,
     photoCount,
     profitMargin,
+    createdAt,
 }: OrderPageHeaderProps) {
     return (
         <header className="mb-6">
@@ -37,7 +52,7 @@ export function OrderPageHeader({
             </h1>
             <div className="flex items-center gap-3 mt-2">
                 <Chip size="sm" variant="soft" color="default">
-                    {`${photoCount} ${photoCount === 1 ? 'photo' : 'photos'}`}
+                    {`${photoCount} ${photoCount === 1 ? "photo" : "photos"}`}
                 </Chip>
                 <Chip size="sm" variant="soft" color="success">
                     {status}
@@ -45,8 +60,11 @@ export function OrderPageHeader({
                 <Chip size="sm" variant="soft" color="default">
                     {`${profitMargin}% margin`}
                 </Chip>
+                <span className="ml-auto flex items-center gap-1.5 text-xs font-medium text-default-400">
+                    <Icon icon="lucide:calendar" className="w-3.5 h-3.5" />
+                    {formatOrderDate(createdAt)}
+                </span>
             </div>
         </header>
     );
 }
-
