@@ -1,6 +1,7 @@
 import { Breadcrumbs, Chip } from "@heroui/react";
 import { Icon } from "@iconify/react";
 import type { CalendarDateTime } from "@internationalized/date";
+import { formatCalendarDate } from "../utils/format-time";
 
 interface OrderPageHeaderProps {
     orderName: string;
@@ -11,17 +12,6 @@ interface OrderPageHeaderProps {
     photoCount: number;
     profitMargin: number;
     createdAt: CalendarDateTime;
-}
-
-/** Format a CalendarDateTime as "10 January 2025" — date only, no time. */
-function formatOrderDate(dt: CalendarDateTime): string {
-    // CalendarDateTime has year/month/day as numbers; convert via native Date
-    const d = new Date(dt.year, dt.month - 1, dt.day);
-    return d.toLocaleDateString("en-GB", {
-        day: "numeric",
-        month: "long",
-        year: "numeric",
-    });
 }
 
 export function OrderPageHeader({
@@ -62,7 +52,7 @@ export function OrderPageHeader({
                 </Chip>
                 <span className="ml-auto flex items-center gap-1.5 text-xs font-medium text-default-400">
                     <Icon icon="lucide:calendar" className="w-3.5 h-3.5" />
-                    {formatOrderDate(createdAt)}
+                    {formatCalendarDate(createdAt)}
                 </span>
             </div>
         </header>

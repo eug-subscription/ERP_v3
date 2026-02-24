@@ -144,3 +144,17 @@ export function formatDateGroupLabel(dateKey: string, now?: Date): string {
         ...(sameYear ? {} : { year: 'numeric' }),
     });
 }
+/**
+ * Format a CalendarDateTime (from @internationalized/date) as a plain date
+ * string with no time component. Use for order-level date labels in the UI.
+ *
+ * @example formatCalendarDate(parseDateTime('2025-01-10T10:00:00')) // "10 January 2025"
+ */
+export function formatCalendarDate(dt: { year: number; month: number; day: number }): string {
+    const d = new Date(dt.year, dt.month - 1, dt.day);
+    return d.toLocaleDateString('en-GB', {
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric',
+    });
+}
