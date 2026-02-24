@@ -1,6 +1,6 @@
 import { ActivityLog } from './ActivityLog/ActivityLog';
-import { OrderPipeline } from './OrderPipeline/OrderPipeline';
-import { OrderPipelineLab } from './OrderPipeline/OrderPipelineLab';
+import { OrderPipeline } from './TimelinePipeline/OrderPipeline';
+import { OrderPipelineLab } from './TimelinePipeline/OrderPipelineLab';
 
 export function Timeline() {
   return (

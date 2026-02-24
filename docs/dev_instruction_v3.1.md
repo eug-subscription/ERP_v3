@@ -145,7 +145,8 @@ Routes are organised into 3 layout groups:
 
 | Path | Component | Notes |
 | :--- | :--- | :--- |
-| `/` | — | Redirects to `/uploading` |
+| `/` | — | Redirects to `/overview` |
+| `/overview` | `OverviewTab` | Bento dashboard, no sidebar |
 | `/uploading` | `FileUploadTabs` | |
 | `/original` | `OriginalPhotos` | |
 | `/items` | `UnmatchedItems` | |

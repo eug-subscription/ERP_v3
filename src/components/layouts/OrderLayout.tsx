@@ -17,8 +17,8 @@ export function OrderLayout() {
     const { location } = useRouterState();
     const { data: order, isLoading } = useOrder();
 
-    // Determine if sidebar should be shown (hidden on billing and team tabs)
-    const NO_SIDEBAR_ROUTES = ["/billing", "/team", "/timeline", "/timeline-lab", "/moderation", "/shot-list"];
+    // Sidebar hidden on full-width tabs (overview, billing, team, timeline, moderation, shot-list)
+    const NO_SIDEBAR_ROUTES = ["/overview", "/billing", "/team", "/timeline", "/moderation", "/shot-list"];
     const showSidebar = !NO_SIDEBAR_ROUTES.includes(location.pathname);
 
     if (isLoading || !order) {

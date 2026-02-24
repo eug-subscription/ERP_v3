@@ -30,9 +30,18 @@ const indexRoute = createRoute({
   getParentRoute: () => orderLayoutRoute,
   path: "/",
   beforeLoad: ({ navigate }) => {
-    throw navigate({ to: "/uploading", replace: true });
+    throw navigate({ to: "/overview", replace: true });
   },
 });
+
+const overviewRoute = createRoute({
+  getParentRoute: () => orderLayoutRoute,
+  path: "/overview",
+  component: React.lazy(() =>
+    import("./components/Overview/OverviewTab").then(m => ({ default: m.OverviewTab }))
+  ),
+});
+
 
 const uploadingRoute = createRoute({
   getParentRoute: () => orderLayoutRoute,
@@ -58,14 +67,11 @@ const teamRoute = createRoute({
   component: React.lazy(() => import("./components/TeamMembers").then(m => ({ default: m.TeamMembers }))),
 });
 
-
 const timelineRoute = createRoute({
   getParentRoute: () => orderLayoutRoute,
   path: "/timeline",
   component: React.lazy(() => import("./components/Timeline").then(m => ({ default: m.Timeline }))),
 });
-
-
 
 const billingRoute = createRoute({
   getParentRoute: () => orderLayoutRoute,
@@ -129,7 +135,6 @@ const projectManagersRoute = createRoute({
   path: "/managers",
   component: ManagersComingSoon,
 });
-
 
 const projectPricesRoute = createRoute({
   getParentRoute: () => projectRoute,
@@ -203,6 +208,8 @@ const rateCardDetailRoute = createRoute({
 const routeTree = rootRoute.addChildren([
   orderLayoutRoute.addChildren([
     indexRoute,
+    overviewRoute,
+
     uploadingRoute,
     originalRoute,
     itemsRoute,

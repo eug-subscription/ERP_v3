@@ -56,4 +56,14 @@ export const mockModerationEntries: ModerationEntry[] = [
         userName: "Marie Dupont",
         userRole: "Client",
     },
+    {
+        id: 197,
+        stage: "Moderation after retouching",
+        inputFileCount: 10,
+        approved: 0,
+        rejected: 0,
+        date: "2026-02-24T09:00:00Z",
+        userName: "Sofia Brenner",
+        userRole: "Moderator",
+    },
 ];

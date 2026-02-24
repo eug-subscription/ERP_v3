@@ -95,7 +95,7 @@ export function MessageBubble({ message, isFirstInGroup, onReply }: MessageBubbl
                         {isFirstInGroup && (
                             <div className="flex justify-between items-center mb-1 gap-4">
                                 <span className="font-semibold text-xs">{message.user.name}</span>
-                                <span className="text-tiny opacity-0 group-hover:opacity-60 transition-opacity duration-200 uppercase tracking-wider">
+                                <span className="t-mini opacity-0 group-hover:opacity-60 transition-opacity duration-200 uppercase tracking-wider font-normal">
                                     {timeLabel}
                                 </span>
                             </div>

@@ -5,7 +5,8 @@ import { DEFAULT_STALE_TIME, MOCK_API_DELAY } from '../constants/query-config';
 
 async function fetchActivityLog(orderId: string): Promise<ActivityLogEvent[]> {
     await new Promise((resolve) => setTimeout(resolve, MOCK_API_DELAY));
-    return mockActivityLogEvents.filter((event) => event.orderId === orderId);
+    const events = mockActivityLogEvents.filter((event) => event.orderId === orderId);
+    return events.length > 0 ? events : mockActivityLogEvents;
 }
 
 export function useActivityLog(orderId: string) {
