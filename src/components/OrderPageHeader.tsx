@@ -52,7 +52,7 @@ export function OrderPageHeader({
                 </Chip>
                 <span className="ml-auto flex items-center gap-1.5 text-xs font-medium text-default-400">
                     <Icon icon="lucide:calendar" className="w-3.5 h-3.5" />
-                    {formatCalendarDate(createdAt)}
+                    Order date: {formatCalendarDate(createdAt)}
                 </span>
             </div>
         </header>
