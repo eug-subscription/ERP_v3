@@ -28,7 +28,7 @@ export function OverviewTab() {
 
     return (
         <>
-            <div className="flex flex-col gap-5 p-6 max-w-screen-2xl mx-auto w-full">
+            <div className="flex flex-col gap-5 max-w-screen-2xl mx-auto w-full">
                 <header className="mb-1">
                     <h2 className="text-2xl font-black text-default-900 tracking-tight">
                         Order Overview
