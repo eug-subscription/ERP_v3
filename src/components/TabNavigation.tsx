@@ -1,6 +1,6 @@
-import { Tabs } from "@heroui/react";
+import { Tabs, Dropdown, Button, Label } from "@heroui/react";
 import { Icon } from "@iconify/react";
-import { Link, useRouterState } from "@tanstack/react-router";
+import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
 
 interface Section {
   id: string;
@@ -9,14 +9,17 @@ interface Section {
   path: string;
 }
 
-const SECTIONS: Section[] = [
+const PRIMARY_SECTIONS: Section[] = [
   { id: "overview", name: "Overview", icon: "lucide:layout-dashboard", path: "/overview" },
   { id: "uploading", name: "Upload", icon: "lucide:upload", path: "/uploading" },
   { id: "original-photos", name: "Photos", icon: "lucide:image", path: "/original" },
-  { id: "items", name: "Matching", icon: "lucide:puzzle", path: "/items" },
   { id: "messages", name: "Messages", icon: "lucide:message-circle", path: "/messages" },
-  { id: "billing", name: "Billing", icon: "lucide:receipt", path: "/billing" },
   { id: "timeline", name: "Timeline", icon: "lucide:clock", path: "/timeline" },
+  { id: "billing", name: "Billing", icon: "lucide:receipt", path: "/billing" },
+];
+
+const OVERFLOW_SECTIONS: Section[] = [
+  { id: "items", name: "Matching", icon: "lucide:puzzle", path: "/items" },
   { id: "team", name: "Team", icon: "lucide:users", path: "/team" },
   { id: "moderation", name: "Moderation", icon: "lucide:shield-check", path: "/moderation" },
   { id: "shot-list", name: "Shot List", icon: "lucide:clipboard-list", path: "/shot-list" },
@@ -24,20 +27,24 @@ const SECTIONS: Section[] = [
 
 /**
  * TabNavigation - Order management section tabs.
+ * Primary tabs are always visible. Less-used tabs are hidden under a "More" Dropdown.
  * Uses HeroUI v3 href+render pattern for native routing integration.
  */
 export function TabNavigation() {
   const routerState = useRouterState();
+  const navigate = useNavigate();
 
-  const activeTab =
-    SECTIONS.find((s) => routerState.location.pathname === s.path)?.id || "overview";
+  const pathname = routerState.location.pathname;
+  const activePrimaryTab = PRIMARY_SECTIONS.find((s) => pathname === s.path)?.id;
+  const activeOverflowSection = OVERFLOW_SECTIONS.find((s) => pathname === s.path);
+  const isOverflowActive = activeOverflowSection !== undefined;
 
   return (
-    <div className="mb-6 overflow-x-auto">
-      <Tabs selectedKey={activeTab}>
+    <div className="mb-6 flex items-center gap-1">
+      <Tabs selectedKey={activePrimaryTab || "overflow"}>
         <Tabs.ListContainer>
           <Tabs.List aria-label="Order Management sections" className="p-1 whitespace-nowrap">
-            {SECTIONS.map((section, index) => (
+            {PRIMARY_SECTIONS.map((section, index) => (
               <Tabs.Tab
                 key={section.id}
                 id={section.id}
@@ -56,6 +63,35 @@ export function TabNavigation() {
           </Tabs.List>
         </Tabs.ListContainer>
       </Tabs>
+
+      <Dropdown>
+        <Button
+          variant={isOverflowActive ? "primary" : "tertiary"}
+          size="sm"
+          className={`ml-1 shrink-0 h-10 ${!isOverflowActive ? "text-muted" : ""}`}
+          aria-label="More navigation options"
+        >
+          {isOverflowActive && (
+            <Icon icon={activeOverflowSection!.icon} className="size-4 shrink-0" />
+          )}
+          {isOverflowActive ? activeOverflowSection!.name : "More"}
+          <Icon icon="lucide:chevron-down" className="w-3.5 h-3.5 ml-1" />
+        </Button>
+        <Dropdown.Popover>
+          <Dropdown.Menu
+            onAction={(key) => {
+              void navigate({ to: key as string });
+            }}
+          >
+            {OVERFLOW_SECTIONS.map((section) => (
+              <Dropdown.Item key={section.id} id={section.path} textValue={section.name}>
+                <Icon icon={section.icon} className="size-4 shrink-0 text-muted" />
+                <Label>{section.name}</Label>
+              </Dropdown.Item>
+            ))}
+          </Dropdown.Menu>
+        </Dropdown.Popover>
+      </Dropdown>
     </div>
   );
 }
