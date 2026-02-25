@@ -1,8 +1,10 @@
 import { Outlet, useRouterState } from "@tanstack/react-router";
-import { Surface, Spinner } from "@heroui/react";
+import { Surface, Spinner, Button, useOverlayState } from "@heroui/react";
+import { Icon } from "@iconify/react";
 import { OrderPageHeader } from "../OrderPageHeader";
 import { TabNavigation } from "../TabNavigation";
 import { OrderInfo } from "../OrderInfo";
+import { CreateOrderModal } from "../CreateOrderModal";
 import { useOrder } from "../../hooks/useOrder";
 
 // Convert project ID slug to human-readable title case (e.g., "wolt_germany" → "Wolt Germany")
@@ -16,6 +18,7 @@ function formatProjectName(projectId: string): string {
 export function OrderLayout() {
     const { location } = useRouterState();
     const { data: order, isLoading } = useOrder();
+    const createOrderState = useOverlayState();
 
     // Sidebar hidden on full-width tabs (overview, billing, team, timeline, moderation, shot-list)
     const NO_SIDEBAR_ROUTES = ["/overview", "/billing", "/team", "/timeline", "/moderation", "/shot-list"];
@@ -30,32 +33,50 @@ export function OrderLayout() {
     }
 
     return (
-        <div className="p-6 md:p-8 max-w-7xl mx-auto">
-            <OrderPageHeader
-                orderName={order.id}
-                clientName={order.client || "Unknown Client"}
-                projectName={formatProjectName(order.projectId)}
-                projectId={order.projectId}
-                status={order.status}
-                photoCount={order.photoCount}
-                profitMargin={order.profit}
-                createdAt={order.orderDate}
-            />
+        <>
+            <div className="p-6 md:p-8 max-w-7xl mx-auto">
+                <OrderPageHeader
+                    orderName={order.id}
+                    clientName={order.client || "Unknown Client"}
+                    projectName={formatProjectName(order.projectId)}
+                    projectId={order.projectId}
+                    status={order.status}
+                    photoCount={order.photoCount}
+                    profitMargin={order.profit}
+                    createdAt={order.orderDate}
+                    actions={
+                        <Button
+                            variant="primary"
+                            size="sm"
+                            onPress={createOrderState.open}
+                            className="shrink-0"
+                        >
+                            <Icon icon="lucide:plus" className="size-4" />
+                            New Order
+                        </Button>
+                    }
+                />
 
-            <TabNavigation />
+                <TabNavigation />
 
-            <div className={`grid grid-cols-1 ${showSidebar ? "lg:grid-cols-[3fr_1fr]" : "lg:grid-cols-1"} gap-8 mt-1`}>
-                <div>
-                    <Surface variant="secondary" className="rounded-3xl shadow-sm overflow-hidden p-6 md:p-10">
-                        <Outlet />
-                    </Surface>
+                <div className={`grid grid-cols-1 ${showSidebar ? "lg:grid-cols-[3fr_1fr]" : "lg:grid-cols-1"} gap-8 mt-1`}>
+                    <div>
+                        <Surface variant="secondary" className="rounded-3xl shadow-sm overflow-hidden p-6 md:p-10">
+                            <Outlet />
+                        </Surface>
+                    </div>
+                    {showSidebar && (
+                        <aside className="space-y-6">
+                            <OrderInfo />
+                        </aside>
+                    )}
                 </div>
-                {showSidebar && (
-                    <aside className="space-y-6">
-                        <OrderInfo />
-                    </aside>
-                )}
             </div>
-        </div>
+
+            <CreateOrderModal
+                isOpen={createOrderState.isOpen}
+                onOpenChange={createOrderState.setOpen}
+            />
+        </>
     );
 }
