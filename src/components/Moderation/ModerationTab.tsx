@@ -4,6 +4,7 @@ import { useModerationEntries } from "../../hooks/useModerationEntries";
 import { ModerationTable } from "./ModerationTable";
 import { ModerationTableSkeleton } from "./ModerationTableSkeleton";
 import { EmptyState } from "../pricing/EmptyState";
+import { TEXT_TAB_HEADING } from "../../constants/ui-tokens";
 
 type RoleFilter = "all" | "Moderator" | "Client";
 
@@ -18,7 +19,7 @@ export function ModerationTab() {
     return (
         <div className="pb-4">
             <header className="mb-6">
-                <h2 className="text-2xl font-black text-default-900 tracking-tight">
+                <h2 className={TEXT_TAB_HEADING}>
                     Moderation
                 </h2>
                 <p className="text-sm font-medium text-default-500 mt-1">

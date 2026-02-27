@@ -21,7 +21,7 @@ export type ModifierType = 'percentage' | 'fixed';
 
 export type RateSource = 'rate_card' | 'project_override' | 'manual';
 
-export type BillingLineStatus = 'draft' | 'confirmed' | 'voided';
+export type BillingLineStatus = 'draft' | 'voided';
 
 // --- Global Rate Management ---
 
@@ -193,8 +193,7 @@ export interface BillingLineInstance {
     createdBy: string;
     modifiedAt: string | null;
     modifiedBy: string | null;
-    confirmedAt: string | null;
-    confirmedBy: string | null;
+
     voidedAt: string | null;
     voidedBy: string | null;
     voidReason: string | null;

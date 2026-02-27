@@ -1,11 +1,11 @@
-import { Outlet, useRouterState } from "@tanstack/react-router";
+import { Outlet } from "@tanstack/react-router";
 import { Surface, Spinner, Button, useOverlayState } from "@heroui/react";
 import { Icon } from "@iconify/react";
 import { OrderPageHeader } from "../OrderPageHeader";
 import { TabNavigation } from "../TabNavigation";
-import { OrderInfo } from "../OrderInfo";
 import { CreateOrderModal } from "../CreateOrderModal";
 import { useOrder } from "../../hooks/useOrder";
+import { useOrderBillingSummary } from "../../hooks/useOrderBilling";
 
 // Convert project ID slug to human-readable title case (e.g., "wolt_germany" → "Wolt Germany")
 function formatProjectName(projectId: string): string {
@@ -16,13 +16,11 @@ function formatProjectName(projectId: string): string {
 }
 
 export function OrderLayout() {
-    const { location } = useRouterState();
     const { data: order, isLoading } = useOrder();
+    const { summary } = useOrderBillingSummary(order?.id ?? '');
     const createOrderState = useOverlayState();
 
-    // Sidebar hidden on full-width tabs (overview, billing, team, timeline, moderation, shot-list)
-    const NO_SIDEBAR_ROUTES = ["/overview", "/billing", "/team", "/timeline", "/moderation", "/shot-list"];
-    const showSidebar = !NO_SIDEBAR_ROUTES.includes(location.pathname);
+    const profitMargin = Math.round(summary?.marginPercentage ?? 0);
 
     if (isLoading || !order) {
         return (
@@ -41,8 +39,7 @@ export function OrderLayout() {
                     projectName={formatProjectName(order.projectId)}
                     projectId={order.projectId}
                     status={order.status}
-                    photoCount={order.photoCount}
-                    profitMargin={order.profit}
+                    profitMargin={profitMargin}
                     createdAt={order.orderDate}
                     actions={
                         <Button
@@ -59,18 +56,9 @@ export function OrderLayout() {
 
                 <TabNavigation />
 
-                <div className={`grid grid-cols-1 ${showSidebar ? "lg:grid-cols-[3fr_1fr]" : "lg:grid-cols-1"} gap-8 mt-1`}>
-                    <div>
-                        <Surface variant="secondary" className="rounded-3xl shadow-sm overflow-hidden p-6 md:p-10">
-                            <Outlet />
-                        </Surface>
-                    </div>
-                    {showSidebar && (
-                        <aside className="space-y-6">
-                            <OrderInfo />
-                        </aside>
-                    )}
-                </div>
+                <Surface variant="secondary" className="rounded-3xl shadow-sm overflow-hidden p-6 md:p-10 mt-1">
+                    <Outlet />
+                </Surface>
             </div>
 
             <CreateOrderModal

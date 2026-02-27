@@ -46,16 +46,26 @@ export const FILTER_SELECT_WIDTH = "w-[180px]";
 export const CONTAINER_BASE_RATES = "p-3 rounded-xl border border-default-100 bg-default-50/50";
 export const CONTAINER_INFO_ACCENT = "p-4 rounded-xl border border-accent/20 bg-accent/5";
 export const CONTAINER_INFO_ITEM = "p-3 rounded-xl border border-default-200 bg-default-50/50";
+export const CONTAINER_DETAIL_BLOCK = "rounded-xl bg-default/40 border border-default px-4 py-3";
 
 // Icon containers
 export const ICON_CONTAINER_LG = "size-10 rounded-full bg-accent/10 flex items-center justify-center shrink-0";
+export const ICON_CONTAINER_SM = "size-7 rounded-full bg-accent/10 flex items-center justify-center shrink-0";
 export const ICON_SIZE_CONTAINER = "size-5 text-accent";
 
 // Typography patterns
 export const TEXT_SECTION_LABEL = "text-xs font-bold uppercase tracking-wider";
 export const TEXT_SECTION_TITLE = "text-sm font-black uppercase tracking-widest text-foreground";
 export const TEXT_TINY_LABEL = "text-tiny text-default-400 capitalize";
-export const TEXT_SUBSECTION_LABEL = "text-xs font-bold text-default-500 uppercase tracking-wider";
+export const TEXT_FIELD_LABEL = "text-xs text-default-400 font-medium";
+
+// Modal icon background — consistent accent-soft style across all edit modals
+export const MODAL_ICON_DEFAULT = "bg-accent-soft text-accent-soft-foreground";
+
+// Ghost edit button — hover-reveal on card headers
+export const GHOST_EDIT_BUTTON = "opacity-0 group-hover:opacity-100 transition-opacity";
+
+
 
 // Layout patterns
 export const FLEX_COL_GAP_1 = "flex flex-col gap-1";
@@ -79,6 +89,8 @@ export const CURRENCY_DECIMALS = 2; // For currency amounts (e.g., "€45.80")
 
 // Table cell constraints
 export const FILE_NAME_MAX_WIDTH = "max-w-[180px]";
+// Billing table column width — Qty / Revenue / Expense columns in BillingContextCard
+export const BILLING_COLUMN_WIDTH = "w-16";
 
 // Matching tab animation timing
 export const DROP_EXIT_ANIMATION_MS = 500;
@@ -93,7 +105,9 @@ export const MESSAGE_ATTACHMENT_FILE_MAX_WIDTH = "max-w-[280px]";
 
 // Timeline / Pipeline
 export const ACTIVITY_LOG_SCROLL_HEIGHT = "max-h-[600px]";
-export const TEXT_TINY_MUTED_BOLD = "text-tiny font-black uppercase tracking-widest text-default-400";
+export const TEXT_TINY_MUTED_BOLD = "t-mini font-black uppercase tracking-widest text-default-400";
+// Modal section sub-heading label — used across all edit modals
+export const TEXT_MODAL_SECTION_LABEL = "t-mini font-bold uppercase tracking-[0.15em] text-default-400";
 export const COMMENT_BUBBLE = "bg-default-50 text-default-900 shadow-surface rounded-2xl rounded-tl-sm px-3 py-2.5";
 // Pipeline track geometry — derived from uniform Card p-4 padding
 export const PIPELINE_DOT_OFFSET = "mt-[18px]";   // dot aligns with card title baseline
@@ -112,5 +126,8 @@ export const ACTION_BUTTON_ICON = "rounded-full bg-default/50 border border-tran
 
 // Card header — consistent section header pattern across all tabs
 export const CARD_HEADER = "p-8 border-b border-default-200 bg-default-50/50";
+
+// Tab page heading — shared h2 style across all tab components
+export const TEXT_TAB_HEADING = "text-2xl font-black text-default-900 tracking-tight";
 
 

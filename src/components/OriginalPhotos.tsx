@@ -1,6 +1,7 @@
 import { Button, Skeleton } from "@heroui/react";
 import { usePhotos } from "../hooks/usePhotos";
 import { PhotosTable } from "./PhotosTable";
+import { TEXT_TAB_HEADING } from "../constants/ui-tokens";
 
 export function OriginalPhotos() {
   const { data: photos = [], isLoading } = usePhotos();
@@ -18,7 +19,7 @@ export function OriginalPhotos() {
   return (
     <section className="mb-8 scroll-mt-32">
       <header className="mb-6">
-        <h2 className="text-2xl font-black text-default-900 tracking-tight">Original photos</h2>
+        <h2 className={TEXT_TAB_HEADING}>Original photos</h2>
         <p className="text-sm font-medium text-default-500 mt-1">
           Archives with all original photos for this order.
         </p>

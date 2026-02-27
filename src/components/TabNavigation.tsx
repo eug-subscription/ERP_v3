@@ -11,6 +11,7 @@ interface Section {
 
 const PRIMARY_SECTIONS: Section[] = [
   { id: "overview", name: "Overview", icon: "lucide:layout-dashboard", path: "/overview" },
+  { id: "details", name: "Details", icon: "lucide:file-text", path: "/details" },
   { id: "uploading", name: "Upload", icon: "lucide:upload", path: "/uploading" },
   { id: "original-photos", name: "Photos", icon: "lucide:image", path: "/original" },
   { id: "messages", name: "Messages", icon: "lucide:message-circle", path: "/messages" },

@@ -12,6 +12,7 @@ import { MessagesPreview } from './MessagesPreview';
 import { QuickActionsBar } from './QuickActionsBar';
 import { TeamMemberModal } from '../TeamMemberModal';
 import { AddShotListItemsModal } from '../ShotList/AddShotListItemsModal';
+import { TEXT_TAB_HEADING } from '../../constants/ui-tokens';
 
 export function OverviewTab() {
     const { data: orderData } = useOrder();
@@ -30,7 +31,7 @@ export function OverviewTab() {
         <>
             <div className="flex flex-col gap-5 max-w-screen-2xl mx-auto w-full">
                 <header className="mb-1">
-                    <h2 className="text-2xl font-black text-default-900 tracking-tight">
+                    <h2 className={TEXT_TAB_HEADING}>
                         Order Overview
                     </h2>
                     <p className="text-sm font-medium text-default-500 mt-1">

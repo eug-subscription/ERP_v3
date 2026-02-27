@@ -40,7 +40,6 @@ export function BillingLineRow({
     const { data: rateItems = [] } = useRateItems();
 
     const isVoided = line.status === "voided";
-    const isConfirmed = line.status === "confirmed";
 
     const handleRowClick = (e: MouseEvent<HTMLTableRowElement>) => {
         if ((e.target as HTMLElement).closest('button, input, label, [role="checkbox"]')) return;
@@ -101,14 +100,6 @@ export function BillingLineRow({
                             <span className={`font-bold t-compact text-foreground uppercase ${PRICING_ITEM_TRACKING} ${isVoided ? "line-through text-default-400" : ""}`}>
                                 {getLineItemName(line.rateItemId)}
                             </span>
-                            {isConfirmed && (
-                                <Tooltip delay={TOOLTIP_DELAY}>
-                                    <Tooltip.Trigger>
-                                        <Icon icon="lucide:lock" className="w-3.5 h-3.5 text-success/60" />
-                                    </Tooltip.Trigger>
-                                    <Tooltip.Content>Confirmed and locked</Tooltip.Content>
-                                </Tooltip>
-                            )}
                         </div>
                         <div className="flex items-center gap-1">
                             <span className="font-mono text-xs text-default-500">
@@ -119,7 +110,7 @@ export function BillingLineRow({
                 </Table.Cell>
                 {/* Qty column */}
                 <Table.Cell>
-                    {!isVoided && !isConfirmed ? (
+                    {!isVoided ? (
                         <QuantityEditor
                             line={line}
                             onSave={(qty) => onEditQuantity?.({ ...line, quantityInput: qty })}
@@ -128,7 +119,7 @@ export function BillingLineRow({
                     ) : (
                         <div className="flex flex-col gap-1 items-start">
                             <div className="flex items-center gap-1.5">
-                                <span className={`font-mono font-bold t-compact ${isVoided ? "line-through text-default-300" : "text-default-900"}`}>
+                                <span className="font-mono font-bold t-compact line-through text-default-300">
                                     {line.quantityEffective}
                                 </span>
                                 <span className="t-mini text-default-400 uppercase ml-1">
@@ -235,7 +226,7 @@ export function BillingLineRow({
                 </Table.Cell>
                 {/* Actions column */}
                 <Table.Cell align="right">
-                    {!isVoided && !isConfirmed ? (
+                    {!isVoided ? (
                         <div className="flex items-center justify-end gap-1">
                             <Tooltip delay={TOOLTIP_DELAY}>
                                 <Tooltip.Trigger>
@@ -266,10 +257,6 @@ export function BillingLineRow({
                                 </Tooltip.Trigger>
                                 <Tooltip.Content>Void Line</Tooltip.Content>
                             </Tooltip>
-                        </div>
-                    ) : isConfirmed ? (
-                        <div className="flex justify-end opacity-40">
-                            <Icon icon="lucide:lock" className="w-4 h-4 text-success" />
                         </div>
                     ) : (
                         <div className="flex justify-end italic text-default-300 text-tiny font-black uppercase tracking-widest">

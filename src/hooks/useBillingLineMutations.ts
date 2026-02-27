@@ -3,7 +3,7 @@ import { BillingLineInstance } from '../types/pricing';
 import { mockBillingLines } from '../data/mock-billing-lines';
 import { mockUsers } from '../data/mock-users';
 
-import { MOCK_API_DELAY, BULK_MOCK_API_DELAY } from '../constants/query-config';
+import { MOCK_API_DELAY } from '../constants/query-config';
 import { calculateLineFinancials, calculateFinalRate } from '../utils/billingCalculations';
 
 const DEFAULT_USER_ID = mockUsers[0].id;
@@ -57,9 +57,9 @@ async function simulateUpdateLine(id: string, updates: Partial<BillingLineInstan
 
     const currentLine = mockBillingLines[lineIndex];
 
-    // Prevent updates to confirmed/voided lines (double check)
-    if (currentLine.status !== 'draft' && !('status' in updates)) {
-        throw new Error('Cannot update a confirmed or voided billing line');
+    // Prevent updates to voided lines
+    if (currentLine.status === 'voided' && !('status' in updates)) {
+        throw new Error('Cannot update a voided billing line');
     }
 
     // Apply updates and recalculate
@@ -125,25 +125,6 @@ export function useUpdateBillingLineModifiers() {
 }
 
 /**
- * Hook to confirm a billing line
- */
-export function useConfirmBillingLine() {
-    const queryClient = useQueryClient();
-
-    return useMutation({
-        mutationFn: (id: string) =>
-            simulateUpdateLine(id, {
-                status: 'confirmed',
-                confirmedAt: new Date().toISOString(),
-                confirmedBy: DEFAULT_USER_ID,
-            }),
-        onSuccess: (data) => {
-            queryClient.invalidateQueries({ queryKey: ['orderBillingLines', data.orderId] });
-        },
-    });
-}
-
-/**
  * Hook to void a billing line
  */
 export function useVoidBillingLine() {
@@ -159,41 +140,6 @@ export function useVoidBillingLine() {
             }),
         onSuccess: (data) => {
             queryClient.invalidateQueries({ queryKey: ['orderBillingLines', data.orderId] });
-        },
-    });
-}
-
-/**
- * NEW: Hook for bulk confirming lines (referenced in Task 5.6.3)
- */
-export function useBulkConfirmBillingLines() {
-    const queryClient = useQueryClient();
-
-    return useMutation({
-        mutationFn: async (ids: string[]) => {
-            await new Promise((resolve) => setTimeout(resolve, BULK_MOCK_API_DELAY));
-
-            const results: BillingLineInstance[] = [];
-            const timestamp = new Date().toISOString();
-
-            for (const id of ids) {
-                const lineIndex = mockBillingLines.findIndex((l) => l.id === id);
-                if (lineIndex !== -1 && mockBillingLines[lineIndex].status === 'draft') {
-                    mockBillingLines[lineIndex] = {
-                        ...mockBillingLines[lineIndex],
-                        status: 'confirmed',
-                        confirmedAt: timestamp,
-                        confirmedBy: DEFAULT_USER_ID,
-                    };
-                    results.push(mockBillingLines[lineIndex]);
-                }
-            }
-            return results;
-        },
-        onSuccess: (data) => {
-            if (data.length > 0) {
-                queryClient.invalidateQueries({ queryKey: ['orderBillingLines', data[0].orderId] });
-            }
         },
     });
 }

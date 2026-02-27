@@ -3,6 +3,7 @@ import { Icon } from "@iconify/react";
 import { TeamMemberModal } from "./TeamMemberModal";
 import { useTeam } from "../hooks/useTeam";
 import { Table } from "./pricing/Table";
+import { TEXT_TAB_HEADING } from "../constants/ui-tokens";
 
 export function TeamMembers() {
   const {
@@ -39,7 +40,7 @@ export function TeamMembers() {
     <section className="mb-8 scroll-mt-32">
       <header className="flex items-center justify-between mb-6">
         <div>
-          <h2 className="text-2xl font-black text-default-900 tracking-tight">Team Members</h2>
+          <h2 className={TEXT_TAB_HEADING}>Team Members</h2>
           <p className="text-default-500 text-sm mt-1 font-medium">
             Manage your team and their roles across projects.
           </p>

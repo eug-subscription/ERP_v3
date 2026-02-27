@@ -155,12 +155,6 @@ export function BillingLineDetail({ line }: BillingLineDetailProps) {
                                         Modified: {formatRelativeTime(line.modifiedAt)} by <span className="font-bold">{getUserName(line.modifiedBy ?? '')}</span>
                                     </div>
                                 )}
-                                {line.confirmedAt && (
-                                    <div className="text-success font-medium flex items-center gap-2">
-                                        <Icon icon="lucide:check-circle" className="size-3" />
-                                        Confirmed: {formatRelativeTime(line.confirmedAt)} by {getUserName(line.confirmedBy ?? '')}
-                                    </div>
-                                )}
                                 {line.voidedAt && (
                                     <div>
                                         <div className="text-danger font-medium flex items-center gap-2">

@@ -42,6 +42,14 @@ const overviewRoute = createRoute({
   ),
 });
 
+const orderDetailsRoute = createRoute({
+  getParentRoute: () => orderLayoutRoute,
+  path: "/details",
+  component: React.lazy(() =>
+    import("./components/OrderDetails/OrderDetailsTab").then(m => ({ default: m.OrderDetailsTab }))
+  ),
+});
+
 
 const uploadingRoute = createRoute({
   getParentRoute: () => orderLayoutRoute,
@@ -209,6 +217,7 @@ const routeTree = rootRoute.addChildren([
   orderLayoutRoute.addChildren([
     indexRoute,
     overviewRoute,
+    orderDetailsRoute,
 
     uploadingRoute,
     originalRoute,

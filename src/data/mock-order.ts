@@ -1,13 +1,5 @@
 import { CalendarDateTime, parseDateTime } from "@internationalized/date";
-
-export interface StructuredAddress {
-  line1: string;
-  line2: string;
-  city: string;
-  state: string;
-  country: string;
-  postcode: string;
-}
+import type { ContactPayload, AddressPayload, AssignedLead, ExtraMember } from "../types/order";
 
 export interface OrderTag {
   id: string;
@@ -17,19 +9,28 @@ export interface OrderTag {
 
 export interface OrderData {
   id: string;
+  orderName: string;
   orderDate: CalendarDateTime;
+  sessionTime: CalendarDateTime | null;
   tags: OrderTag[];
   client: string | null;
-  address: StructuredAddress | null;
+  contact: ContactPayload;
+  secondaryContact: ContactPayload | null;
+  address: AddressPayload | null;
   status: "Completed" | "Pending" | "In Progress";
   profit: number;
   projectId: string;
-  photoCount: number;
+  createdAt: string;
+  modifiedAt: string | null;
+  assignedLead: AssignedLead | null;
+  extraMembers: ExtraMember[];
 }
 
 export const mockOrderData: OrderData = {
   id: "order-1",
+  orderName: "Budget King Berlin — Food Photography",
   orderDate: parseDateTime("2025-01-10T10:00:00"),
+  sessionTime: parseDateTime("2025-01-10T10:00:00"),
   tags: [
     { id: "1", text: "Food photography", color: "accent" },
     { id: "2", text: "Web Germany", color: "default" },
@@ -37,18 +38,35 @@ export const mockOrderData: OrderData = {
     { id: "4", text: "Editing", color: "default" },
   ],
   client: "Budget King Berlin",
+  contact: {
+    name: "Marcus Hoffmann",
+    email: "m.hoffmann@budgetkingberlin.de",
+    phone: "+49 30 1234 5678",
+  },
+  secondaryContact: {
+    name: "Laura Schneider",
+    email: "l.schneider@budgetkingberlin.de",
+    phone: "+49 30 8765 4321",
+  },
   address: {
     line1: "Johannisstraße 20",
-    line2: "",
+    line2: "Hinterhaus, 2. OG",
     city: "Berlin",
-    state: "Berlin",
     country: "DE",
     postcode: "10117",
   },
   status: "Completed",
   profit: 45,
   projectId: "wolt_germany",
-  photoCount: 3,
+  createdAt: "2025-01-10T09:15:00Z",
+  modifiedAt: "2026-02-23T09:00:00Z",
+  assignedLead: {
+    name: "Elena Braun",
+    role: "Senior Photographer",
+  },
+  extraMembers: [
+    { id: "extra-1", name: "Alex Morgan", role: "Photographer" },
+  ],
 };
 
 export const availableTags: OrderTag[] = [
@@ -58,11 +76,3 @@ export const availableTags: OrderTag[] = [
   { id: "7", text: "Commercial", color: "default" },
 ];
 
-export const countries = [
-  { code: "DE", name: "Germany" },
-  { code: "GB", name: "United Kingdom" },
-  { code: "US", name: "United States" },
-  { code: "FR", name: "France" },
-  { code: "IT", name: "Italy" },
-  { code: "ES", name: "Spain" },
-];

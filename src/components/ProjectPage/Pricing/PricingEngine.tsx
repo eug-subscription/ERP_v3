@@ -5,7 +5,6 @@ import { RateCardComboBox } from "./RateCardComboBox";
 import { RateCardTicket } from "./RateCardTicket";
 import { TaxSettings } from "./TaxSettings";
 import { Currency, TaxTreatment } from "../../../types/pricing";
-import { useHasConfirmedOrders } from "../../../hooks/useHasConfirmedOrders";
 import { percentToDecimal } from "../../../constants/pricing-data";
 
 interface SaveAllData {
@@ -39,7 +38,7 @@ interface PricingEngineProps {
  * Consolidates Currency, Rate Card, and Tax Settings into a single step.
  */
 export function PricingEngine({
-    projectId,
+    projectId: _projectId,
     currencyTaxInitialData,
     selectedCardId,
     isSaving,
@@ -48,8 +47,6 @@ export function PricingEngine({
     onRateCardDirtyChange,
     currentCurrency: initialCurrency
 }: PricingEngineProps) {
-    const { data: hasConfirmedOrders } = useHasConfirmedOrders(projectId);
-
     // Manual state for pending changes
     const [pendingRateCardId, setPendingRateCardId] = useState<string | null>(selectedCardId || null);
     const [pendingCurrency, setPendingCurrency] = useState<Currency | null>(
@@ -200,7 +197,6 @@ export function PricingEngine({
                             <div className="ml-14">
                                 <RateCardComboBox
                                     selectedCardId={pendingRateCardId}
-                                    lockedCurrency={hasConfirmedOrders ? initialCurrency : null}
                                     onChange={handleCardChange}
                                 />
                             </div>

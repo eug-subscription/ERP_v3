@@ -40,13 +40,11 @@ export interface OrderBillingSummary {
     hasMixedTaxRates: boolean;
     breakdown: {
         draft: { preTax: number; incTax: number; cost: number };
-        confirmed: { preTax: number; incTax: number; cost: number };
         voided: { preTax: number; incTax: number; cost: number };
     };
     lineCount: {
         total: number;
         draft: number;
-        confirmed: number;
         voided: number;
     };
 }
@@ -78,7 +76,6 @@ export function useOrderBillingSummary(orderId: string) {
             : 0;
 
         const draftLines = lines.filter(l => l.status === 'draft');
-        const confirmedLines = lines.filter(l => l.status === 'confirmed');
         const voidedLines = lines.filter(l => l.status === 'voided');
 
         return {
@@ -99,11 +96,6 @@ export function useOrderBillingSummary(orderId: string) {
                     incTax: draftLines.reduce((sum, l) => sum + l.lineClientTotalIncTax, 0),
                     cost: draftLines.reduce((sum, l) => sum + l.lineCostTotal, 0),
                 },
-                confirmed: {
-                    preTax: confirmedLines.reduce((sum, l) => sum + l.lineClientTotalPreTax, 0),
-                    incTax: confirmedLines.reduce((sum, l) => sum + l.lineClientTotalIncTax, 0),
-                    cost: confirmedLines.reduce((sum, l) => sum + l.lineCostTotal, 0),
-                },
                 voided: {
                     preTax: voidedLines.reduce((sum, l) => sum + l.lineClientTotalPreTax, 0),
                     incTax: voidedLines.reduce((sum, l) => sum + l.lineClientTotalIncTax, 0),
@@ -113,7 +105,6 @@ export function useOrderBillingSummary(orderId: string) {
             lineCount: {
                 total: lines.length,
                 draft: draftLines.length,
-                confirmed: confirmedLines.length,
                 voided: voidedLines.length,
             }
         };

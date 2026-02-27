@@ -1,12 +1,13 @@
 import { ActivityLog } from './ActivityLog/ActivityLog';
 import { OrderPipeline } from './TimelinePipeline/OrderPipeline';
 import { OrderPipelineLab } from './TimelinePipeline/OrderPipelineLab';
+import { TEXT_TAB_HEADING } from '../constants/ui-tokens';
 
 export function Timeline() {
   return (
     <section className="mb-8 scroll-mt-32">
       <header className="mb-6">
-        <h2 className="text-2xl font-black text-default-900 tracking-tight">
+        <h2 className={TEXT_TAB_HEADING}>
           Timeline
         </h2>
         <p className="text-default-500 text-sm mt-1 font-medium">

@@ -15,6 +15,17 @@ export interface AddressPayload {
     postcode: string;
 }
 
+export interface AssignedLead {
+    name: string;
+    role: string;
+}
+
+export interface ExtraMember {
+    id: string;
+    name: string;
+    role: string;
+}
+
 export interface CreateOrderPayload {
     orderName: string;
     contact: ContactPayload;

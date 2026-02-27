@@ -5,6 +5,7 @@ import { OrderBillingSummaryCard } from "./OrderBillingSummary";
 import { OrderPricingCard } from "./OrderPricingCard";
 import { useOrder } from "../../hooks/useOrder";
 import { FALLBACK_PROJECT_ID } from "../../constants/pricing";
+import { TEXT_TAB_HEADING } from "../../constants/ui-tokens";
 
 interface OrderBillingTabProps {
     orderId: string;
@@ -18,7 +19,7 @@ export function OrderBillingTab({ orderId }: OrderBillingTabProps) {
     return (
         <div className="pb-4">
             <header className="mb-6">
-                <h2 className="text-2xl font-black text-default-900 tracking-tight flex items-center gap-3">
+                <h2 className={`${TEXT_TAB_HEADING} flex items-center gap-3`}>
                     Order Billing
                     <Chip size="sm" variant="soft" color="accent" className="font-black t-mini h-5 px-2">
                         Beta

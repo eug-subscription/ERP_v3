@@ -6,7 +6,7 @@ import { ShotListTable } from "./ShotListTable";
 import { ShotListTableSkeleton } from "./ShotListTableSkeleton";
 import { EmptyState } from "../pricing/EmptyState";
 import { AddShotListItemsModal } from "./AddShotListItemsModal";
-import { TOOLTIP_DELAY, SEARCH_FIELD_WIDTH, FILTER_SELECT_WIDTH } from "../../constants/ui-tokens";
+import { TOOLTIP_DELAY, SEARCH_FIELD_WIDTH, FILTER_SELECT_WIDTH, TEXT_TAB_HEADING } from "../../constants/ui-tokens";
 import type { ShotListStatus } from "../../types/shot-list";
 import { SHOT_LIST_STATUS_FILTER_LABELS } from "../../constants/shot-list";
 
@@ -38,7 +38,7 @@ export function ShotListTab() {
         <div className="pb-4">
             <header className="flex items-center justify-between mb-6">
                 <div>
-                    <h2 className="text-2xl font-black text-default-900 tracking-tight">
+                    <h2 className={TEXT_TAB_HEADING}>
                         Shot List
                     </h2>
                     <p className="text-sm font-medium text-default-500 mt-1">

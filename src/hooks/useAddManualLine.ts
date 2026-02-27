@@ -202,8 +202,6 @@ export function useAddManualLine({ orderId, projectId }: UseAddManualLineProps) 
             createdBy: mockUsers[0].id,
             modifiedAt: null,
             modifiedBy: null,
-            confirmedAt: null,
-            confirmedBy: null,
             voidedAt: null,
             voidedBy: null,
             voidReason: null,

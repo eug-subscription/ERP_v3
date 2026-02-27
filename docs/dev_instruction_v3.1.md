@@ -147,6 +147,7 @@ Routes are organised into 3 layout groups:
 | :--- | :--- | :--- |
 | `/` | — | Redirects to `/overview` |
 | `/overview` | `OverviewTab` | Bento dashboard, no sidebar |
+| `/details` | `OrderDetailsTab` | Lazy loaded |
 | `/uploading` | `FileUploadTabs` | |
 | `/original` | `OriginalPhotos` | |
 | `/items` | `UnmatchedItems` | |

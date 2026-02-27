@@ -8,5 +8,3 @@ export const DEFAULT_STALE_TIME = 1000 * 60 * 5;
 // Default delay for mock API calls
 export const MOCK_API_DELAY = 800;
 
-// Default delay for bulk mock API operations
-export const BULK_MOCK_API_DELAY = 1200;

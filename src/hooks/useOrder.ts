@@ -13,7 +13,7 @@ async function fetchOrderData(): Promise<OrderData> {
   // const response = await fetch('/api/orders/123');
   // return response.json();
 
-  return mockOrderData;
+  return { ...mockOrderData };
 }
 
 /**

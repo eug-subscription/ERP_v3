@@ -158,3 +158,13 @@ export function formatCalendarDate(dt: { year: number; month: number; day: numbe
         year: 'numeric',
     });
 }
+
+/**
+ * Format the time portion of a CalendarDateTime as HH:MM.
+ * Use instead of inline padStart formatting.
+ *
+ * @example formatCalendarTime(parseDateTime('2025-01-10T10:00:00')) // "10:00"
+ */
+export function formatCalendarTime(dt: { hour: number; minute: number }): string {
+    return `${String(dt.hour).padStart(2, '0')}:${String(dt.minute).padStart(2, '0')}`;
+}

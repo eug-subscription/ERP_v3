@@ -25,7 +25,6 @@ const getCurrencyFlag = (currency: Currency) => {
 
 interface RateCardComboBoxProps {
     selectedCardId: string | null;
-    lockedCurrency: Currency | null;
     onChange: (cardId: string | null, currency: Currency | null) => void;
 }
 
@@ -35,7 +34,6 @@ interface RateCardComboBoxProps {
  */
 export function RateCardComboBox({
     selectedCardId,
-    lockedCurrency,
     onChange
 }: RateCardComboBoxProps) {
     const { data: rateCards, isLoading, error } = useRateCards();
@@ -143,14 +141,11 @@ export function RateCardComboBox({
             <ComboBox.Popover className="w-(--trigger-width)">
                 <ListBox className="p-1 max-h-[300px] overflow-y-auto">
                     {activeCards.map(card => {
-                        const isCurrencyMismatch = lockedCurrency && card.currency !== lockedCurrency;
-
                         return (
                             <ListBox.Item
                                 key={card.id}
                                 id={card.id}
                                 textValue={`${card.name} ${card.currency} ${card.id}`}
-                                isDisabled={!!isCurrencyMismatch}
                             >
                                 <div className="flex items-center justify-between gap-3">
                                     <div className="flex items-center gap-2">
