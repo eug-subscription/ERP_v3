@@ -212,6 +212,24 @@ const rateCardDetailRoute = createRoute({
   ),
 });
 
+// Team Layout Route (Parent — pathless, mirrors _rates pattern)
+const teamLayoutRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  id: "_team",
+  component: React.lazy(() =>
+    import("./components/Team/TeamLayout").then(m => ({ default: m.TeamLayout }))
+  ),
+});
+
+// Team Index Route — uses /people to avoid conflict with the order-level /team tab
+const teamIndexRoute = createRoute({
+  getParentRoute: () => teamLayoutRoute,
+  path: "/people",
+  component: React.lazy(() =>
+    import("./components/Team/TeamPage").then(m => ({ default: m.TeamPage }))
+  ),
+});
+
 // 5. Create Router
 const routeTree = rootRoute.addChildren([
   orderLayoutRoute.addChildren([
@@ -244,6 +262,9 @@ const routeTree = rootRoute.addChildren([
   ratesLayoutRoute.addChildren([
     ratesIndexRoute,
     rateCardDetailRoute,
+  ]),
+  teamLayoutRoute.addChildren([
+    teamIndexRoute,
   ]),
 ]);
 

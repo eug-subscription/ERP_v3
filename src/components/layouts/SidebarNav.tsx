@@ -5,6 +5,7 @@ import { useTheme } from "../../hooks/useTheme";
 
 const NAV_ITEMS = [
     { label: "Orders", path: "/uploading", icon: "lucide:file-text" },
+    { label: "Team", path: "/people", icon: "lucide:users" },
     { label: "Rate Management", path: "/rates", icon: "lucide:receipt" },
     { label: "Project Settings", path: `/project/${DEFAULT_PROJECT_ID}`, icon: "lucide:settings" },
 ];
