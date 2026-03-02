@@ -4,6 +4,7 @@ import { Avatar, Button, ComboBox, Description, Input, Label, ListBox, Modal, to
 import { Icon } from '@iconify/react';
 import type { AssignedLead } from '../../types/order';
 import { useTeam } from '../../hooks/useTeam';
+import { ROLE_LABEL_MAP } from '../../types/team';
 import { useUpdateAssignedLead } from '../../hooks/useUpdateAssignedLead';
 import { MODAL_WIDTH_MD, MODAL_BACKDROP, TEXT_MODAL_SECTION_LABEL, MODAL_ICON_DEFAULT } from '../../constants/ui-tokens';
 import { getInitials } from '../../utils/format-name';
@@ -37,14 +38,14 @@ export function AssignedLeadEditModal({
 
     // Exclude the currently drafted lead from the picker so they can't be double-assigned
     const availableMembers = teamMembers.filter(
-        (m) => m.user.name !== currentLeadDraft?.name
+        (m) => m.name !== currentLeadDraft?.name
     );
 
     function handleAssign() {
         if (!selectedKey) return;
         const member = teamMembers.find((m) => m.id === String(selectedKey));
         if (!member) return;
-        setCurrentLeadDraft({ name: member.user.name, role: member.role });
+        setCurrentLeadDraft({ name: member.name, role: ROLE_LABEL_MAP[member.role] });
         setSelectedKey(null);
     }
 
@@ -107,14 +108,14 @@ export function AssignedLeadEditModal({
                                             <ListBox.Item
                                                 key={member.id}
                                                 id={member.id}
-                                                textValue={`${member.user.name} ${member.role}`}
+                                                textValue={`${member.name} ${ROLE_LABEL_MAP[member.role]}`}
                                             >
                                                 <Avatar size="sm" color="accent" className="shrink-0">
-                                                    <Avatar.Fallback>{getInitials(member.user.name)}</Avatar.Fallback>
+                                                    <Avatar.Fallback>{getInitials(member.name)}</Avatar.Fallback>
                                                 </Avatar>
                                                 <div className="flex flex-col">
-                                                    <Label>{member.user.name}</Label>
-                                                    <Description>{member.role}</Description>
+                                                    <Label>{member.name}</Label>
+                                                    <Description>{ROLE_LABEL_MAP[member.role]}</Description>
                                                 </div>
                                                 <ListBox.ItemIndicator />
                                             </ListBox.Item>

@@ -4,6 +4,28 @@ import { TeamMemberModal } from "./TeamMemberModal";
 import { useTeam } from "../hooks/useTeam";
 import { Table } from "./pricing/Table";
 import { TEXT_TAB_HEADING } from "../constants/ui-tokens";
+import { ROLE_LABEL_MAP } from "../types/team";
+import type { TeamMemberStatus } from "../types/team";
+
+const STATUS_COLOR_MAP: Record<TeamMemberStatus, "success" | "warning" | "default"> = {
+  active: "success",
+  paused: "warning",
+  inactive: "default",
+};
+
+const STATUS_LABEL: Record<TeamMemberStatus, string> = {
+  active: "Active",
+  paused: "Paused",
+  inactive: "Inactive",
+};
+
+function formatDate(iso: string): string {
+  return new Date(iso).toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  });
+}
 
 export function TeamMembers() {
   const {
@@ -17,12 +39,6 @@ export function TeamMembers() {
     toggleSelected,
     handleAddMember,
   } = useTeam();
-
-  const statusColorMap: Record<string, "success" | "warning" | "default"> = {
-    Active: "success",
-    Paused: "warning",
-    Inactive: "default",
-  };
 
   if (isLoading) {
     return (
@@ -68,8 +84,8 @@ export function TeamMembers() {
             <Table.Column isBlack>Member</Table.Column>
             <Table.Column>Role</Table.Column>
             <Table.Column>Status</Table.Column>
-            <Table.Column>Added Date</Table.Column>
-            <Table.Column>Last Activity</Table.Column>
+            <Table.Column>Date Joined</Table.Column>
+            <Table.Column>Location</Table.Column>
             <Table.Column align="right">Actions</Table.Column>
           </tr>
         </Table.Header>
@@ -92,33 +108,47 @@ export function TeamMembers() {
               <Table.Cell>
                 <div className="flex items-center gap-3">
                   <Avatar size="sm">
-                    <Avatar.Image src={member.user.avatar} alt={member.user.name} />
+                    {member.avatarUrl ? (
+                      <Avatar.Image src={member.avatarUrl} alt={member.name} />
+                    ) : null}
+                    <Avatar.Fallback>
+                      {member.name
+                        .split(" ")
+                        .map((n) => n[0])
+                        .join("")}
+                    </Avatar.Fallback>
                   </Avatar>
                   <div>
-                    <div className="text-sm font-medium text-default-900">{member.user.name}</div>
+                    <div className="text-sm font-medium text-default-900">{member.name}</div>
                     <div className="text-xs text-default-400 font-normal">
-                      {member.user.email}
+                      {member.email}
                     </div>
                   </div>
                 </div>
               </Table.Cell>
               <Table.Cell>
-                <span className="text-sm font-medium text-default-600">{member.role}</span>
+                <span className="text-sm font-medium text-default-600">
+                  {ROLE_LABEL_MAP[member.role]}
+                </span>
               </Table.Cell>
               <Table.Cell>
                 <Chip
                   size="sm"
                   variant="soft"
-                  color={statusColorMap[member.status]}
+                  color={STATUS_COLOR_MAP[member.status]}
                 >
-                  {member.status}
+                  {STATUS_LABEL[member.status]}
                 </Chip>
               </Table.Cell>
               <Table.Cell>
-                <span className="text-xs font-medium text-default-500 whitespace-nowrap">{member.addedDate}</span>
+                <span className="text-xs font-medium text-default-500 whitespace-nowrap">
+                  {formatDate(member.dateJoined)}
+                </span>
               </Table.Cell>
               <Table.Cell>
-                <span className="text-xs font-medium text-default-500 whitespace-nowrap">{member.lastActivity}</span>
+                <span className="text-xs font-medium text-default-500 whitespace-nowrap">
+                  {member.city}, {member.country}
+                </span>
               </Table.Cell>
               <Table.Cell align="right">
                 <Dropdown>

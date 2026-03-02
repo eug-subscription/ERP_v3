@@ -2,6 +2,7 @@ import React from "react";
 import { Avatar, ComboBox, ListBox, Button, Modal, Input, Label } from "@heroui/react";
 import { Icon } from "@iconify/react";
 import { useUsers } from "../hooks/useUsers";
+import { ROLE_LABEL_MAP } from "../types/team";
 
 interface TeamMemberModalProps {
   isOpen: boolean;
@@ -24,11 +25,12 @@ export function TeamMemberModal({
   };
 
   const filteredUsers = React.useMemo(() => {
+    const query = filterValue.toLowerCase();
     return users.filter(
       (user) =>
-        user.name.toLowerCase().includes(filterValue.toLowerCase()) ||
-        user.email.toLowerCase().includes(filterValue.toLowerCase()) ||
-        user.role.toLowerCase().includes(filterValue.toLowerCase())
+        user.name.toLowerCase().includes(query) ||
+        user.email.toLowerCase().includes(query) ||
+        ROLE_LABEL_MAP[user.role].toLowerCase().includes(query)
     );
   }, [users, filterValue]);
 
@@ -81,7 +83,15 @@ export function TeamMemberModal({
                         >
                           <div className="flex items-center gap-3">
                             <Avatar size="sm">
-                              <Avatar.Image src={item.avatar} alt={item.name} />
+                              {item.avatarUrl ? (
+                                <Avatar.Image src={item.avatarUrl} alt={item.name} />
+                              ) : null}
+                              <Avatar.Fallback>
+                                {item.name
+                                  .split(" ")
+                                  .map((n) => n[0])
+                                  .join("")}
+                              </Avatar.Fallback>
                             </Avatar>
                             <div className="flex flex-col flex-1">
                               <div className="flex items-center justify-between">
@@ -89,7 +99,7 @@ export function TeamMemberModal({
                                   {item.name}
                                 </span>
                                 <span className="t-mini text-default-500 font-bold px-2 py-0.5 bg-default-100 rounded uppercase tracking-widest">
-                                  {item.role}
+                                  {ROLE_LABEL_MAP[item.role]}
                                 </span>
                               </div>
                               <span className="t-mini text-default-400 font-normal">

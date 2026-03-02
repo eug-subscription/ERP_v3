@@ -10,6 +10,20 @@ export const COPY_FEEDBACK_DURATION_MS = 2000;
 export const SKELETON_ROW_HEIGHT = "h-12";
 export const SKELETON_FIELD_HEIGHT = "h-10";
 export const SKELETON_AREA_HEIGHT = "h-20";
+export const SKELETON_LABEL_HEIGHT = "h-5";
+export const SKELETON_TEXT_HEIGHT = "h-4";
+export const SKELETON_TAB_HEIGHT = "h-8";
+export const SKELETON_TAB_WIDTH = "w-28";
+
+// Member Profile — shared layout geometry (header + skeleton must stay in sync)
+export const PROFILE_BANNER_HEIGHT = "h-52";
+export const PROFILE_AVATAR_SIZE = "size-28";
+export const PROFILE_AVATAR_OFFSET = "-bottom-14 left-8";
+export const PROFILE_AVATAR_RING = "ring-4 ring-white/20";
+export const PROFILE_NAME_OFFSET = "mt-20 pl-8";
+// Avatar upload overlay — semi-transparent hover state over profile avatar
+export const AVATAR_OVERLAY_BG = "bg-black/50 backdrop-blur-[2px]";
+
 
 // High-density UI sizing (Magic number elimination)
 export const DENSITY_CHIP_HEIGHT = "h-5";
@@ -48,16 +62,23 @@ export const CONTAINER_INFO_ACCENT = "p-4 rounded-xl border border-accent/20 bg-
 export const CONTAINER_INFO_ITEM = "p-3 rounded-xl border border-default-200 bg-default-50/50";
 export const CONTAINER_DETAIL_BLOCK = "rounded-xl bg-default/40 border border-default px-4 py-3";
 
+// Tab panel surface — elevated card wrapping tab content (matches order page pattern)
+export const TAB_PANEL_SURFACE = "rounded-3xl shadow-sm overflow-hidden p-6 md:p-10 mt-6";
+
 // Icon containers
 export const ICON_CONTAINER_LG = "size-10 rounded-full bg-accent/10 flex items-center justify-center shrink-0";
 export const ICON_CONTAINER_SM = "size-7 rounded-full bg-accent/10 flex items-center justify-center shrink-0";
 export const ICON_SIZE_CONTAINER = "size-5 text-accent";
+// Standard small icon size — used for action button icons across the app
+export const ICON_SIZE_SM = "w-4 h-4";
 
 // Typography patterns
 export const TEXT_SECTION_LABEL = "text-xs font-bold uppercase tracking-wider";
 export const TEXT_SECTION_TITLE = "text-sm font-black uppercase tracking-widest text-foreground";
 export const TEXT_TINY_LABEL = "text-tiny text-default-400 capitalize";
 export const TEXT_FIELD_LABEL = "text-xs text-default-400 font-medium";
+// Sub-section heading — repeated across PaymentsTab and similar multi-section forms
+export const TEXT_SUBSECTION_LABEL = "text-base font-bold text-foreground";
 
 // Modal icon background — consistent accent-soft style across all edit modals
 export const MODAL_ICON_DEFAULT = "bg-accent-soft text-accent-soft-foreground";
@@ -69,10 +90,16 @@ export const GHOST_EDIT_BUTTON = "opacity-0 group-hover:opacity-100 transition-o
 
 // Layout patterns
 export const FLEX_COL_GAP_1 = "flex flex-col gap-1";
+export const FLEX_COL_GAP_1_5 = "flex flex-col gap-1.5";
 export const FLEX_COL_GAP_2 = "flex flex-col gap-2";
+export const FLEX_COL_GAP_3 = "flex flex-col gap-3";
 export const FLEX_COL_GAP_4 = "flex flex-col gap-4";
 export const SPACE_Y_4 = "space-y-4";
 export const SPACE_Y_6 = "space-y-6";
+// Form action row — Cancel + Save button row shared across form sections and tab footers
+export const FORM_ACTION_ROW = "flex items-center justify-end gap-3 pt-2";
+// Two-column responsive form grid — used in DetailsTab field rows
+export const FORM_GRID_2COL = "grid grid-cols-1 sm:grid-cols-2 gap-4";
 
 // Border radius
 export const ROUNDED_STANDARD = "rounded-xl";

@@ -6,7 +6,7 @@ import { useRateCards } from "./useRateCards";
 import { useProjectOverrides } from "./useProjectOverrides";
 import { calculateLineFinancials, calculateFinalRate } from "../utils/billingCalculations";
 import { NewBillingLinePayload, RateSource, ModifierType } from "../types/pricing";
-import { mockUsers } from "../data/mock-users";
+import { ALL_TEAM_MEMBERS } from "../data/mock-team-members";
 
 interface UseAddManualLineProps {
     orderId: string;
@@ -199,7 +199,7 @@ export function useAddManualLine({ orderId, projectId }: UseAddManualLineProps) 
             lineMargin: activePricing.margin,
             status: "draft" as const,
             createdAt: new Date().toISOString(),
-            createdBy: mockUsers[0].id,
+            createdBy: ALL_TEAM_MEMBERS[0].id,
             modifiedAt: null,
             modifiedBy: null,
             voidedAt: null,

@@ -4,6 +4,7 @@ import { Avatar, Button, ComboBox, Description, Input, Label, ListBox, Modal, to
 import { Icon } from '@iconify/react';
 import type { AssignedLead, ExtraMember } from '../../types/order';
 import { useTeam } from '../../hooks/useTeam';
+import { ROLE_LABEL_MAP } from '../../types/team';
 import { useUpdateExtraMembers } from '../../hooks/useUpdateExtraMembers';
 import { MODAL_WIDTH_MD, MODAL_BACKDROP, TEXT_MODAL_SECTION_LABEL, MODAL_ICON_DEFAULT } from '../../constants/ui-tokens';
 import { getInitials } from '../../utils/format-name';
@@ -43,7 +44,7 @@ export function ExtraMembersEditModal({
         ...(assignedLead ? [assignedLead.name] : []),
     ]);
 
-    const availableMembers = teamMembers.filter((m) => !excludedNames.has(m.user.name));
+    const availableMembers = teamMembers.filter((m) => !excludedNames.has(m.name));
 
     function handleAdd() {
         if (!selectedKey) return;
@@ -51,7 +52,7 @@ export function ExtraMembersEditModal({
         if (!member) return;
         setMembers((prev) => [
             ...prev,
-            { id: crypto.randomUUID(), name: member.user.name, role: member.role },
+            { id: crypto.randomUUID(), name: member.name, role: ROLE_LABEL_MAP[member.role] },
         ]);
         setSelectedKey(null);
     }
@@ -122,14 +123,14 @@ export function ExtraMembersEditModal({
                                             <ListBox.Item
                                                 key={member.id}
                                                 id={member.id}
-                                                textValue={`${member.user.name} ${member.role}`}
+                                                textValue={`${member.name} ${ROLE_LABEL_MAP[member.role]}`}
                                             >
                                                 <Avatar size="sm" color="accent" className="shrink-0">
-                                                    <Avatar.Fallback>{getInitials(member.user.name)}</Avatar.Fallback>
+                                                    <Avatar.Fallback>{getInitials(member.name)}</Avatar.Fallback>
                                                 </Avatar>
                                                 <div className="flex flex-col">
-                                                    <Label>{member.user.name}</Label>
-                                                    <Description>{member.role}</Description>
+                                                    <Label>{member.name}</Label>
+                                                    <Description>{ROLE_LABEL_MAP[member.role]}</Description>
                                                 </div>
                                                 <ListBox.ItemIndicator />
                                             </ListBox.Item>

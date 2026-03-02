@@ -46,12 +46,9 @@ export function RateManagementPage() {
         <Surface className="min-h-screen bg-surface rounded-none shadow-none pb-20 p-12">
             {/* Avant-Garde Header Section */}
             <header className="mb-10 px-0">
-                <Breadcrumbs
-                    separator={<Icon icon="lucide:chevron-right" className="text-default-300 w-4 h-4" />}
-                    className="mb-4"
-                >
-                    <Breadcrumbs.Item className="no-underline hover:no-underline font-medium opacity-60 hover:opacity-100 transition-opacity cursor-default">Administration</Breadcrumbs.Item>
-                    <Breadcrumbs.Item className="no-underline hover:no-underline font-bold text-accent tracking-tight">Pricing Catalog</Breadcrumbs.Item>
+                <Breadcrumbs className="mb-4">
+                    <Breadcrumbs.Item>Administration</Breadcrumbs.Item>
+                    <Breadcrumbs.Item>Pricing Catalog</Breadcrumbs.Item>
                 </Breadcrumbs>
 
                 <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">

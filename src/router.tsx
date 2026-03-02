@@ -230,6 +230,17 @@ const teamIndexRoute = createRoute({
   ),
 });
 
+// Team Member Detail Route
+const teamMemberDetailRoute = createRoute({
+  getParentRoute: () => teamLayoutRoute,
+  path: "/people/$memberId",
+  component: React.lazy(() =>
+    import("./components/Team/MemberProfile/MemberProfilePage").then(
+      m => ({ default: m.MemberProfilePage })
+    )
+  ),
+});
+
 // 5. Create Router
 const routeTree = rootRoute.addChildren([
   orderLayoutRoute.addChildren([
@@ -265,6 +276,7 @@ const routeTree = rootRoute.addChildren([
   ]),
   teamLayoutRoute.addChildren([
     teamIndexRoute,
+    teamMemberDetailRoute,
   ]),
 ]);
 

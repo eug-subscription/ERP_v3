@@ -1,11 +1,12 @@
 import React from "react";
 import { useQuery } from "@tanstack/react-query";
-import { mockTeamMembers, TeamMember } from "../data/mock-team";
+import { ALL_TEAM_MEMBERS } from "../data/mock-team-members";
+import type { SplTeamMember } from "../types/team";
 import { DEFAULT_STALE_TIME, MOCK_API_DELAY } from "../constants/query-config";
 
-async function fetchTeamMembers(): Promise<TeamMember[]> {
+async function fetchTeamMembers(): Promise<SplTeamMember[]> {
     await new Promise((resolve) => setTimeout(resolve, MOCK_API_DELAY));
-    return mockTeamMembers;
+    return ALL_TEAM_MEMBERS;
 }
 
 export function useTeam() {

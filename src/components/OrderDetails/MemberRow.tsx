@@ -1,23 +1,34 @@
 import { Avatar, Button, Tooltip } from '@heroui/react';
 import { Icon } from '@iconify/react';
 import { getInitials } from '../../utils/format-name';
+import { ALL_TEAM_MEMBERS } from '../../data/mock-team-members';
 import { TOOLTIP_DELAY } from '../../constants/ui-tokens';
 
 interface MemberRowProps {
     name: string;
     role: string;
+    /** Optional avatar URL override. When omitted, looks up by name in ALL_TEAM_MEMBERS. */
+    avatarUrl?: string | null;
     /** 'card' = hover bg, Tooltip, larger Avatar; 'modal' = static bg, optional remove button */
     variant: 'card' | 'modal';
     onRemove?: () => void;
     removeLabel?: string;
 }
 
+/** Resolve avatar URL: use explicit prop, or fall back to team directory lookup by name. */
+function resolveAvatarUrl(name: string, avatarUrl?: string | null): string | null {
+    if (avatarUrl !== undefined) return avatarUrl;
+    return ALL_TEAM_MEMBERS.find((m) => m.name === name)?.avatarUrl ?? null;
+}
+
 /**
  * Shared member row used in team cards and edit modals.
- * Renders an Avatar with initials, name, role, and optional remove action.
+ * Renders an Avatar with photo (when available) or initials fallback,
+ * name, role, and optional remove action.
  */
-export function MemberRow({ name, role, variant, onRemove, removeLabel }: MemberRowProps) {
+export function MemberRow({ name, role, variant, avatarUrl, onRemove, removeLabel }: MemberRowProps) {
     const isCard = variant === 'card';
+    const resolvedAvatar = resolveAvatarUrl(name, avatarUrl);
 
     return (
         <div
@@ -28,6 +39,9 @@ export function MemberRow({ name, role, variant, onRemove, removeLabel }: Member
             }
         >
             <Avatar size={isCard ? 'md' : 'sm'} color="accent" className="shrink-0">
+                {resolvedAvatar ? (
+                    <Avatar.Image src={resolvedAvatar} alt={name} />
+                ) : null}
                 <Avatar.Fallback>{getInitials(name)}</Avatar.Fallback>
             </Avatar>
 

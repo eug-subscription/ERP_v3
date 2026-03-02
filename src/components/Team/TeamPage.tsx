@@ -1,4 +1,5 @@
 import { useState, useDeferredValue } from "react";
+import { useNavigate } from "@tanstack/react-router";
 import { Button, Breadcrumbs, Surface } from "@heroui/react";
 import { Icon } from "@iconify/react";
 import { FilterBar } from "../pricing/FilterBar";
@@ -21,6 +22,7 @@ export function TeamPage() {
     // ── State ────────────────────────────────────────────────────────────────
     const [searchQuery, setSearchQuery] = useState("");
     const deferredSearch = useDeferredValue(searchQuery);
+    const navigate = useNavigate();
 
     const [page, setPage] = useState(1);
     const [statusFilter, setStatusFilter] = useState<TeamMemberStatus | "all">("all");
@@ -66,6 +68,9 @@ export function TeamPage() {
         dropdownFilters.city !== "";
 
     // ── Handlers ─────────────────────────────────────────────────────────────
+    const handleEdit = (member: SplTeamMember) =>
+        void navigate({ to: "/people/$memberId", params: { memberId: member.id } });
+
     const handleSort = (key: keyof SplTeamMember) => {
         if (key === sortKey) {
             setSortDirection((prev) => (prev === "asc" ? "desc" : "asc"));
@@ -103,16 +108,9 @@ export function TeamPage() {
         <Surface className="min-h-screen bg-surface rounded-none shadow-none pb-20 p-12">
             {/* Header */}
             <header className="mb-10 px-0">
-                <Breadcrumbs
-                    separator={<Icon icon="lucide:chevron-right" className="text-default-300 w-4 h-4" />}
-                    className="mb-4"
-                >
-                    <Breadcrumbs.Item className="no-underline hover:no-underline font-medium opacity-60 hover:opacity-100 transition-opacity cursor-default">
-                        Administration
-                    </Breadcrumbs.Item>
-                    <Breadcrumbs.Item className="no-underline hover:no-underline font-bold text-accent tracking-tight">
-                        Team Directory
-                    </Breadcrumbs.Item>
+                <Breadcrumbs className="mb-4">
+                    <Breadcrumbs.Item>Administration</Breadcrumbs.Item>
+                    <Breadcrumbs.Item>Team Directory</Breadcrumbs.Item>
                 </Breadcrumbs>
 
                 <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
@@ -176,6 +174,7 @@ export function TeamPage() {
                     onSort={handleSort}
                     onClearFilters={handleClearFilters}
                     hasActiveFilters={hasActiveFilters}
+                    onEdit={handleEdit}
                 />
             )}
 

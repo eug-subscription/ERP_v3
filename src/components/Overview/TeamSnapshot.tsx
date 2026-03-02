@@ -3,21 +3,21 @@ import { Link } from '@tanstack/react-router';
 import { Icon } from '@iconify/react';
 import { useTeam } from '../../hooks/useTeam';
 import { TEXT_SECTION_LABEL } from '../../constants/ui-tokens';
-import type { TeamMember } from '../../data/mock-team';
+import type { TeamMemberStatus } from '../../types/team';
 
 const TEAM_PREVIEW_COUNT = 4;
 
-const STATUS_DOT_COLOR: Record<TeamMember['status'], string> = {
-    Active: 'bg-success',
-    Paused: 'bg-warning',
-    Inactive: 'bg-default',
+const STATUS_DOT_COLOR: Record<TeamMemberStatus, string> = {
+    active: 'bg-success',
+    paused: 'bg-warning',
+    inactive: 'bg-default',
 };
 
 export function TeamSnapshot() {
     const { teamMembers, isLoading } = useTeam();
 
-    const activeCount = teamMembers.filter((m) => m.status === 'Active').length;
-    const pausedCount = teamMembers.filter((m) => m.status === 'Paused').length;
+    const activeCount = teamMembers.filter((m) => m.status === 'active').length;
+    const pausedCount = teamMembers.filter((m) => m.status === 'paused').length;
 
     return (
         <Card>
@@ -49,12 +49,14 @@ export function TeamSnapshot() {
                             {teamMembers.map((member) => (
                                 <div key={member.id} className="relative shrink-0 transition-transform hover:-translate-y-1 hover:z-10">
                                     <Avatar className="ring-2 ring-surface size-10 shadow-sm">
-                                        <Avatar.Image
-                                            src={member.user.avatar}
-                                            alt={member.user.name}
-                                        />
+                                        {member.avatarUrl ? (
+                                            <Avatar.Image
+                                                src={member.avatarUrl}
+                                                alt={member.name}
+                                            />
+                                        ) : null}
                                         <Avatar.Fallback>
-                                            {member.user.name
+                                            {member.name
                                                 .split(' ')
                                                 .map((n) => n[0])
                                                 .join('')}

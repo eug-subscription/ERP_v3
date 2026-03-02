@@ -1,12 +1,12 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { BillingLineInstance } from '../types/pricing';
 import { mockBillingLines } from '../data/mock-billing-lines';
-import { mockUsers } from '../data/mock-users';
+import { ALL_TEAM_MEMBERS } from '../data/mock-team-members';
 
 import { MOCK_API_DELAY } from '../constants/query-config';
 import { calculateLineFinancials, calculateFinalRate } from '../utils/billingCalculations';
 
-const DEFAULT_USER_ID = mockUsers[0].id;
+const DEFAULT_USER_ID = ALL_TEAM_MEMBERS[0].id;
 
 /**
  * Helper to recalculate all totals for a billing line instance

@@ -5,10 +5,10 @@ import { CurrencyDisplay } from "../pricing/CurrencyDisplay";
 import { ModifierBadge } from "../pricing/ModifierBadge";
 import { PRICING_LABEL_CLASSES } from "../../constants/pricing";
 import { formatPercentage } from "../../utils/formatters";
-import { mockUsers } from "../../data/mock-users";
+import { ALL_TEAM_MEMBERS } from "../../data/mock-team-members";
 import { formatRelativeTime } from "../../utils/format-time";
 
-const getUserName = (userId: string) => mockUsers.find(u => u.id === userId)?.name ?? userId;
+const getUserName = (userId: string) => ALL_TEAM_MEMBERS.find(u => u.id === userId)?.name ?? userId;
 
 interface BillingLineDetailProps {
     line: BillingLineInstance;
