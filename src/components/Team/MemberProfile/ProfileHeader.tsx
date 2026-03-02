@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { Suspense, useState } from "react";
 import { Avatar, Breadcrumbs, Button, Chip, Tooltip } from "@heroui/react";
 import { Icon } from "@iconify/react";
 import { useNavigate } from "@tanstack/react-router";
@@ -14,7 +14,11 @@ import { ROLE_LABEL_MAP } from "../../../types/team";
 import type { TeamMemberStatus } from "../../../types/team";
 import type { SplTeamMemberProfile } from "../../../types/team-profile";
 import { AvatarUploadOverlay } from "./AvatarUploadOverlay";
-import { AvatarUploadModal } from "./AvatarUploadModal";
+
+// Lazy-loaded — react-easy-crop is only fetched when the user opens the modal.
+const AvatarUploadModal = React.lazy(() =>
+    import("./AvatarUploadModal").then(m => ({ default: m.AvatarUploadModal }))
+);
 
 interface ProfileHeaderProps {
     profile: SplTeamMemberProfile;
@@ -156,12 +160,16 @@ export function ProfileHeader({ profile }: ProfileHeaderProps) {
             </div>
 
             {/* Avatar upload modal — rendered outside the avatar wrapper to avoid z-index issues */}
-            <AvatarUploadModal
-                isOpen={isModalOpen}
-                onOpenChange={setIsModalOpen}
-                memberId={profile.id}
-                hasAvatar={Boolean(avatarSrc)}
-            />
+            {isModalOpen && (
+                <Suspense fallback={null}>
+                    <AvatarUploadModal
+                        isOpen={isModalOpen}
+                        onOpenChange={setIsModalOpen}
+                        memberId={profile.id}
+                        hasAvatar={Boolean(avatarSrc)}
+                    />
+                </Suspense>
+            )}
         </div>
     );
 }
