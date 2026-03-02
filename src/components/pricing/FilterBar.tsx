@@ -32,7 +32,7 @@ export function FilterBar<T extends string = string>({ search, status, currency 
                         aria-label="Search catalog"
                         className="w-full group"
                     >
-                        <SearchField.Group className="bg-surface-base dark:bg-default-100 border-none rounded-full h-10 shadow-sm focus-within:ring-2 focus-within:ring-accent/20 transition-all">
+                        <SearchField.Group className="bg-surface-base dark:bg-default border-none rounded-full h-10 shadow-sm focus-within:ring-2 focus-within:ring-accent/20 transition-all">
                             <SearchField.SearchIcon className="ml-4 text-default-400 group-focus-within:text-accent transition-colors size-4" />
                             <SearchField.Input
                                 placeholder={search.placeholder || "Search..."}
@@ -63,7 +63,7 @@ export function FilterBar<T extends string = string>({ search, status, currency 
                                         className="h-8 px-5 rounded-full text-xs font-semibold data-[selected=true]:text-foreground text-default-500 transition-colors whitespace-nowrap relative"
                                     >
                                         {opt.label}
-                                        <Tabs.Indicator className="bg-surface-base dark:bg-default-200 rounded-full shadow-sm" />
+                                        <Tabs.Indicator className="bg-surface-base dark:bg-default/80 rounded-full shadow-sm" />
                                     </Tabs.Tab>
                                 ))}
                             </Tabs.List>
@@ -92,7 +92,7 @@ export function FilterBar<T extends string = string>({ search, status, currency 
                                     >
                                         {index > 0 && <Tabs.Separator />}
                                         {opt.label}
-                                        <Tabs.Indicator className="bg-surface-base dark:bg-default-200 rounded-full shadow-sm" />
+                                        <Tabs.Indicator className="bg-surface-base dark:bg-default/80 rounded-full shadow-sm" />
                                     </Tabs.Tab>
                                 ))}
                             </Tabs.List>

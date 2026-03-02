@@ -32,12 +32,12 @@ export function TeamFilters({ filters, onFiltersChange, countryOptions, cityOpti
                 <ComboBox.Popover className="w-(--trigger-width)">
                     <ListBox className="p-1 max-h-[260px] overflow-y-auto">
                         <ListBox.Item id="" textValue="All roles">
-                            All roles
+                            <Label>All roles</Label>
                             <ListBox.ItemIndicator />
                         </ListBox.Item>
                         {TEAM_ROLES.map((role) => (
                             <ListBox.Item key={role.id} id={role.id} textValue={role.label}>
-                                {role.label}
+                                <Label>{role.label}</Label>
                                 <ListBox.ItemIndicator />
                             </ListBox.Item>
                         ))}
@@ -62,12 +62,12 @@ export function TeamFilters({ filters, onFiltersChange, countryOptions, cityOpti
                 <ComboBox.Popover className="w-(--trigger-width)">
                     <ListBox className="p-1 max-h-[260px] overflow-y-auto">
                         <ListBox.Item id="" textValue="All countries">
-                            All countries
+                            <Label>All countries</Label>
                             <ListBox.ItemIndicator />
                         </ListBox.Item>
                         {countryOptions.map((country) => (
                             <ListBox.Item key={country} id={country} textValue={country}>
-                                {country}
+                                <Label>{country}</Label>
                                 <ListBox.ItemIndicator />
                             </ListBox.Item>
                         ))}
@@ -92,12 +92,12 @@ export function TeamFilters({ filters, onFiltersChange, countryOptions, cityOpti
                 <ComboBox.Popover className="w-(--trigger-width)">
                     <ListBox className="p-1 max-h-[260px] overflow-y-auto">
                         <ListBox.Item id="" textValue="All cities">
-                            All cities
+                            <Label>All cities</Label>
                             <ListBox.ItemIndicator />
                         </ListBox.Item>
                         {cityOptions.map((city) => (
                             <ListBox.Item key={city} id={city} textValue={city}>
-                                {city}
+                                <Label>{city}</Label>
                                 <ListBox.ItemIndicator />
                             </ListBox.Item>
                         ))}

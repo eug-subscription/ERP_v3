@@ -1,4 +1,3 @@
-import React from "react";
 import { useQuery } from "@tanstack/react-query";
 import { ALL_TEAM_MEMBERS } from "../data/mock-team-members";
 import type { SplTeamMember } from "../types/team";
@@ -9,6 +8,7 @@ async function fetchTeamMembers(): Promise<SplTeamMember[]> {
     return ALL_TEAM_MEMBERS;
 }
 
+/** Pure data hook — returns team member query state only. */
 export function useTeam() {
     const query = useQuery({
         queryKey: ["teamMembers"],
@@ -16,37 +16,9 @@ export function useTeam() {
         staleTime: DEFAULT_STALE_TIME,
     });
 
-    const [selectedKeys, setSelectedKeys] = React.useState<Set<string>>(new Set());
-    const [page, setPage] = React.useState(1);
-    const [isOpen, setIsOpen] = React.useState(false);
-
-    const toggleSelected = (id: string) => {
-        const newSelected = new Set(selectedKeys);
-        if (newSelected.has(id)) {
-            newSelected.delete(id);
-        } else {
-            newSelected.add(id);
-        }
-        setSelectedKeys(newSelected);
-    };
-
-    const handleAddMember = () => {
-        setIsOpen(false);
-    };
-
     return {
-
-        teamMembers: query.data || [],
+        teamMembers: query.data ?? [],
         isLoading: query.isLoading,
         error: query.error,
-        selectedKeys,
-        page,
-        isOpen,
-
-        setSelectedKeys,
-        setPage,
-        setIsOpen,
-        toggleSelected,
-        handleAddMember,
     };
 }

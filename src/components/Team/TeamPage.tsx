@@ -154,7 +154,7 @@ export function TeamPage() {
             </div>
 
             {/* Dropdown filters (role, country, city) */}
-            <div className="mb-8">
+            <div className="mb-8 bg-surface-secondary rounded-2xl p-4">
                 <TeamFilters
                     filters={dropdownFilters}
                     onFiltersChange={handleDropdownFiltersChange}

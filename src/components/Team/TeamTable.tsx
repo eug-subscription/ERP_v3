@@ -1,11 +1,12 @@
-import { Avatar, Button, Chip, Tooltip } from "@heroui/react";
+import { Avatar, Button, Checkbox, Chip, Tooltip } from "@heroui/react";
 import { Icon } from "@iconify/react";
 import { Table } from "../pricing/Table";
 import { EmptyState } from "../pricing/EmptyState";
-import { TOOLTIP_DELAY, ACTION_BUTTON_ICON } from "../../constants/ui-tokens";
+import { TOOLTIP_DELAY, ACTION_BUTTON_ICON, ICON_SIZE_SM } from "../../constants/ui-tokens";
 import { ROLE_LABEL_MAP } from "../../types/team";
 import type { SplTeamMember } from "../../types/team";
 import { formatRelativeTime, formatAbsoluteTime } from "../../utils/format-time";
+import { getInitials } from "../../utils/format-name";
 
 // ─── Role chip color mapping ─────────────────────────────────────────────────
 
@@ -30,47 +31,75 @@ const STATUS_CONFIG: Record<string, { color: "success" | "warning" | "default"; 
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
-export type SortableColumn = Extract<keyof SplTeamMember, "name" | "email" | "role" | "status" | "dateJoined" | "country" | "city">;
+export type SortableColumn = Extract<keyof SplTeamMember, "name" | "role" | "status" | "dateJoined" | "country" | "city">;
 
 interface TeamTableProps {
     members: SplTeamMember[];
-    sortKey: SortableColumn;
-    sortDirection: "asc" | "desc";
-    onSort: (key: SortableColumn) => void;
-    onClearFilters: () => void;
-    hasActiveFilters: boolean;
+    sortKey?: SortableColumn;
+    sortDirection?: "asc" | "desc";
+    onSort?: (key: SortableColumn) => void;
+    onClearFilters?: () => void;
+    hasActiveFilters?: boolean;
     onEdit?: (member: SplTeamMember) => void;
-}
-
-/** Derive initials from a full name (up to 2 letters). */
-function getInitials(name: string): string {
-    return name
-        .split(" ")
-        .slice(0, 2)
-        .map((n) => n[0]?.toUpperCase() ?? "")
-        .join("");
+    /** Optional checkbox selection — renders checkboxes when provided */
+    selectedKeys?: Set<string>;
+    onSelectAll?: () => void;
+    onToggleSelect?: (id: string) => void;
+    /** Called when empty-state CTA is pressed (e.g. "Add Member") */
+    onAddMember?: () => void;
 }
 
 // ─── Component ───────────────────────────────────────────────────────────────
 
-export function TeamTable({ members, sortKey, sortDirection, onSort, onClearFilters, hasActiveFilters, onEdit }: TeamTableProps) {
-    const sortButton = (label: string, key: SortableColumn, isBlack = false) => (
-        <Table.SortButton
-            label={label}
-            isActive={sortKey === key}
-            direction={sortKey === key ? sortDirection : undefined}
-            onPress={() => onSort(key)}
-            isBlack={isBlack}
-        />
-    );
+export function TeamTable({
+    members,
+    sortKey,
+    sortDirection,
+    onSort,
+    onClearFilters,
+    hasActiveFilters = false,
+    onEdit,
+    selectedKeys,
+    onSelectAll,
+    onToggleSelect,
+    onAddMember,
+}: TeamTableProps) {
+    const showCheckboxes = selectedKeys !== undefined;
+    const showSort = onSort !== undefined;
+
+    const sortButton = (label: string, key: SortableColumn, isBlack = false) =>
+        showSort ? (
+            <Table.SortButton
+                label={label}
+                isActive={sortKey === key}
+                direction={sortKey === key ? sortDirection : undefined}
+                onPress={() => onSort(key)}
+                isBlack={isBlack}
+            />
+        ) : (
+            label
+        );
+
+    const columnCount = showCheckboxes ? 8 : 7;
 
     return (
         <Table>
             <Table.Header>
                 <tr>
-                    <Table.Column className="w-12">Avatar</Table.Column>
-                    <Table.Column isBlack>{sortButton("Name", "name", true)}</Table.Column>
-                    <Table.Column>{sortButton("Email", "email")}</Table.Column>
+                    {showCheckboxes && (
+                        <Table.Column className="w-10">
+                            <Checkbox
+                                isSelected={members.length > 0 && selectedKeys.size === members.length}
+                                isIndeterminate={selectedKeys.size > 0 && selectedKeys.size < members.length}
+                                onChange={onSelectAll}
+                            >
+                                <Checkbox.Control>
+                                    <Checkbox.Indicator />
+                                </Checkbox.Control>
+                            </Checkbox>
+                        </Table.Column>
+                    )}
+                    <Table.Column isBlack>{sortButton("Member", "name", true)}</Table.Column>
                     <Table.Column>{sortButton("Role", "role")}</Table.Column>
                     <Table.Column>{sortButton("Status", "status")}</Table.Column>
                     <Table.Column>{sortButton("Date Joined", "dateJoined")}</Table.Column>
@@ -82,28 +111,38 @@ export function TeamTable({ members, sortKey, sortDirection, onSort, onClearFilt
             <Table.Body>
                 {members.length > 0 ? (
                     members.map((member) => (
-                        <Table.Row key={member.id}>
-                            {/* Avatar — v3 compound pattern */}
-                            <Table.Cell>
-                                <Avatar size="sm" className="shrink-0">
-                                    {member.avatarUrl && (
-                                        <Avatar.Image
-                                            src={member.avatarUrl}
-                                            alt={member.name}
-                                        />
-                                    )}
-                                    <Avatar.Fallback>{getInitials(member.name)}</Avatar.Fallback>
-                                </Avatar>
-                            </Table.Cell>
+                        <Table.Row
+                            key={member.id}
+                            className={showCheckboxes && selectedKeys.has(member.id) ? "!bg-accent/5" : ""}
+                        >
+                            {/* Checkbox (optional) */}
+                            {showCheckboxes && (
+                                <Table.Cell>
+                                    <Checkbox
+                                        isSelected={selectedKeys.has(member.id)}
+                                        onChange={() => onToggleSelect?.(member.id)}
+                                    >
+                                        <Checkbox.Control>
+                                            <Checkbox.Indicator />
+                                        </Checkbox.Control>
+                                    </Checkbox>
+                                </Table.Cell>
+                            )}
 
-                            {/* Name */}
+                            {/* Member — avatar + name + email */}
                             <Table.Cell>
-                                <span className="text-sm font-medium text-default-900">{member.name}</span>
-                            </Table.Cell>
-
-                            {/* Email */}
-                            <Table.Cell>
-                                <span className="text-xs text-default-400 font-normal">{member.email}</span>
+                                <div className="flex items-center gap-3">
+                                    <Avatar size="sm" className="shrink-0">
+                                        {member.avatarUrl && (
+                                            <Avatar.Image src={member.avatarUrl} alt={member.name} />
+                                        )}
+                                        <Avatar.Fallback>{getInitials(member.name)}</Avatar.Fallback>
+                                    </Avatar>
+                                    <div>
+                                        <div className="text-sm font-medium text-default-900">{member.name}</div>
+                                        <div className="text-xs text-default-400 font-normal">{member.email}</div>
+                                    </div>
+                                </div>
                             </Table.Cell>
 
                             {/* Role */}
@@ -118,7 +157,7 @@ export function TeamTable({ members, sortKey, sortDirection, onSort, onClearFilt
                                 </Chip>
                             </Table.Cell>
 
-                            {/* Status — soft chip with dot icon replacing v2 "dot" variant */}
+                            {/* Status — soft chip with dot icon */}
                             <Table.Cell>
                                 <Chip
                                     size="sm"
@@ -168,7 +207,7 @@ export function TeamTable({ members, sortKey, sortDirection, onSort, onClearFilt
                                             className={ACTION_BUTTON_ICON}
                                             onPress={() => onEdit?.(member)}
                                         >
-                                            <Icon icon="lucide:edit-3" width={16} />
+                                            <Icon icon="lucide:edit-3" className={ICON_SIZE_SM} />
                                         </Button>
                                     </Tooltip.Trigger>
                                     <Tooltip.Content>Edit Member</Tooltip.Content>
@@ -178,7 +217,7 @@ export function TeamTable({ members, sortKey, sortDirection, onSort, onClearFilt
                     ))
                 ) : (
                     <tr>
-                        <td colSpan={9} className="p-0">
+                        <td colSpan={columnCount} className="p-0">
                             <EmptyState
                                 icon="lucide:users"
                                 title="No Team Members Found"
@@ -187,9 +226,9 @@ export function TeamTable({ members, sortKey, sortDirection, onSort, onClearFilt
                                         ? "No members match your current filters. Try adjusting your search or filter criteria."
                                         : "Your team directory is empty. Start by inviting your first team member."
                                 }
-                                actionLabel={hasActiveFilters ? "Clear Filters" : undefined}
-                                actionIcon={hasActiveFilters ? "lucide:x" : undefined}
-                                onAction={hasActiveFilters ? onClearFilters : undefined}
+                                actionLabel={hasActiveFilters ? "Clear Filters" : onAddMember ? "Add Member" : undefined}
+                                actionIcon={hasActiveFilters ? "lucide:x" : onAddMember ? "lucide:user-plus" : undefined}
+                                onAction={hasActiveFilters ? onClearFilters : onAddMember}
                             />
                         </td>
                     </tr>
